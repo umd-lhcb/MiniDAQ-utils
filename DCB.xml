@@ -44,14 +44,14 @@ DCB
         <reg type="I2C" poll="3" offset="0x0" subaddress="0x000016D" size="1" specific_type="0" frequency="3" name="configDone" onchange="1"/>
     </hwtype>
 
-    <hwtype name="DCB">
+    <hwtype name="DCB" type="GBT">
         <node name="MasterGBT" type="GBTx_IC"/>
         <node name="SCA_Master" type="SCA_chip"/>
-        <node name="DataGbt_0" type="GBTx_I2C" address="0x1" bus="0x0"/>
-        <node name="DataGbt_1" type="GBTx_I2C" address="0x1" bus="0x1"/>
-        <node name="DataGbt_2" type="GBTx_I2C" address="0x1" bus="0x2"/>
-        <node name="DataGbt_3" type="GBTx_I2C" address="0x1" bus="0x3"/>
-        <node name="DataGbt_4" type="GBTx_I2C" address="0x1" bus="0x4"/>
-        <node name="DataGbt_5" type="GBTx_I2C" address="0x1" bus="0x5"/>
+        <node name="DataGbt_1" type="GBTx_I2C" address="0x6" bus="0x1"/>
+        <node name="DataGbt_2" type="GBTx_I2C" address="0x6" bus="0x2"/>
+        <node name="DataGbt_3" type="GBTx_I2C" address="0x6" bus="0x3"/>
+        <node name="DataGbt_4" type="GBTx_I2C" address="0x6" bus="0x4"/>
+        <node name="DataGbt_5" type="GBTx_I2C" address="0x6" bus="0x5"/>
+        <node name="DataGbt_6" type="GBTx_I2C" address="0x6" bus="0x6"/>
     </hwtype>
 </root>
