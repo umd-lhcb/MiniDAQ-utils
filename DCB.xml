@@ -32,7 +32,7 @@ DCB
     </hwtype>
 
     <hwtype name="GBTx_I2C">
-        <reg name="WholeGBT" type="I2C" offset="0x0" subaddress="0x000" specific_type="0" frequency="3" size="366" poll="3" onchange="1"/>
+        <reg type="I2C" poll="3" offset="0x0" subaddress="0x0000000" size="366" specific_type="0" frequency="3" name="wholeGBT" onchange="1"/>
         <reg type="I2C" poll="3" offset="0x0" subaddress="0x0000000" size="1" specific_type="0" frequency="3" name="ckCtr0" onchange="1"/>
         <reg type="I2C" poll="3" offset="0x0" subaddress="0x0000001" size="1" specific_type="0" frequency="3" name="ckCtr1" onchange="1"/>
         <reg type="I2C" poll="3" offset="0x0" subaddress="0x000001C" size="1" specific_type="0" frequency="3" name="txCtr0" onchange="1"/>
