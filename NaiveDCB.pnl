@@ -1,12 +1,12 @@
 V 14
 1
 LANG:1 8 NaiveDCB
-PANEL,-1 -1 650 495 N "_3DFace" 0
+PANEL,-1 -1 650 460 N "_3DFace" 0
 "main()
 {
   //Workaround to disable the reference (Reset and set timeout buttons) when not applicable (i.e. no GBT and SCA selected)
   TextFieldScaId.text = \"0\";
-  ComboBoxBus.selectedPos(6);
+  ComboBoxBus.selectedPos(7);
   //ComboBoxRegisters.appendItem(\"(Select)\");  
   //ComboBoxRegisters.selectedPos(1);
   activeFlag = true;
@@ -72,7 +72,7 @@ void refresh()
           if ((int) substr(ComboBoxGbtID.text, 0, 2) == (int) list1[2])
             ComboBoxRegisters.appendItem(list0[i][1]);
     }      
-    ComboBoxRegisters.selectedPos(6);
+    ComboBoxRegisters.selectedPos(7);
   }
 }
 
@@ -470,7 +470,8 @@ void activate()
   bool flag;
 
   if (activeFlag)  
-    state = fwGbtStateManager;
+    //state = fwGbtStateManager;
+    state = 1;
   else
     state = 0;  
   
@@ -487,10 +488,10 @@ void activate()
   ComboBoxFrequency.enabled = (flag && ComboBoxGbtID.text != \"\");
   TextFieldIn.enabled = (flag && ComboBoxGbtID.text != \"\");  
   TextFieldMask.enabled = (flag && ComboBoxGbtID.text != \"\");  
-  ComboBoxRegisters.enabled = (flag && ComboBoxGbtID.text != \"\");  
-  ButtonRegistersConfig.enabled = (flag && ComboBoxGbtID.text != \"\");
-  SpinButtonRefreshRate.enabled = (flag && ComboBoxGbtID.text != \"\");  
-  CheckButtonDataChange.enabled = (flag && ComboBoxGbtID.text != \"\");
+  //ComboBoxRegisters.enabled = (flag && ComboBoxGbtID.text != \"\");  
+  //ButtonRegistersConfig.enabled = (flag && ComboBoxGbtID.text != \"\");
+  //SpinButtonRefreshRate.enabled = (flag && ComboBoxGbtID.text != \"\");  
+  //CheckButtonDataChange.enabled = (flag && ComboBoxGbtID.text != \"\");
   //ButtonStartStop.enabled = (flag && ComboBoxGbtID.text != \"\" && ComboBoxRegisters.selectedPos() != 1);  
   //ButtonReset.enabled = (flag && ComboBoxGbtID.text != \"\" && buttonFlag);
   //ButtonSpeed.enabled = (flag && ComboBoxGbtID.text != \"\" && buttonFlag);
@@ -499,7 +500,7 @@ void activate()
   //ButtonWRead.enabled = (flag && ComboBoxGbtID.text != \"\" && buttonFlag);
   ButtonActChannel.enabled = (flag && ComboBoxGbtID.text != \"\" && buttonFlag);
   //ButtonDeactChannel.enabled = (flag && ComboBoxGbtID.text != \"\" && buttonFlag);
-  ButtonView.enabled = (flag && ComboBoxGbtID.text != \"\" && ComboBoxRegisters.itemCount() > 1 && buttonFlag);
+  //ButtonView.enabled = (flag && ComboBoxGbtID.text != \"\" && ComboBoxRegisters.itemCount() > 1 && buttonFlag);
 }" 0
  3
 "CBRef" "1"
@@ -532,31 +533,10 @@ E E 0 1 1 0 1 E U  0 E 52 192 143 208
 LANG:1 26 Arial,-1,13,5,50,0,0,0,0,0
 0 1
 LANG:1 7 Address
-2 64
-"Text6"
-""
-1 50 220 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
- E E
-13 0 0 0 0 0
-E E E
-0
-1
-LANG:1 0 
-
-3
-"layoutAlignment" "AlignCenter"
-"dashclr"N "_Transparent"
-"antiAliased" "0"
-E E 0 1 1 0 1 E U  0 E 52 222 143 238
-0 2 0 "0s" 0 0 0 64 0 0  52 222 1
-1
-LANG:1 26 Arial,-1,13,5,50,0,0,0,0,0
-0 1
-LANG:1 11 Sub address
 2 18
 "Text7"
 ""
-1 50 309 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+1 51 279.25 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
  E E
 15 0 0 0 0 0
 E E E
@@ -568,8 +548,8 @@ LANG:1 0
 "layoutAlignment" "AlignCenter"
 "dashclr"N "_Transparent"
 "antiAliased" "0"
-E E 0 1 1 0 1 E U  0 E 52 311 143 327
-0 2 0 "0s" 0 0 0 64 0 0  52 311 1
+E E 0 1 1 0 1 E U  0 E 53 281.25 144 297.25
+0 2 0 "0s" 0 0 0 64 0 0  53 281.25 1
 1
 LANG:1 26 Arial,-1,13,5,50,0,0,0,0,0
 0 1
@@ -577,7 +557,7 @@ LANG:1 12 Size (bytes)
 2 20
 "Text8"
 ""
-1 50 339 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+1 51 309.25 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
  E E
 17 0 0 0 0 0
 E E E
@@ -589,8 +569,8 @@ LANG:1 0
 "layoutAlignment" "AlignCenter"
 "dashclr"N "_Transparent"
 "antiAliased" "0"
-E E 0 1 1 0 1 E U  0 E 52 341 143 357
-0 2 0 "0s" 0 0 0 64 0 0  52 341 1
+E E 0 1 1 0 1 E U  0 E 53 311.25 144 327.25
+0 2 0 "0s" 0 0 0 64 0 0  53 311.25 1
 1
 LANG:1 26 Arial,-1,13,5,50,0,0,0,0,0
 0 1
@@ -598,7 +578,7 @@ LANG:1 7 Data in
 2 27
 "Text10"
 ""
-1 50 400 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+1 51 370.25 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
  E E
 21 0 0 0 0 0
 E E E
@@ -610,8 +590,8 @@ LANG:1 0
 "layoutAlignment" "AlignCenter"
 "dashclr"N "_Transparent"
 "antiAliased" "0"
-E E 0 1 1 0 1 E U  0 E 52 402 143 418
-0 2 0 "0s" 0 0 0 64 0 0  52 402 1
+E E 0 1 1 0 1 E U  0 E 53 372.25 144 388.25
+0 2 0 "0s" 0 0 0 64 0 0  53 372.25 1
 1
 LANG:1 26 Arial,-1,13,5,50,0,0,0,0,0
 0 1
@@ -694,7 +674,7 @@ LANG:1 0
 "layoutAlignment" "AlignCenter"
 "dashclr"N "_Transparent"
 "antiAliased" "0"
-E E 0 1 1 0 1 E 1 0 0.9206680584551148 0 2.379958246346556 0 E 30 30 340 510
+E E 0 1 1 0 1 E 1 0 0.8538622129436325 0 4.384133611691025 0 E 30 30 340 510
 1
 LANG:1 26 Arial,-1,13,5,50,0,0,0,0,0
 0 1
@@ -718,7 +698,7 @@ E E 0 1 1 0 1 E 1 0 0.3828996282527881 0 18.51301115241636 0 E 360 30 615 300
 1
 LANG:1 26 Arial,-1,13,5,50,0,0,0,0,0
 0 1
-LANG:1 25 Commands (write to all 6)
+LANG:1 8 Commands
 2 61
 "Text3"
 ""
@@ -743,7 +723,7 @@ LANG:1 6 SCA ID
 2 74
 "Text15"
 ""
-1 50 431 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+1 51 401.25 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
  E E
 37 0 0 0 0 0
 E E E
@@ -755,8 +735,8 @@ LANG:1 0
 "layoutAlignment" "AlignCenter"
 "dashclr"N "_Transparent"
 "antiAliased" "0"
-E E 0 1 1 0 1 E U  0 E 52 433 143 449
-0 2 0 "0s" 0 0 0 64 0 0  52 433 1
+E E 0 1 1 0 1 E U  0 E 53 403.25 144 419.25
+0 2 0 "0s" 0 0 0 64 0 0  53 403.25 1
 1
 LANG:1 26 Arial,-1,13,5,50,0,0,0,0,0
 0 1
@@ -764,7 +744,7 @@ LANG:1 15 Server Version:
 2 81
 "Text17"
 ""
-1 50 250 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+1 51 220.25 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
  E E
 47 0 0 0 0 0
 E E E
@@ -776,8 +756,8 @@ LANG:1 0
 "layoutAlignment" "AlignCenter"
 "dashclr"N "_Transparent"
 "antiAliased" "0"
-E E 0 1 1 0 1 E U  0 E 52 252 143 268
-0 2 0 "0s" 0 0 0 64 0 0  52 252 1
+E E 0 1 1 0 1 E U  0 E 53 222.25 144 238.25
+0 2 0 "0s" 0 0 0 64 0 0  53 222.25 1
 1
 LANG:1 26 Arial,-1,13,5,50,0,0,0,0,0
 0 1
@@ -785,7 +765,7 @@ LANG:1 4 Type
 2 90
 "Text20"
 ""
-1 50 369 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+1 51 339.25 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
  E E
 55 0 0 0 0 0
 E E E
@@ -797,29 +777,12 @@ LANG:1 0
 "layoutAlignment" "AlignCenter"
 "dashclr"N "_Transparent"
 "antiAliased" "0"
-E E 0 1 1 0 1 E U  0 E 52 371 143 387
-0 2 0 "0s" 0 0 0 64 0 0  52 371 1
+E E 0 1 1 0 1 E U  0 E 53 341.25 144 357.25
+0 2 0 "0s" 0 0 0 64 0 0  53 341.25 1
 1
 LANG:1 26 Arial,-1,13,5,50,0,0,0,0,0
 0 1
 LANG:1 4 Mask
-14 65
-"TextFieldSubAddress"
-""
-1 150 220 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
- E E
-14 0 0 0 0 0
-E E E
-0
-1
-LANG:1 76 Define sub address (in hexadecimal; example: 1A; leave empty if don't exist)
-
-1
-"layoutAlignment" "AlignCenter"
-1
-LANG:1 26 Arial,-1,13,5,50,0,0,0,0,0
-0  148 218 317 245
-3 "0s" 0 0 0 0 0 -1  E E E
 14 0
 "TextFieldScaId"
 ""
@@ -857,7 +820,7 @@ LANG:1 26 Arial,-1,13,5,50,0,0,0,0,0
 14 17
 "TextFieldSize"
 ""
-1 150 309 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+1 151 279.25 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
  E E
 16 0 0 0 0 0
 E E E
@@ -869,12 +832,12 @@ LANG:1 34 Define data in/out size (in bytes)
 "layoutAlignment" "AlignCenter"
 1
 LANG:1 26 Arial,-1,13,5,50,0,0,0,0,0
-0  148 307 317 334
+0  149 277.25 318 304.25
 3 "4d" 4 0 0 0 0 -1  E E E
 14 19
 "TextFieldIn"
 ""
-1 150 339 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+1 151 309.25 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
  E E
 18 0 0 0 0 0
 E E E
@@ -886,7 +849,7 @@ LANG:1 44 Define data in (in hexadecimal; example: 1A)
 "layoutAlignment" "AlignCenter"
 1
 LANG:1 26 Arial,-1,13,5,50,0,0,0,0,0
-0  148 337 317 364
+0  149 307.25 318 334.25
 3 "0s" 0 0 0 0 0 -1  E E E
 22 30
 "ComboBoxBus"
@@ -1005,7 +968,7 @@ E
 14 26
 "TextFieldStatus"
 ""
-1 150 400 E E E 1 E 1 E N "Grau" E N "_3DFace" E E
+1 151 370.25 E E E 1 E 1 E N "Grau" E N "_3DFace" E E
  E "main()
 {
   if (this.text()!=\"\")
@@ -1022,7 +985,7 @@ LANG:1 34 Status of last command (operation)
 "layoutAlignment" "AlignCenter"
 1
 LANG:1 26 Arial,-1,13,5,50,0,0,0,0,0
-0  148 398 317 425
+0  149 368.25 318 395.25
 2 "0s" 0 0 0 0 0 -1  E E E
 13 21
 "ButtonWrite"
@@ -1043,7 +1006,7 @@ LANG:1 26 Arial,-1,13,5,50,0,0,0,0,0
 
 T 
 1
-LANG:1 5 Write
+LANG:1 14 Write to all 6
 "main()
 {  
 
@@ -1060,7 +1023,7 @@ LANG:1 5 Write
 14 75
 "ServerVersion"
 ""
-1 150 431 E E E 1 E 1 E N "Grau" E N "_3DFace" E E
+1 151 401.25 E E E 1 E 1 E N "Grau" E N "_3DFace" E E
  E E
 38 0 0 0 0 0
 E E E
@@ -1072,14 +1035,12 @@ LANG:1 45 Data out result (in hexadecimal; example: 1A)
 "layoutAlignment" "AlignCenter"
 1
 LANG:1 26 Arial,-1,13,5,50,0,0,0,0,0
-0  148 429 317 456
+0  149 399.25 318 426.25
 2 "0s" 0 0 0 0 0 -1  E E E
-1 124 3 "" 0
-0
 14 92
 "TextFieldMask"
 ""
-1 150 369 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+1 151 339.25 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
  E E
 57 0 0 0 0 0
 E E E
@@ -1091,12 +1052,12 @@ LANG:1 44 Define data in (in hexadecimal; example: 1A)
 "layoutAlignment" "AlignCenter"
 1
 LANG:1 26 Arial,-1,13,5,50,0,0,0,0,0
-0  148 367 317 394
+0  149 337.25 318 364.25
 3 "0s" 0 0 0 0 0 -1  E E E
 22 94
 "ComboBoxType"
 ""
-1 150 250 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+1 151 220.25 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
  E E
 59 0 0 0 0 0
 E E E
@@ -1108,7 +1069,7 @@ LANG:1 25 Choose type from the list
 "layoutAlignment" "AlignCenter"
 1
 LANG:1 26 Arial,-1,13,5,50,0,0,0,0,0
-0  148 248 317 275
+0  149 218.25 318 245.25
 6
 1
 LANG:1 14 GBTx (default)
@@ -1176,7 +1137,7 @@ LANG:1 16 Activate Channel
 2 107
 "PRIMITIVE_TEXT1"
 ""
-1 51 249.9999999999999 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
+1 52 220.2499999999999 E E E 1 E 1 E N "_WindowText" E N "_Transparent" E E
  E E
 63 0 0 0 0 0
 E E E
@@ -1188,8 +1149,8 @@ LANG:1 0
 "layoutAlignment" "AlignCenter"
 "dashclr"N "_Transparent"
 "antiAliased" "0"
-E E 0 1 1 0 1 E U  0 E 52 280.9999999999999 143 296.9999999999999
-0 2 0 "0s" 0 0 0 64 0 0  52 280.9999999999999 1
+E E 0 1 1 0 1 E U  0 E 53 251.2499999999999 144 267.2499999999999
+0 2 0 "0s" 0 0 0 64 0 0  53 251.2499999999999 1
 1
 LANG:1 26 Arial,-1,13,5,50,0,0,0,0,0
 0 1
@@ -1197,7 +1158,7 @@ LANG:1 9 Frequency
 22 108
 "ComboBoxFrequency"
 ""
-1 150 279 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+1 151 249.25 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
  E E
 64 0 0 0 0 0
 E E E
@@ -1209,7 +1170,7 @@ LANG:1 25 Choose type from the list
 "layoutAlignment" "AlignCenter"
 1
 LANG:1 26 Arial,-1,13,5,50,0,0,0,0,0
-0  148 277 317 304
+0  149 247.25 318 274.25
 4
 1
 LANG:1 5 1 MHz
@@ -1235,7 +1196,7 @@ E
 14 118
 "TEXT_FIELD_buttonFlag"
 ""
-1 630 459 E E E 1 E 0 E N "_WindowText" E N "_Window" E E
+1 627 427 E E E 1 E 0 E N "_WindowText" E N "_Window" E E
  E E
 67 0 0 0 0 0
 E E E
@@ -1259,12 +1220,12 @@ synchronized checkFlag(string newText)
 }"
 1
 LANG:1 31 Sans Serif,-1,13,5,50,0,0,0,0,0
-0  628 459 642 473
+0  625 427 639 441
 3 "0s" 0 0 0 0 0 -1  E E E
 13 123
 "fileSelectorBtn"
 ""
-1 316 343.5 E E E 1 E 0 E N "_ButtonText" E N "_Button" E E
+1 316 313.375 E E E 1 E 0 E N "_ButtonText" E N "_Button" E E
  E E
 68 0 0 0 0 0
 E E E
@@ -1276,7 +1237,7 @@ LANG:1 0
 "layoutAlignment" "AlignNone"
 1
 LANG:1 31 Sans Serif,-1,13,5,50,0,0,0,0,0
-0  314 337.5 338 363.5
+0  314 307.375 338 333.375
 
 T 
 1
@@ -1303,6 +1264,102 @@ LANG:1 3 ...
   }
 }" 0
 
+22 130
+"ComboBoxGbtNode"
+""
+1 150 70 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+ E E
+71 0 0 0 0 0
+E E E
+0
+1
+LANG:1 31 Choose GBT server from the list
+
+1
+"layoutAlignment" "AlignCenter"
+1
+LANG:1 26 Arial,-1,13,5,50,0,0,0,0,0
+0  148 68 317 94.75
+0
+
+"main()
+{
+  ComboBoxGbtNode.text = \"localhost\";
+  updateGbtList();
+}
+
+
+public void updateGbtList()
+{
+	dyn_int tmp;	
+	int     i;
+	int     ret, major, minor, patch;
+  dyn_string gbtIdItems;
+  
+
+	ComboBoxGbtID.deleteAllItems();
+	ComboBoxGbtID.text = \"\";		
+//	activeFlag = false;
+	TextFieldStatus.text = \"Retrieving master IDs...\";
+//	fwGbt_add(ComboBoxGbtNode.text);
+// 	if (fwGbt_getMasterIDs(ComboBoxGbtNode.text, tmp))
+// 		if (dynlen(tmp) == 0)	
+// 			ChildPanelOnCentralModal(\"vision/MessageInfo1\", \"Info\", makeDynString(\"GBT '\" + ComboBoxGbtNode.text + \"' doesn't have master IDs!\"));	
+// 		else		
+// 			for(i = 1; i <= dynlen(tmp); i++)
+// 				if (tmp[i] < 10)
+// 					ComboBoxGbtID.appendItem(\"0\" + (string) tmp[i] + \"  (PCI: \" + (string) ((tmp[i] - 1) / 4) + \"  PORT: \" + (string) ((tmp[i] - 1) % 4 + 1) + \")\");
+// 				else
+// 					ComboBoxGbtID.appendItem((string) tmp[i] + \"  (PCI: \" + (string) ((tmp[i] - 1) / 4) + \"  PORT: \" + (string) ((tmp[i] - 1) % 4 + 1) + \")\");
+// 	else
+// 		ChildPanelOnCentralModal(\"vision/MessageWarning\", \"Warning\", makeDynString(\"Couldn't retrieve master IDs from '\" + ComboBoxGbtNode.text + \"' GBT!\"));	
+
+  for (int i=0; i<=47; ++i) {
+    dynAppend(gbtIdItems, i);
+  }
+  ComboBoxGbtID.items(gbtIdItems);
+
+	TextFieldStatus.text = \"\";
+//	activeFlag = true;	
+
+	TextFieldStatus.text = \"Getting Server Info...\";
+	ret = fwGbt_getServerVersion(ComboBoxGbtNode.text, major, minor, patch);
+	ServerVersion.text = (major + \"-\" + minor + \"-\" + patch);
+	TextFieldStatus.text = \"\";
+	
+	if (ret)
+		if ((int) ((string) major + (string) minor + (string) patch) < FWGBT_SERVER_VERSION)
+			ChildPanelOnCentralModal(\"vision/MessageWarning\", \"Warning\", makeDynString(\"The GbtServer could be incompatible with the Gbt Client!\"));
+}
+
+
+
+
+
+
+
+" 0
+
+"main()
+{
+	updateGbtList();
+}
+
+
+
+
+
+
+
+
+
+
+
+
+" 0
+
+E
+ 0 0
 0
 LAYER, 1 
 1
@@ -1331,10 +1388,5 @@ LANG:1 6 Layer7
 LAYER, 7 
 1
 LANG:1 6 Layer8
-0
-3 3 "ComboBoxGbtNode" -1
-"layoutAlignment" "AlignCenter"
-"" ""
-"fwGbt/GbtPcChoice.pnl" 150 70 T 42 1.222222222222222 0 1 -45.55555555555555 -10
 0
 0
