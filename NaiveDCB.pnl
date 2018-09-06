@@ -187,9 +187,10 @@ void I2CWrite()
   int i, pos;
   string dataIn;
   
-  TextFieldStatus.text = \"Writing...\";
+for (int idx = 1; idx <= 6; idx++) {
   
-  for (idx = 1; idx <= 6; idx++) {
+  TextFieldStatus.text = \"Writing...\";
+
 /*
   if (strltrim(TextFieldSubAddress.text()) == \"\")
   {
@@ -250,7 +251,8 @@ void I2CWrite()
                                 (int) substr(ComboBoxGbtID.text(), 0, 2),
                                 (int) TextFieldScaId.text(),
                                 (int) ComboBoxBus.text(),
-                                fwGbt_convertHexToDec(TextFieldAddress.text()),
+                                //fwGbt_convertHexToDec(TextFieldAddress.text()),
+                                fwGbt_convertHexToDec(idx),
                                 fwGbt_convertHexToDec(TextFieldSubAddress.text()),
                                 (int) TextFieldSize.text(),
                                 dataIn,
@@ -266,7 +268,8 @@ void I2CWrite()
                             (int) TextFieldScaId.text(),
                             (int) ComboBoxBus.text(),
                             fwGbt_convertHexToDec(TextFieldAddress.text()),
-                            fwGbt_convertHexToDec(TextFieldSubAddress.text()),
+                            //fwGbt_convertHexToDec(TextFieldSubAddress.text()),
+                            idx,
                             (int) TextFieldSize.text(),
                             fwGbt_convertHexToByte(TextFieldIn.text()),
                             _fwGbt_getI2cTypeId(ComboBoxType.text()),
@@ -481,8 +484,8 @@ void activate()
   ComboBoxGbtID.enabled = (flag && ComboBoxGbtID.itemCount() > 0);
   TextFieldScaId.enabled = (flag && ComboBoxGbtID.text != \"\");
   ComboBoxBus.enabled = (flag && ComboBoxGbtID.text != \"\");
-  TextFieldAddress.enabled = (flag && ComboBoxGbtID.text != \"\");
-  //TextFieldSubAddress.enabled = (flag && ComboBoxGbtID.text != \"\");
+  //TextFieldAddress.enabled = (flag && ComboBoxGbtID.text != \"\");
+  TextFieldSubAddress.enabled = (flag && ComboBoxGbtID.text != \"\");
   TextFieldSize.enabled = (flag && ComboBoxGbtID.text != \"\");
   ComboBoxType.enabled = (flag && ComboBoxGbtID.text != \"\");
   ComboBoxFrequency.enabled = (flag && ComboBoxGbtID.text != \"\");
@@ -532,7 +535,7 @@ E E 0 1 1 0 1 E U  0 E 52 192 143 208
 1
 LANG:1 26 Arial,-1,13,5,50,0,0,0,0,0
 0 1
-LANG:1 7 Address
+LANG:1 11 Sub address
 2 18
 "Text7"
 ""
@@ -801,7 +804,7 @@ LANG:1 26 Arial,-1,13,5,50,0,0,0,0,0
 0  148 128 317 155
 3 "4d" 4 0 0 0 0 -1  E E E
 14 13
-"TextFieldAddress"
+"TextFieldSubAddress"
 ""
 1 150 190 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
  E E
