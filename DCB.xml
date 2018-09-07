@@ -45,8 +45,8 @@ DCB
     </hwtype>
 
     <hwtype name="DCB" type="GBT">
-        <node name="MasterGBT" type="GBTx_IC"/>
-        <node name="SCA_Master" type="SCA_chip"/>
+        <node name="MasterGbt" type="GBTx_IC"/>
+        <node name="SCAMaster" type="SCA_chip"/>
         <node name="DataGbt_1" type="GBTx_I2C" address="0x6" bus="0x1"/>
         <node name="DataGbt_2" type="GBTx_I2C" address="0x6" bus="0x2"/>
         <node name="DataGbt_3" type="GBTx_I2C" address="0x6" bus="0x3"/>
