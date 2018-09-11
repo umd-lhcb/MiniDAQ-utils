@@ -1,0 +1,1765 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<panel version="14">
+ <properties>
+  <prop name="Name">
+   <prop name="en_US.iso88591">NaiveDCB</prop>
+  </prop>
+  <prop name="Size">650 460</prop>
+  <prop name="BackColor">_3DFace</prop>
+  <prop name="RefPoint">40 60</prop>
+  <prop name="InitAndTermRef">True</prop>
+  <prop name="SendClick">False</prop>
+  <prop name="RefFileName"></prop>
+  <prop name="DPI">96</prop>
+  <prop name="layoutType">None</prop>
+ </properties>
+ <events>
+  <script name="ScopeLib" isEscaped="1"><![CDATA[bool activeFlag;
+bool buttonFlag;
+
+
+void refresh()
+{
+  dyn_dyn_string list0;
+  dyn_string     list1;
+  string         tmp;
+  int            i;
+
+  activate();
+/*
+  if (fwGbtChangeGBTFlag == 1)
+  {  
+    fwGbtChangeGBTFlag--;
+    tmp = ComboBoxGbtNode.text;
+    ComboBoxGbtNode.items = fwGbtList;
+    if (dynContains(fwGbtList, tmp) &gt; 0)
+      ComboBoxGbtNode.text = tmp;
+    else
+      ComboBoxGbtNode.text = &quot;&quot;;
+  }
+*/  
+
+  if (fwGbtChangeRegistersFlag == FWGBT_I2C)
+  {
+    fwGbt_getRegisters(list0, FWGBT_I2C);
+    fwGbtChangeRegistersFlag = -1;
+    ComboBoxRegisters.deleteAllItems();
+    ComboBoxRegisters.appendItem(&quot;(Select)&quot;);
+    for(i = 1; i &lt;= dynlen(list0); i++)
+    {
+      list1 = strsplit(list0[i][2], &quot;,&quot;);
+      if (dynlen(list1) &gt; 1)      
+        if (ComboBoxGbtNode.text == list1[1])
+          if ((int) substr(ComboBoxGbtID.text, 0, 2) == (int) list1[2])
+            ComboBoxRegisters.appendItem(list0[i][1]);
+    }      
+    ComboBoxRegisters.selectedPos(7);
+  }
+}
+
+
+
+
+bool validSettings(bool flag)
+{
+  if (strltrim(TextFieldAddress.text) != &quot;&quot;)
+    if (fwGbt_isHex(TextFieldAddress.text) == false)
+    {
+      ChildPanelOnCentralModal(&quot;vision/MessageWarning&quot;, &quot;Warning&quot;, makeDynString(&quot;The I²C address has an invalid hexadecimal value!&quot;));
+      return false;
+    }
+
+/*
+  if (strltrim(TextFieldSubAddress.text) != &quot;&quot;)
+    if (fwGbt_isHex(TextFieldSubAddress.text) == false)
+    {
+      ChildPanelOnCentralModal(&quot;vision/MessageWarning&quot;, &quot;Warning&quot;, makeDynString(&quot;The I²C sub address has an invalid hexadecimal value!&quot;));
+      return false;
+    }
+*/
+
+  if (flag)  
+  {
+                if(strpos(TextFieldIn.text, &quot;file:&quot;) == 0 ||
+                   strpos(TextFieldIn.text, &quot;lfile:&quot;) == 0)
+                  return true;
+    if (strlen(strltrim(strrtrim(TextFieldIn.text))) != (int) TextFieldSize.text * 2)
+    {
+      ChildPanelOnCentralModal(&quot;vision/MessageWarning&quot;, &quot;Warning&quot;, makeDynString(&quot;The size doesn't match with data in!&quot;));
+      return false;
+    }
+    
+    if (fwGbt_isHex(TextFieldIn.text) == false)
+    {
+      ChildPanelOnCentralModal(&quot;vision/MessageWarning&quot;, &quot;Warning&quot;, makeDynString(&quot;The data in has an invalid hexadecimal value!&quot;));
+      return false;
+    }    
+  }
+  
+  return true;
+  
+}
+
+
+/*
+void I2CRead()
+{
+  dyn_char dataRead;
+  int      i;
+
+  TextFieldStatus.text = &quot;Reading...&quot;;
+
+  if (strltrim(TextFieldSubAddress.text()) == &quot;&quot;)
+  {
+    i = fwGbt_I2CRead(ComboBoxGbtNode.text(),
+                      (int) substr(ComboBoxGbtID.text(), 0, 2),
+                      (int) TextFieldScaId.text(),
+                      (int) ComboBoxBus.text(),
+                      fwGbt_convertHexToDec(TextFieldAddress.text()),
+                      (int) TextFieldSize.text(),
+                      dataRead,
+                      _fwGbt_getI2cTypeId(ComboBoxType.text()),
+                      _fwGbt_getI2cFrequency(ComboBoxFrequency.text())
+    );
+  }
+  else
+  {
+    i = fwGbt_I2CReadSub(ComboBoxGbtNode.text(),
+                         (int) substr(ComboBoxGbtID.text(), 0, 2),
+                         (int) TextFieldScaId.text(),
+                         (int) ComboBoxBus.text(),
+                         fwGbt_convertHexToDec(TextFieldAddress.text()),
+                         fwGbt_convertHexToDec(TextFieldSubAddress.text()),
+                         (int) TextFieldSize.text(),
+                         dataRead,
+                         _fwGbt_getI2cTypeId(ComboBoxType.text()),
+                         _fwGbt_getI2cFrequency(ComboBoxFrequency.text())
+    );
+  }
+  
+  if (i == -1)
+  {
+    ChildPanelOnCentralModal(&quot;vision/MessageWarning&quot;, &quot;Warning&quot;, makeDynString(&quot;Couldn't read from '&quot; + ComboBoxGbtNode.text + &quot;' GBT!&quot;));
+    TextFieldStatus.text = &quot;&quot;;
+  }
+  else  
+    if (i == 0)  
+    {    
+      TextFieldOut.text = fwGbt_convertByteToHex(dataRead);
+      TextFieldStatus.text = &quot;OK (Read)&quot;;
+    }
+    else
+    {
+      TextFieldOut.text = &quot;???&quot;;
+//       TextFieldStatus.text = &quot;ERROR: 0x&quot; + fwGbt_convertDecToHex((unsigned) i) + &quot; (Read)&quot;;
+DebugTN(fwGbtErr_getErrorsFromStatus( i, FWGBT_I2C), i);
+      string errors = (string) fwGbtErr_getErrorsFromStatus( i, FWGBT_I2C);
+      strreplace(errors, &quot; | &quot;, &quot;\n&quot;);
+      TextFieldStatus.text(&quot;ERROR: 0x&quot; + fwGbt_convertDecToHex((unsigned) i) + &quot; (Read) - &quot;+errors);
+    }
+  
+}
+*/
+
+
+
+void I2CWrite()
+{
+  int i, pos;
+  string dataIn;
+  
+for (int idx = 1; idx &lt;= 6; idx++) {
+  
+  TextFieldStatus.text = &quot;Writing...&quot;;
+
+/*
+  if (strltrim(TextFieldSubAddress.text()) == &quot;&quot;)
+  {
+    dataIn = TextFieldIn.text();
+    if((pos = strpos(dataIn,&quot;file:&quot;)) == 0)
+    {
+      dataIn = substr(dataIn,5);
+      i = fwGbt_I2CWriteFile(ComboBoxGbtNode.text(),
+                             (int) substr(ComboBoxGbtID.text(), 0, 2),
+                             (int) TextFieldScaId.text(),
+                             (int) ComboBoxBus.text(),
+                             fwGbt_convertHexToDec(TextFieldAddress.text()),
+                             (int) TextFieldSize.text(),
+                             dataIn,
+                             _fwGbt_getI2cTypeId(ComboBoxType.text()),
+                             _fwGbt_getI2cFrequency(ComboBoxFrequency.text()),
+                             true
+      );
+    }
+    else if((pos = strpos(dataIn,&quot;lfile:&quot;)) == 0)
+    {
+      dataIn = substr(dataIn,6);
+      i = fwGbt_I2CWriteLocalFile(ComboBoxGbtNode.text(),
+                                  (int) substr(ComboBoxGbtID.text(), 0, 2),
+                                  (int) TextFieldScaId.text(),
+                                  (int) ComboBoxBus.text(),
+                                  fwGbt_convertHexToDec(TextFieldAddress.text()),
+                                  (int) TextFieldSize.text(),
+                                  dataIn,
+                                  _fwGbt_getI2cTypeId(ComboBoxType.text()),
+                                  _fwGbt_getI2cFrequency(ComboBoxFrequency.text()),
+                                  true);
+    }
+    else
+    {
+      i = fwGbt_I2CWrite(ComboBoxGbtNode.text(),
+                         (int) substr(ComboBoxGbtID.text(), 0, 2),
+                         (int) TextFieldScaId.text(),
+                         (int) ComboBoxBus.text(),
+                         fwGbt_convertHexToDec(TextFieldAddress.text()),
+                         (int) TextFieldSize.text(),
+                         fwGbt_convertHexToByte(TextFieldIn.text()),
+                         _fwGbt_getI2cTypeId(ComboBoxType.text()),
+                         _fwGbt_getI2cFrequency(ComboBoxFrequency.text()),
+                         true,
+                         fwGbt_convertHexToByte(TextFieldMask.text())
+      );
+    }
+  }
+  else
+  {
+*/
+    dataIn = TextFieldIn.text();
+    if((pos = strpos(dataIn,&quot;file:&quot;)) == 0)
+    {
+      dataIn = substr(dataIn,5);
+      i = fwGbt_I2CWriteSubFile(ComboBoxGbtNode.text(),
+                                (int) substr(ComboBoxGbtID.text(), 0, 2),
+                                (int) TextFieldScaId.text(),
+                                (int) ComboBoxBus.text(),
+                                //fwGbt_convertHexToDec(TextFieldAddress.text()),
+                                fwGbt_convertHexToDec(idx),
+                                fwGbt_convertHexToDec(TextFieldSubAddress.text()),
+                                (int) TextFieldSize.text(),
+                                dataIn,
+                                _fwGbt_getI2cTypeId(ComboBoxType.text()),
+                                _fwGbt_getI2cFrequency(ComboBoxFrequency.text()),
+                                true
+      );
+    }
+    else
+    {
+      i = fwGbt_I2CWriteSub(ComboBoxGbtNode.text,
+                            (int) substr(ComboBoxGbtID.text(), 0, 2),
+                            (int) TextFieldScaId.text(),
+                            (int) ComboBoxBus.text(),
+                            //fwGbt_convertHexToDec(TextFieldAddress.text()),
+                            fwGbt_convertHexToDec(idx),
+                            fwGbt_convertHexToDec(TextFieldSubAddress.text()),
+                            (int) TextFieldSize.text(),
+                            fwGbt_convertHexToByte(TextFieldIn.text()),
+                            _fwGbt_getI2cTypeId(ComboBoxType.text()),
+                            _fwGbt_getI2cFrequency(ComboBoxFrequency.text()),
+                            true,
+                            fwGbt_convertHexToByte(TextFieldMask.text())
+      );
+//    }
+  }
+  
+  
+  if (i == -1)
+  {
+    ChildPanelOnCentralModal(&quot;vision/MessageWarning&quot;, &quot;Warning&quot;, makeDynString(&quot;Couldn't write to '&quot; + ComboBoxGbtNode.text() + &quot;' GBT!&quot;));  
+    TextFieldStatus.text = &quot;&quot;;
+  }
+  else  
+    if (i == 0)
+      TextFieldStatus.text(&quot;OK (Write)&quot;);
+    else {
+//       TextFieldStatus.text(&quot;ERROR: 0x&quot; + fwGbt_convertDecToHex((unsigned) i) + &quot; (Write)&quot;);
+      string errors = (string) fwGbtErr_getErrorsFromStatus( i, FWGBT_I2C);
+      strreplace(errors, &quot; | &quot;, &quot;\n&quot;);
+      TextFieldStatus.text(&quot;ERROR: 0x&quot; + fwGbt_convertDecToHex((unsigned) i) + &quot; (Write) - &quot;+errors);
+    }
+  }
+  
+}
+
+
+
+/*
+void I2CWRead()
+{
+
+  dyn_char dataRead;
+  string   dataIn;
+  int      i, pos;
+
+  TextFieldStatus.text = &quot;Writing/Reading...&quot;;
+
+  if (strltrim(TextFieldSubAddress.text()) == &quot;&quot;)
+  {
+    dataIn = TextFieldIn.text();
+    if((pos = strpos(dataIn,&quot;file:&quot;)) == 0)
+    {
+      dataIn = substr(dataIn,5);
+      i = fwGbt_I2CWriteReadFile(ComboBoxGbtNode.text(),
+                                 (int) substr(ComboBoxGbtID.text(), 0, 2),
+                                 (int) TextFieldScaId.text(),
+                                 (int) ComboBoxBus.text(),
+                                 fwGbt_convertHexToDec(TextFieldAddress.text()),
+                                 (int) TextFieldSize.text(),
+                                 dataIn,
+                                 dataRead,
+                                 _fwGbt_getI2cTypeId(ComboBoxType.text()),
+                                 _fwGbt_getI2cFrequency(ComboBoxFrequency.text()),
+                                 fwGbt_convertHexToByte(TextFieldMask.text()) 
+      );
+    }
+    else {
+      i = fwGbt_I2CWriteRead(ComboBoxGbtNode.text,
+                             (int) substr(ComboBoxGbtID.text(), 0, 2),
+                             (int) TextFieldScaId.text(),
+                             (int) ComboBoxBus.text(),
+                             fwGbt_convertHexToDec(TextFieldAddress.text()),
+                             (int) TextFieldSize.text(),
+                             fwGbt_convertHexToByte(dataIn),
+                             dataRead,
+                             _fwGbt_getI2cTypeId(ComboBoxType.text()),
+                             _fwGbt_getI2cFrequency(ComboBoxFrequency.text()),
+                             fwGbt_convertHexToByte(TextFieldMask.text())
+      );
+    }
+  }
+  else
+  {
+    dataIn = TextFieldIn.text();
+    if((pos = strpos(dataIn,&quot;file:&quot;)) == 0)
+    {
+      dataIn = substr(dataIn,5);
+      i = fwGbt_I2CWriteReadSubFile(ComboBoxGbtNode.text(),
+                                    (int) substr(ComboBoxGbtID.text(), 0, 2),
+                                    (int) TextFieldScaId.text(),
+                                    (int) ComboBoxBus.text(),
+                                    fwGbt_convertHexToDec(TextFieldAddress.text()),
+                                    fwGbt_convertHexToDec(TextFieldSubAddress.text()),
+                                    (int) TextFieldSize.text(),
+                                    dataIn,
+                                    dataRead,
+                                    _fwGbt_getI2cTypeId(ComboBoxType.text()),
+                                    _fwGbt_getI2cFrequency(ComboBoxFrequency.text()),
+                                    fwGbt_convertHexToByte(TextFieldMask.text()) 
+      );
+    }
+    else {
+      i = fwGbt_I2CWriteReadSub(ComboBoxGbtNode.text(),
+                                (int) substr(ComboBoxGbtID.text(), 0, 2),
+                                (int) TextFieldScaId.text(),
+                                (int) ComboBoxBus.text(),
+                                fwGbt_convertHexToDec(TextFieldAddress.text()),
+                                fwGbt_convertHexToDec(TextFieldSubAddress.text()),
+                                (int) TextFieldSize.text(),
+                                fwGbt_convertHexToByte(dataIn),
+                                dataRead,
+                                _fwGbt_getI2cTypeId(ComboBoxType.text()),
+                                _fwGbt_getI2cFrequency(ComboBoxFrequency.text()),
+                                fwGbt_convertHexToByte(TextFieldMask.text())      
+      );
+    }
+  }
+  
+  if (i == -1)
+  {
+    ChildPanelOnCentralModal(&quot;vision/MessageWarning&quot;, &quot;Warning&quot;, makeDynString(&quot;Couldn't write/read from '&quot; + ComboBoxGbtNode.text + &quot;' GBT!&quot;));
+    TextFieldStatus.text(&quot;&quot;);
+  }
+  else  
+    if (i == 0)  
+    {    
+      TextFieldOut.text(fwGbt_convertByteToHex(dataRead));
+      TextFieldStatus.text(&quot;OK (Write/Read)&quot;);
+    }
+    else
+    {
+      TextFieldOut.text(&quot;???&quot;);
+//       TextFieldStatus.text(&quot;ERROR: 0x&quot; + fwGbt_convertDecToHex((unsigned) i) + &quot; (Write/Read)&quot;);
+      string errors = (string) fwGbtErr_getErrorsFromStatus( i, FWGBT_I2C);
+      strreplace(errors, &quot; | &quot;, &quot;\n&quot;);
+      TextFieldStatus.text(&quot;ERROR: 0x&quot; + fwGbt_convertDecToHex((unsigned) i) + &quot; (Write/Read) - &quot;+errors);
+    }
+  
+}
+*/
+
+void I2CActivateChannel()
+{
+
+  int      i;
+
+  TextFieldStatus.text = &quot;Activating channel &quot;+ComboBoxBus.text()+&quot;...&quot;;
+
+  i = fwGbt_I2CActivateChannel (ComboBoxGbtNode.text, 
+    (int) substr(ComboBoxGbtID.text, 0, 2), 
+    (int) TextFieldScaId.text, 
+    (int) ComboBoxBus.text      
+  );
+  
+  if (i == -1)
+  {
+    ChildPanelOnCentralModal(&quot;vision/MessageWarning&quot;, &quot;Warning&quot;, makeDynString(&quot;Couldn't activate channel &quot;+ComboBoxBus.text()+&quot; from '&quot; + ComboBoxGbtNode.text + &quot;' GBT!&quot;));
+    TextFieldStatus.text = &quot;&quot;;
+  }
+  else  
+    if (i == 0)
+      TextFieldStatus.text = &quot;OK (Activate Channel &quot;+ComboBoxBus.text()+&quot;)&quot;;
+    else {
+//       TextFieldStatus.text = &quot;ERROR: 0x&quot; + fwGbt_convertDecToHex((unsigned) i) + &quot; (Activate Channel)&quot;;
+      string errors = (string) fwGbtErr_getErrorsFromStatus( i, FWGBT_I2C);
+      strreplace(errors, &quot; | &quot;, &quot;\n&quot;);
+      TextFieldStatus.text(&quot;ERROR: 0x&quot; + fwGbt_convertDecToHex((unsigned) i) + &quot; (Activate Channel) - &quot;+errors);
+    }
+  
+}
+
+/*
+void I2CDeactivateChannel()
+{
+
+  int      i;
+
+  TextFieldStatus.text = &quot;Deactivating channel &quot;+ComboBoxBus.text()+&quot;...&quot;;
+
+  i = fwGbt_I2CDeactivateChannel (ComboBoxGbtNode.text, 
+    (int) substr(ComboBoxGbtID.text, 0, 2), 
+    (int) TextFieldScaId.text, 
+    (int) ComboBoxBus.text      
+  );
+  
+  if (i == -1)
+  {
+    ChildPanelOnCentralModal(&quot;vision/MessageWarning&quot;, &quot;Warning&quot;, makeDynString(&quot;Couldn't deactivate channel &quot;+ComboBoxBus.text()+&quot; from '&quot; + ComboBoxGbtNode.text + &quot;' GBT!&quot;));
+    TextFieldStatus.text = &quot;&quot;;
+  }
+  else  
+    if (i == 0)
+      TextFieldStatus.text = &quot;OK (Deactivate Channel &quot;+ComboBoxBus.text()+&quot;)&quot;;
+    else {
+//       TextFieldStatus.text = &quot;ERROR: 0x&quot; + fwGbt_convertDecToHex((unsigned) i) + &quot; (Deactivate Channel)&quot;;
+      string errors = (string) fwGbtErr_getErrorsFromStatus( i, FWGBT_I2C);
+      strreplace(errors, &quot; | &quot;, &quot;\n&quot;);
+      TextFieldStatus.text(&quot;ERROR: 0x&quot; + fwGbt_convertDecToHex((unsigned) i) + &quot; (Deactivate Channel) - &quot;+errors);
+    }
+  
+}
+*/
+
+void activate()
+{
+  int  state;
+  bool flag;
+
+  if (activeFlag)  
+    //state = fwGbtStateManager;
+    state = 1;
+  else
+    state = 0;  
+  
+  flag = (state == 1 &amp;&amp; ComboBoxGbtNode.text != &quot;&quot;);
+  ComboBoxGbtNode.enabled = (state == 1 &amp;&amp; ComboBoxGbtNode.itemCount() &gt; 0);
+  //ButtonMasterCardsInfo.enabled = flag;
+  ComboBoxGbtID.enabled = (flag &amp;&amp; ComboBoxGbtID.itemCount() &gt; 0);
+  TextFieldScaId.enabled = (flag &amp;&amp; ComboBoxGbtID.text != &quot;&quot;);
+  ComboBoxBus.enabled = (flag &amp;&amp; ComboBoxGbtID.text != &quot;&quot;);
+  //TextFieldAddress.enabled = (flag &amp;&amp; ComboBoxGbtID.text != &quot;&quot;);
+  TextFieldSubAddress.enabled = (flag &amp;&amp; ComboBoxGbtID.text != &quot;&quot;);
+  TextFieldSize.enabled = (flag &amp;&amp; ComboBoxGbtID.text != &quot;&quot;);
+  ComboBoxType.enabled = (flag &amp;&amp; ComboBoxGbtID.text != &quot;&quot;);
+  ComboBoxFrequency.enabled = (flag &amp;&amp; ComboBoxGbtID.text != &quot;&quot;);
+  TextFieldIn.enabled = (flag &amp;&amp; ComboBoxGbtID.text != &quot;&quot;);  
+  TextFieldMask.enabled = (flag &amp;&amp; ComboBoxGbtID.text != &quot;&quot;);  
+  //ComboBoxRegisters.enabled = (flag &amp;&amp; ComboBoxGbtID.text != &quot;&quot;);  
+  //ButtonRegistersConfig.enabled = (flag &amp;&amp; ComboBoxGbtID.text != &quot;&quot;);
+  //SpinButtonRefreshRate.enabled = (flag &amp;&amp; ComboBoxGbtID.text != &quot;&quot;);  
+  //CheckButtonDataChange.enabled = (flag &amp;&amp; ComboBoxGbtID.text != &quot;&quot;);
+  //ButtonStartStop.enabled = (flag &amp;&amp; ComboBoxGbtID.text != &quot;&quot; &amp;&amp; ComboBoxRegisters.selectedPos() != 1);  
+  //ButtonReset.enabled = (flag &amp;&amp; ComboBoxGbtID.text != &quot;&quot; &amp;&amp; buttonFlag);
+  //ButtonSpeed.enabled = (flag &amp;&amp; ComboBoxGbtID.text != &quot;&quot; &amp;&amp; buttonFlag);
+  ButtonWrite.enabled = (flag &amp;&amp; ComboBoxGbtID.text != &quot;&quot; &amp;&amp; buttonFlag);
+  //ButtonRead.enabled = (flag &amp;&amp; ComboBoxGbtID.text != &quot;&quot; &amp;&amp; buttonFlag);
+  //ButtonWRead.enabled = (flag &amp;&amp; ComboBoxGbtID.text != &quot;&quot; &amp;&amp; buttonFlag);
+  ButtonActChannel.enabled = (flag &amp;&amp; ComboBoxGbtID.text != &quot;&quot; &amp;&amp; buttonFlag);
+  //ButtonDeactChannel.enabled = (flag &amp;&amp; ComboBoxGbtID.text != &quot;&quot; &amp;&amp; buttonFlag);
+  //ButtonView.enabled = (flag &amp;&amp; ComboBoxGbtID.text != &quot;&quot; &amp;&amp; ComboBoxRegisters.itemCount() &gt; 1 &amp;&amp; buttonFlag);
+}]]></script>
+  <script name="Initialize" isEscaped="1"><![CDATA[main()
+{
+  //Workaround to disable the reference (Reset and set timeout buttons) when not applicable (i.e. no GBT and SCA selected)
+  TextFieldScaId.text = &quot;0&quot;;
+  ComboBoxBus.selectedPos(7);
+  //ComboBoxRegisters.appendItem(&quot;(Select)&quot;);  
+  //ComboBoxRegisters.selectedPos(1);
+  activeFlag = true;
+  buttonFlag = true;
+  
+/*
+  while(!globalExists(&quot;GBT_activeTab&quot;))
+    delay(0,100);
+*/
+  
+  while(1)
+  {
+    refresh();
+    delay(0, 200);
+  }
+}
+
+
+
+
+
+
+
+]]></script>
+ </events>
+ <layers>
+  <layer layerId="0">
+   <prop name="Visible">True</prop>
+   <prop name="Name">Layer1</prop>
+  </layer>
+  <layer layerId="1">
+   <prop name="Visible">True</prop>
+   <prop name="Name">Layer2</prop>
+  </layer>
+  <layer layerId="2">
+   <prop name="Visible">True</prop>
+   <prop name="Name">Layer3</prop>
+  </layer>
+  <layer layerId="3">
+   <prop name="Visible">True</prop>
+   <prop name="Name">Layer4</prop>
+  </layer>
+  <layer layerId="4">
+   <prop name="Visible">True</prop>
+   <prop name="Name">Layer5</prop>
+  </layer>
+  <layer layerId="5">
+   <prop name="Visible">True</prop>
+   <prop name="Name">Layer6</prop>
+  </layer>
+  <layer layerId="6">
+   <prop name="Visible">True</prop>
+   <prop name="Name">Layer7</prop>
+  </layer>
+  <layer layerId="7">
+   <prop name="Visible">True</prop>
+   <prop name="Name">Layer8</prop>
+  </layer>
+ </layers>
+ <shapes>
+  <shape Name="Text5" shapeType="PRIMITIVE_TEXT" layerId="0">
+   <properties>
+    <prop name="serialId">14</prop>
+    <prop name="Type"></prop>
+    <prop name="RefPoint">50 190</prop>
+    <prop name="Enable">True</prop>
+    <prop name="Visible">True</prop>
+    <prop name="ForeColor">_WindowText</prop>
+    <prop name="BackColor">_Transparent</prop>
+    <prop name="TabOrder">11</prop>
+    <prop name="ToolTipText">
+     <prop name="en_US.iso88591"></prop>
+    </prop>
+    <prop name="layoutAlignment">AlignCenter</prop>
+    <prop name="snapMode">Point</prop>
+    <prop name="DashBackColor">_Transparent</prop>
+    <prop name="AntiAliased">False</prop>
+    <prop name="LineType">[solid,oneColor,JoinMiter,CapButt,1]</prop>
+    <prop name="BorderZoomable">False</prop>
+    <prop name="FillType">[outline]</prop>
+    <prop name="Location">52 192</prop>
+    <prop name="Size">92 17</prop>
+    <prop name="Font">
+     <prop name="en_US.iso88591">Arial,-1,13,5,50,0,0,0,0,0</prop>
+    </prop>
+    <prop name="Text">
+     <prop name="en_US.iso88591">Sub address</prop>
+    </prop>
+    <prop name="Distance">0</prop>
+    <prop name="BorderOffset">2</prop>
+    <prop name="Bordered">False</prop>
+    <prop name="Fit">False</prop>
+    <prop name="Transformable">True</prop>
+    <prop name="TextFormat">[0s,,,ALIGNMENT_BEGINNING]</prop>
+   </properties>
+  </shape>
+  <shape Name="Text7" shapeType="PRIMITIVE_TEXT" layerId="0">
+   <properties>
+    <prop name="serialId">18</prop>
+    <prop name="Type"></prop>
+    <prop name="RefPoint">51 279.25</prop>
+    <prop name="Enable">True</prop>
+    <prop name="Visible">True</prop>
+    <prop name="ForeColor">_WindowText</prop>
+    <prop name="BackColor">_Transparent</prop>
+    <prop name="TabOrder">15</prop>
+    <prop name="ToolTipText">
+     <prop name="en_US.iso88591"></prop>
+    </prop>
+    <prop name="layoutAlignment">AlignCenter</prop>
+    <prop name="snapMode">Point</prop>
+    <prop name="DashBackColor">_Transparent</prop>
+    <prop name="AntiAliased">False</prop>
+    <prop name="LineType">[solid,oneColor,JoinMiter,CapButt,1]</prop>
+    <prop name="BorderZoomable">False</prop>
+    <prop name="FillType">[outline]</prop>
+    <prop name="Location">53 281.25</prop>
+    <prop name="Size">92 17</prop>
+    <prop name="Font">
+     <prop name="en_US.iso88591">Arial,-1,13,5,50,0,0,0,0,0</prop>
+    </prop>
+    <prop name="Text">
+     <prop name="en_US.iso88591">Size (bytes)</prop>
+    </prop>
+    <prop name="Distance">0</prop>
+    <prop name="BorderOffset">2</prop>
+    <prop name="Bordered">False</prop>
+    <prop name="Fit">False</prop>
+    <prop name="Transformable">True</prop>
+    <prop name="TextFormat">[0s,,,ALIGNMENT_BEGINNING]</prop>
+   </properties>
+  </shape>
+  <shape Name="Text8" shapeType="PRIMITIVE_TEXT" layerId="0">
+   <properties>
+    <prop name="serialId">20</prop>
+    <prop name="Type"></prop>
+    <prop name="RefPoint">51 309.25</prop>
+    <prop name="Enable">True</prop>
+    <prop name="Visible">True</prop>
+    <prop name="ForeColor">_WindowText</prop>
+    <prop name="BackColor">_Transparent</prop>
+    <prop name="TabOrder">17</prop>
+    <prop name="ToolTipText">
+     <prop name="en_US.iso88591"></prop>
+    </prop>
+    <prop name="layoutAlignment">AlignCenter</prop>
+    <prop name="snapMode">Point</prop>
+    <prop name="DashBackColor">_Transparent</prop>
+    <prop name="AntiAliased">False</prop>
+    <prop name="LineType">[solid,oneColor,JoinMiter,CapButt,1]</prop>
+    <prop name="BorderZoomable">False</prop>
+    <prop name="FillType">[outline]</prop>
+    <prop name="Location">53 311.25</prop>
+    <prop name="Size">92 17</prop>
+    <prop name="Font">
+     <prop name="en_US.iso88591">Arial,-1,13,5,50,0,0,0,0,0</prop>
+    </prop>
+    <prop name="Text">
+     <prop name="en_US.iso88591">Data in</prop>
+    </prop>
+    <prop name="Distance">0</prop>
+    <prop name="BorderOffset">2</prop>
+    <prop name="Bordered">False</prop>
+    <prop name="Fit">False</prop>
+    <prop name="Transformable">True</prop>
+    <prop name="TextFormat">[0s,,,ALIGNMENT_BEGINNING]</prop>
+   </properties>
+  </shape>
+  <shape Name="Text10" shapeType="PRIMITIVE_TEXT" layerId="0">
+   <properties>
+    <prop name="serialId">27</prop>
+    <prop name="Type"></prop>
+    <prop name="RefPoint">51 370.25</prop>
+    <prop name="Enable">True</prop>
+    <prop name="Visible">True</prop>
+    <prop name="ForeColor">_WindowText</prop>
+    <prop name="BackColor">_Transparent</prop>
+    <prop name="TabOrder">21</prop>
+    <prop name="ToolTipText">
+     <prop name="en_US.iso88591"></prop>
+    </prop>
+    <prop name="layoutAlignment">AlignCenter</prop>
+    <prop name="snapMode">Point</prop>
+    <prop name="DashBackColor">_Transparent</prop>
+    <prop name="AntiAliased">False</prop>
+    <prop name="LineType">[solid,oneColor,JoinMiter,CapButt,1]</prop>
+    <prop name="BorderZoomable">False</prop>
+    <prop name="FillType">[outline]</prop>
+    <prop name="Location">53 372.25</prop>
+    <prop name="Size">92 17</prop>
+    <prop name="Font">
+     <prop name="en_US.iso88591">Arial,-1,13,5,50,0,0,0,0,0</prop>
+    </prop>
+    <prop name="Text">
+     <prop name="en_US.iso88591">Status</prop>
+    </prop>
+    <prop name="Distance">0</prop>
+    <prop name="BorderOffset">2</prop>
+    <prop name="Bordered">False</prop>
+    <prop name="Fit">False</prop>
+    <prop name="Transformable">True</prop>
+    <prop name="TextFormat">[0s,,,ALIGNMENT_BEGINNING]</prop>
+   </properties>
+  </shape>
+  <shape Name="Text4" shapeType="PRIMITIVE_TEXT" layerId="0">
+   <properties>
+    <prop name="serialId">10</prop>
+    <prop name="Type"></prop>
+    <prop name="RefPoint">50 160</prop>
+    <prop name="Enable">True</prop>
+    <prop name="Visible">True</prop>
+    <prop name="ForeColor">_WindowText</prop>
+    <prop name="BackColor">_Transparent</prop>
+    <prop name="TabOrder">9</prop>
+    <prop name="ToolTipText">
+     <prop name="en_US.iso88591"></prop>
+    </prop>
+    <prop name="layoutAlignment">AlignCenter</prop>
+    <prop name="snapMode">Point</prop>
+    <prop name="DashBackColor">_Transparent</prop>
+    <prop name="AntiAliased">False</prop>
+    <prop name="LineType">[solid,oneColor,JoinMiter,CapButt,1]</prop>
+    <prop name="BorderZoomable">False</prop>
+    <prop name="FillType">[outline]</prop>
+    <prop name="Location">52 162</prop>
+    <prop name="Size">92 17</prop>
+    <prop name="Font">
+     <prop name="en_US.iso88591">Arial,-1,13,5,50,0,0,0,0,0</prop>
+    </prop>
+    <prop name="Text">
+     <prop name="en_US.iso88591">Bus</prop>
+    </prop>
+    <prop name="Distance">0</prop>
+    <prop name="BorderOffset">2</prop>
+    <prop name="Bordered">False</prop>
+    <prop name="Fit">False</prop>
+    <prop name="Transformable">True</prop>
+    <prop name="TextFormat">[0s,,,ALIGNMENT_BEGINNING]</prop>
+   </properties>
+  </shape>
+  <shape Name="Text2" shapeType="PRIMITIVE_TEXT" layerId="0">
+   <properties>
+    <prop name="serialId">8</prop>
+    <prop name="Type"></prop>
+    <prop name="RefPoint">50 100</prop>
+    <prop name="Enable">True</prop>
+    <prop name="Visible">True</prop>
+    <prop name="ForeColor">_WindowText</prop>
+    <prop name="BackColor">_Transparent</prop>
+    <prop name="TabOrder">5</prop>
+    <prop name="ToolTipText">
+     <prop name="en_US.iso88591"></prop>
+    </prop>
+    <prop name="layoutAlignment">AlignCenter</prop>
+    <prop name="snapMode">Point</prop>
+    <prop name="DashBackColor">_Transparent</prop>
+    <prop name="AntiAliased">False</prop>
+    <prop name="LineType">[solid,oneColor,JoinMiter,CapButt,1]</prop>
+    <prop name="BorderZoomable">False</prop>
+    <prop name="FillType">[outline]</prop>
+    <prop name="Location">52 102</prop>
+    <prop name="Size">92 17</prop>
+    <prop name="Font">
+     <prop name="en_US.iso88591">Arial,-1,13,5,50,0,0,0,0,0</prop>
+    </prop>
+    <prop name="Text">
+     <prop name="en_US.iso88591">GBT ID</prop>
+    </prop>
+    <prop name="Distance">0</prop>
+    <prop name="BorderOffset">2</prop>
+    <prop name="Bordered">False</prop>
+    <prop name="Fit">False</prop>
+    <prop name="Transformable">True</prop>
+    <prop name="TextFormat">[0s,,,ALIGNMENT_BEGINNING]</prop>
+   </properties>
+  </shape>
+  <shape Name="Text1" shapeType="PRIMITIVE_TEXT" layerId="0">
+   <properties>
+    <prop name="serialId">39</prop>
+    <prop name="Type"></prop>
+    <prop name="RefPoint">50 70</prop>
+    <prop name="Enable">True</prop>
+    <prop name="Visible">True</prop>
+    <prop name="ForeColor">_WindowText</prop>
+    <prop name="BackColor">_Transparent</prop>
+    <prop name="TabOrder">2</prop>
+    <prop name="ToolTipText">
+     <prop name="en_US.iso88591"></prop>
+    </prop>
+    <prop name="layoutAlignment">AlignCenter</prop>
+    <prop name="snapMode">Point</prop>
+    <prop name="DashBackColor">_Transparent</prop>
+    <prop name="AntiAliased">False</prop>
+    <prop name="LineType">[solid,oneColor,JoinMiter,CapButt,1]</prop>
+    <prop name="BorderZoomable">False</prop>
+    <prop name="FillType">[outline]</prop>
+    <prop name="Location">52 72</prop>
+    <prop name="Size">92 17</prop>
+    <prop name="Font">
+     <prop name="en_US.iso88591">Arial,-1,13,5,50,0,0,0,0,0</prop>
+    </prop>
+    <prop name="Text">
+     <prop name="en_US.iso88591">PC</prop>
+    </prop>
+    <prop name="Distance">0</prop>
+    <prop name="BorderOffset">2</prop>
+    <prop name="Bordered">False</prop>
+    <prop name="Fit">False</prop>
+    <prop name="Transformable">True</prop>
+    <prop name="TextFormat">[0s,,,ALIGNMENT_BEGINNING]</prop>
+   </properties>
+  </shape>
+  <shape Name="Frame1" shapeType="FRAME" layerId="0">
+   <properties>
+    <prop name="serialId">37</prop>
+    <prop name="Type"></prop>
+    <prop name="RefPoint">30 500</prop>
+    <prop name="Enable">True</prop>
+    <prop name="Visible">True</prop>
+    <prop name="ForeColor">_3DText</prop>
+    <prop name="BackColor">_Transparent</prop>
+    <prop name="TabOrder">1</prop>
+    <prop name="ToolTipText">
+     <prop name="en_US.iso88591"></prop>
+    </prop>
+    <prop name="layoutAlignment">AlignCenter</prop>
+    <prop name="snapMode">Point</prop>
+    <prop name="DashBackColor">_Transparent</prop>
+    <prop name="AntiAliased">False</prop>
+    <prop name="LineType">[solid,oneColor,JoinMiter,CapButt,1]</prop>
+    <prop name="BorderZoomable">False</prop>
+    <prop name="FillType">[outline]</prop>
+    <prop name="Geometry">1 0 0 0.8538622129436325 0 4.384133611691025</prop>
+    <prop name="BorderStyle">3D</prop>
+    <prop name="Text">
+     <prop name="en_US.iso88591">Settings</prop>
+    </prop>
+    <prop name="Font">
+     <prop name="en_US.iso88591">Arial,-1,13,5,50,0,0,0,0,0</prop>
+    </prop>
+    <prop name="Location">30 30</prop>
+    <prop name="Size">310 480</prop>
+   </properties>
+  </shape>
+  <shape Name="Frame2" shapeType="FRAME" layerId="0">
+   <properties>
+    <prop name="serialId">38</prop>
+    <prop name="Type"></prop>
+    <prop name="RefPoint">360 287</prop>
+    <prop name="Enable">True</prop>
+    <prop name="Visible">True</prop>
+    <prop name="ForeColor">_3DText</prop>
+    <prop name="BackColor">_Transparent</prop>
+    <prop name="TabOrder">23</prop>
+    <prop name="ToolTipText">
+     <prop name="en_US.iso88591"></prop>
+    </prop>
+    <prop name="layoutAlignment">AlignCenter</prop>
+    <prop name="snapMode">Point</prop>
+    <prop name="DashBackColor">_Transparent</prop>
+    <prop name="AntiAliased">False</prop>
+    <prop name="LineType">[solid,oneColor,JoinMiter,CapButt,1]</prop>
+    <prop name="BorderZoomable">False</prop>
+    <prop name="FillType">[outline]</prop>
+    <prop name="Geometry">1 0 0 0.3828996282527881 0 18.51301115241636</prop>
+    <prop name="BorderStyle">3D</prop>
+    <prop name="Text">
+     <prop name="en_US.iso88591">Commands</prop>
+    </prop>
+    <prop name="Font">
+     <prop name="en_US.iso88591">Arial,-1,13,5,50,0,0,0,0,0</prop>
+    </prop>
+    <prop name="Location">360 30</prop>
+    <prop name="Size">255 270</prop>
+   </properties>
+  </shape>
+  <shape Name="Text3" shapeType="PRIMITIVE_TEXT" layerId="0">
+   <properties>
+    <prop name="serialId">61</prop>
+    <prop name="Type"></prop>
+    <prop name="RefPoint">50 130</prop>
+    <prop name="Enable">True</prop>
+    <prop name="Visible">True</prop>
+    <prop name="ForeColor">_WindowText</prop>
+    <prop name="BackColor">_Transparent</prop>
+    <prop name="TabOrder">7</prop>
+    <prop name="ToolTipText">
+     <prop name="en_US.iso88591"></prop>
+    </prop>
+    <prop name="layoutAlignment">AlignCenter</prop>
+    <prop name="snapMode">Point</prop>
+    <prop name="DashBackColor">_Transparent</prop>
+    <prop name="AntiAliased">False</prop>
+    <prop name="LineType">[solid,oneColor,JoinMiter,CapButt,1]</prop>
+    <prop name="BorderZoomable">False</prop>
+    <prop name="FillType">[outline]</prop>
+    <prop name="Location">52 132</prop>
+    <prop name="Size">92 17</prop>
+    <prop name="Font">
+     <prop name="en_US.iso88591">Arial,-1,13,5,50,0,0,0,0,0</prop>
+    </prop>
+    <prop name="Text">
+     <prop name="en_US.iso88591">SCA ID</prop>
+    </prop>
+    <prop name="Distance">0</prop>
+    <prop name="BorderOffset">2</prop>
+    <prop name="Bordered">False</prop>
+    <prop name="Fit">False</prop>
+    <prop name="Transformable">True</prop>
+    <prop name="TextFormat">[0s,,,ALIGNMENT_BEGINNING]</prop>
+   </properties>
+  </shape>
+  <shape Name="Text15" shapeType="PRIMITIVE_TEXT" layerId="0">
+   <properties>
+    <prop name="serialId">74</prop>
+    <prop name="Type"></prop>
+    <prop name="RefPoint">51 401.25</prop>
+    <prop name="Enable">True</prop>
+    <prop name="Visible">True</prop>
+    <prop name="ForeColor">_WindowText</prop>
+    <prop name="BackColor">_Transparent</prop>
+    <prop name="TabOrder">37</prop>
+    <prop name="ToolTipText">
+     <prop name="en_US.iso88591"></prop>
+    </prop>
+    <prop name="layoutAlignment">AlignCenter</prop>
+    <prop name="snapMode">Point</prop>
+    <prop name="DashBackColor">_Transparent</prop>
+    <prop name="AntiAliased">False</prop>
+    <prop name="LineType">[solid,oneColor,JoinMiter,CapButt,1]</prop>
+    <prop name="BorderZoomable">False</prop>
+    <prop name="FillType">[outline]</prop>
+    <prop name="Location">53 403.25</prop>
+    <prop name="Size">92 17</prop>
+    <prop name="Font">
+     <prop name="en_US.iso88591">Arial,-1,13,5,50,0,0,0,0,0</prop>
+    </prop>
+    <prop name="Text">
+     <prop name="en_US.iso88591">Server Version:</prop>
+    </prop>
+    <prop name="Distance">0</prop>
+    <prop name="BorderOffset">2</prop>
+    <prop name="Bordered">False</prop>
+    <prop name="Fit">False</prop>
+    <prop name="Transformable">True</prop>
+    <prop name="TextFormat">[0s,,,ALIGNMENT_BEGINNING]</prop>
+   </properties>
+  </shape>
+  <shape Name="Text17" shapeType="PRIMITIVE_TEXT" layerId="0">
+   <properties>
+    <prop name="serialId">81</prop>
+    <prop name="Type"></prop>
+    <prop name="RefPoint">51 220.25</prop>
+    <prop name="Enable">True</prop>
+    <prop name="Visible">True</prop>
+    <prop name="ForeColor">_WindowText</prop>
+    <prop name="BackColor">_Transparent</prop>
+    <prop name="TabOrder">47</prop>
+    <prop name="ToolTipText">
+     <prop name="en_US.iso88591"></prop>
+    </prop>
+    <prop name="layoutAlignment">AlignCenter</prop>
+    <prop name="snapMode">Point</prop>
+    <prop name="DashBackColor">_Transparent</prop>
+    <prop name="AntiAliased">False</prop>
+    <prop name="LineType">[solid,oneColor,JoinMiter,CapButt,1]</prop>
+    <prop name="BorderZoomable">False</prop>
+    <prop name="FillType">[outline]</prop>
+    <prop name="Location">53 222.25</prop>
+    <prop name="Size">92 17</prop>
+    <prop name="Font">
+     <prop name="en_US.iso88591">Arial,-1,13,5,50,0,0,0,0,0</prop>
+    </prop>
+    <prop name="Text">
+     <prop name="en_US.iso88591">Type</prop>
+    </prop>
+    <prop name="Distance">0</prop>
+    <prop name="BorderOffset">2</prop>
+    <prop name="Bordered">False</prop>
+    <prop name="Fit">False</prop>
+    <prop name="Transformable">True</prop>
+    <prop name="TextFormat">[0s,,,ALIGNMENT_BEGINNING]</prop>
+   </properties>
+  </shape>
+  <shape Name="Text20" shapeType="PRIMITIVE_TEXT" layerId="0">
+   <properties>
+    <prop name="serialId">90</prop>
+    <prop name="Type"></prop>
+    <prop name="RefPoint">51 339.25</prop>
+    <prop name="Enable">True</prop>
+    <prop name="Visible">True</prop>
+    <prop name="ForeColor">_WindowText</prop>
+    <prop name="BackColor">_Transparent</prop>
+    <prop name="TabOrder">55</prop>
+    <prop name="ToolTipText">
+     <prop name="en_US.iso88591"></prop>
+    </prop>
+    <prop name="layoutAlignment">AlignCenter</prop>
+    <prop name="snapMode">Point</prop>
+    <prop name="DashBackColor">_Transparent</prop>
+    <prop name="AntiAliased">False</prop>
+    <prop name="LineType">[solid,oneColor,JoinMiter,CapButt,1]</prop>
+    <prop name="BorderZoomable">False</prop>
+    <prop name="FillType">[outline]</prop>
+    <prop name="Location">53 341.25</prop>
+    <prop name="Size">92 17</prop>
+    <prop name="Font">
+     <prop name="en_US.iso88591">Arial,-1,13,5,50,0,0,0,0,0</prop>
+    </prop>
+    <prop name="Text">
+     <prop name="en_US.iso88591">Mask</prop>
+    </prop>
+    <prop name="Distance">0</prop>
+    <prop name="BorderOffset">2</prop>
+    <prop name="Bordered">False</prop>
+    <prop name="Fit">False</prop>
+    <prop name="Transformable">True</prop>
+    <prop name="TextFormat">[0s,,,ALIGNMENT_BEGINNING]</prop>
+   </properties>
+  </shape>
+  <shape Name="TextFieldScaId" shapeType="TEXT_FIELD" layerId="0">
+   <properties>
+    <prop name="serialId">0</prop>
+    <prop name="Type"></prop>
+    <prop name="RefPoint">150 130</prop>
+    <prop name="Enable">True</prop>
+    <prop name="Visible">True</prop>
+    <prop name="ForeColor">_WindowText</prop>
+    <prop name="BackColor">_Window</prop>
+    <prop name="TabOrder">8</prop>
+    <prop name="ToolTipText">
+     <prop name="en_US.iso88591">Define slave address</prop>
+    </prop>
+    <prop name="layoutAlignment">AlignCenter</prop>
+    <prop name="snapMode">Point</prop>
+    <prop name="Font">
+     <prop name="en_US.iso88591">Arial,-1,13,5,50,0,0,0,0,0</prop>
+    </prop>
+    <prop name="Location">150 130</prop>
+    <prop name="Size">166 24</prop>
+    <prop name="BorderStyle">Normal</prop>
+    <prop name="Editable">True</prop>
+    <prop name="TextFormat">[4d,False,False,ALIGNMENT_BEGINNING,False]</prop>
+   </properties>
+  </shape>
+  <shape Name="TextFieldSubAddress" shapeType="TEXT_FIELD" layerId="0">
+   <properties>
+    <prop name="serialId">13</prop>
+    <prop name="Type"></prop>
+    <prop name="RefPoint">150 190</prop>
+    <prop name="Enable">True</prop>
+    <prop name="Visible">True</prop>
+    <prop name="ForeColor">_WindowText</prop>
+    <prop name="BackColor">_Window</prop>
+    <prop name="TabOrder">12</prop>
+    <prop name="ToolTipText">
+     <prop name="en_US.iso88591">Define address (in hexadecimal; example: 1A)</prop>
+    </prop>
+    <prop name="layoutAlignment">AlignCenter</prop>
+    <prop name="snapMode">Point</prop>
+    <prop name="Font">
+     <prop name="en_US.iso88591">Arial,-1,13,5,50,0,0,0,0,0</prop>
+    </prop>
+    <prop name="Location">150 190</prop>
+    <prop name="Size">166 24</prop>
+    <prop name="BorderStyle">Normal</prop>
+    <prop name="Editable">True</prop>
+    <prop name="TextFormat">[0s,,,ALIGNMENT_BEGINNING]</prop>
+   </properties>
+  </shape>
+  <shape Name="TextFieldSize" shapeType="TEXT_FIELD" layerId="0">
+   <properties>
+    <prop name="serialId">17</prop>
+    <prop name="Type"></prop>
+    <prop name="RefPoint">151 279.25</prop>
+    <prop name="Enable">True</prop>
+    <prop name="Visible">True</prop>
+    <prop name="ForeColor">_WindowText</prop>
+    <prop name="BackColor">_Window</prop>
+    <prop name="TabOrder">16</prop>
+    <prop name="ToolTipText">
+     <prop name="en_US.iso88591">Define data in/out size (in bytes)</prop>
+    </prop>
+    <prop name="layoutAlignment">AlignCenter</prop>
+    <prop name="snapMode">Point</prop>
+    <prop name="Font">
+     <prop name="en_US.iso88591">Arial,-1,13,5,50,0,0,0,0,0</prop>
+    </prop>
+    <prop name="Location">151 279.25</prop>
+    <prop name="Size">166 24</prop>
+    <prop name="BorderStyle">Normal</prop>
+    <prop name="Editable">True</prop>
+    <prop name="TextFormat">[4d,False,False,ALIGNMENT_BEGINNING,False]</prop>
+   </properties>
+  </shape>
+  <shape Name="TextFieldIn" shapeType="TEXT_FIELD" layerId="0">
+   <properties>
+    <prop name="serialId">19</prop>
+    <prop name="Type"></prop>
+    <prop name="RefPoint">151 309.25</prop>
+    <prop name="Enable">True</prop>
+    <prop name="Visible">True</prop>
+    <prop name="ForeColor">_WindowText</prop>
+    <prop name="BackColor">_Window</prop>
+    <prop name="TabOrder">18</prop>
+    <prop name="ToolTipText">
+     <prop name="en_US.iso88591">Define data in (in hexadecimal; example: 1A)</prop>
+    </prop>
+    <prop name="layoutAlignment">AlignCenter</prop>
+    <prop name="snapMode">Point</prop>
+    <prop name="Font">
+     <prop name="en_US.iso88591">Arial,-1,13,5,50,0,0,0,0,0</prop>
+    </prop>
+    <prop name="Location">151 309.25</prop>
+    <prop name="Size">166 24</prop>
+    <prop name="BorderStyle">Normal</prop>
+    <prop name="Editable">True</prop>
+    <prop name="TextFormat">[0s,,,ALIGNMENT_BEGINNING]</prop>
+   </properties>
+  </shape>
+  <shape Name="ComboBoxBus" shapeType="COMBO_BOX" layerId="0">
+   <properties>
+    <prop name="serialId">30</prop>
+    <prop name="Type"></prop>
+    <prop name="RefPoint">150 160</prop>
+    <prop name="Enable">True</prop>
+    <prop name="Visible">True</prop>
+    <prop name="ForeColor">_WindowText</prop>
+    <prop name="BackColor">_Window</prop>
+    <prop name="TabOrder">10</prop>
+    <prop name="ToolTipText">
+     <prop name="en_US.iso88591">Choose bus from the list</prop>
+    </prop>
+    <prop name="layoutAlignment">AlignCenter</prop>
+    <prop name="snapMode">Point</prop>
+    <prop name="Font">
+     <prop name="en_US.iso88591">Arial,-1,13,5,50,0,0,0,0,0</prop>
+    </prop>
+    <prop name="Location">150 160</prop>
+    <prop name="Size">166 24</prop>
+    <prop name="Listitems">
+     <prop name="Item">
+      <prop name="Text">
+       <prop name="en_US.iso88591">0</prop>
+      </prop>
+      <prop name="Select">False</prop>
+     </prop>
+     <prop name="Item">
+      <prop name="Text">
+       <prop name="en_US.iso88591">1</prop>
+      </prop>
+      <prop name="Select">False</prop>
+     </prop>
+     <prop name="Item">
+      <prop name="Text">
+       <prop name="en_US.iso88591">2</prop>
+      </prop>
+      <prop name="Select">False</prop>
+     </prop>
+     <prop name="Item">
+      <prop name="Text">
+       <prop name="en_US.iso88591">3</prop>
+      </prop>
+      <prop name="Select">False</prop>
+     </prop>
+     <prop name="Item">
+      <prop name="Text">
+       <prop name="en_US.iso88591">4</prop>
+      </prop>
+      <prop name="Select">False</prop>
+     </prop>
+     <prop name="Item">
+      <prop name="Text">
+       <prop name="en_US.iso88591">5</prop>
+      </prop>
+      <prop name="Select">False</prop>
+     </prop>
+     <prop name="Item">
+      <prop name="Text">
+       <prop name="en_US.iso88591">6</prop>
+      </prop>
+      <prop name="Select">False</prop>
+     </prop>
+     <prop name="Item">
+      <prop name="Text">
+       <prop name="en_US.iso88591">7</prop>
+      </prop>
+      <prop name="Select">False</prop>
+     </prop>
+     <prop name="Item">
+      <prop name="Text">
+       <prop name="en_US.iso88591">8</prop>
+      </prop>
+      <prop name="Select">False</prop>
+     </prop>
+     <prop name="Item">
+      <prop name="Text">
+       <prop name="en_US.iso88591">9</prop>
+      </prop>
+      <prop name="Select">False</prop>
+     </prop>
+     <prop name="Item">
+      <prop name="Text">
+       <prop name="en_US.iso88591">10</prop>
+      </prop>
+      <prop name="Select">False</prop>
+     </prop>
+     <prop name="Item">
+      <prop name="Text">
+       <prop name="en_US.iso88591">11</prop>
+      </prop>
+      <prop name="Select">False</prop>
+     </prop>
+     <prop name="Item">
+      <prop name="Text">
+       <prop name="en_US.iso88591">12</prop>
+      </prop>
+      <prop name="Select">False</prop>
+     </prop>
+     <prop name="Item">
+      <prop name="Text">
+       <prop name="en_US.iso88591">13</prop>
+      </prop>
+      <prop name="Select">False</prop>
+     </prop>
+     <prop name="Item">
+      <prop name="Text">
+       <prop name="en_US.iso88591">14</prop>
+      </prop>
+      <prop name="Select">False</prop>
+     </prop>
+     <prop name="Item">
+      <prop name="Text">
+       <prop name="en_US.iso88591">15</prop>
+      </prop>
+      <prop name="Select">False</prop>
+     </prop>
+    </prop>
+    <prop name="Editable">False</prop>
+   </properties>
+  </shape>
+  <shape Name="ComboBoxGbtID" shapeType="COMBO_BOX" layerId="0">
+   <properties>
+    <prop name="serialId">33</prop>
+    <prop name="Type"></prop>
+    <prop name="RefPoint">150 100</prop>
+    <prop name="Enable">True</prop>
+    <prop name="Visible">True</prop>
+    <prop name="ForeColor">_WindowText</prop>
+    <prop name="BackColor">_Window</prop>
+    <prop name="TabOrder">6</prop>
+    <prop name="ToolTipText">
+     <prop name="en_US.iso88591">Choose GBT ID from the list</prop>
+    </prop>
+    <prop name="layoutAlignment">AlignCenter</prop>
+    <prop name="snapMode">Point</prop>
+    <prop name="Font">
+     <prop name="en_US.iso88591">Arial,-1,13,5,50,0,0,0,0,0</prop>
+    </prop>
+    <prop name="Location">150 100</prop>
+    <prop name="Size">166 24</prop>
+    <prop name="Listitems"/>
+    <prop name="Editable">True</prop>
+   </properties>
+   <events>
+    <script name="Changed" isEscaped="1"><![CDATA[main()
+{  
+  fwGbtChangeRegistersFlag = FWGBT_I2C;
+}
+
+]]></script>
+   </events>
+  </shape>
+  <shape Name="TextFieldStatus" shapeType="TEXT_FIELD" layerId="0">
+   <properties>
+    <prop name="serialId">26</prop>
+    <prop name="Type"></prop>
+    <prop name="RefPoint">151 370.25</prop>
+    <prop name="Enable">True</prop>
+    <prop name="Visible">True</prop>
+    <prop name="ForeColor">Grau</prop>
+    <prop name="BackColor">_3DFace</prop>
+    <prop name="TabOrder">22</prop>
+    <prop name="ToolTipText">
+     <prop name="en_US.iso88591">Status of last command (operation)</prop>
+    </prop>
+    <prop name="layoutAlignment">AlignCenter</prop>
+    <prop name="snapMode">Point</prop>
+    <prop name="Font">
+     <prop name="en_US.iso88591">Arial,-1,13,5,50,0,0,0,0,0</prop>
+    </prop>
+    <prop name="Location">151 370.25</prop>
+    <prop name="Size">166 24</prop>
+    <prop name="BorderStyle">Normal</prop>
+    <prop name="Editable">False</prop>
+    <prop name="TextFormat">[0s,,,ALIGNMENT_BEGINNING]</prop>
+   </properties>
+   <events>
+    <script name="DoubleClicked" isEscaped="1"><![CDATA[main()
+{
+  if (this.text()!=&quot;&quot;)
+    ChildPanelOnCentralModal(&quot;fwGbt/GbtMessage.pnl&quot;, &quot;Message&quot;, makeDynString(&quot;$message:&quot;+this.text()));
+}]]></script>
+   </events>
+  </shape>
+  <shape Name="ButtonWrite" shapeType="PUSH_BUTTON" layerId="0">
+   <properties>
+    <prop name="serialId">21</prop>
+    <prop name="Type"></prop>
+    <prop name="RefPoint">380 59</prop>
+    <prop name="Enable">True</prop>
+    <prop name="Visible">True</prop>
+    <prop name="ForeColor">_ButtonText</prop>
+    <prop name="BackColor">_Button</prop>
+    <prop name="TabOrder">25</prop>
+    <prop name="ToolTipText">
+     <prop name="en_US.iso88591">Write to I²C</prop>
+    </prop>
+    <prop name="layoutAlignment">AlignCenter</prop>
+    <prop name="snapMode">Point</prop>
+    <prop name="Font">
+     <prop name="en_US.iso88591">Arial,-1,13,5,50,0,0,0,0,0</prop>
+    </prop>
+    <prop name="Location">380 59</prop>
+    <prop name="Size">211 23</prop>
+    <prop name="BorderStyle">Normal</prop>
+    <prop name="Text">
+     <prop name="en_US.iso88591">Write to all 6</prop>
+    </prop>
+   </properties>
+   <events>
+    <script name="Clicked" isEscaped="1"><![CDATA[main()
+{  
+
+  if (validSettings(true))
+  {
+    buttonFlag = false;
+    I2CWrite();
+    buttonFlag = true;
+  }
+
+}
+]]></script>
+   </events>
+  </shape>
+  <shape Name="ServerVersion" shapeType="TEXT_FIELD" layerId="0">
+   <properties>
+    <prop name="serialId">75</prop>
+    <prop name="Type"></prop>
+    <prop name="RefPoint">151 401.25</prop>
+    <prop name="Enable">True</prop>
+    <prop name="Visible">True</prop>
+    <prop name="ForeColor">Grau</prop>
+    <prop name="BackColor">_3DFace</prop>
+    <prop name="TabOrder">38</prop>
+    <prop name="ToolTipText">
+     <prop name="en_US.iso88591">Data out result (in hexadecimal; example: 1A)</prop>
+    </prop>
+    <prop name="layoutAlignment">AlignCenter</prop>
+    <prop name="snapMode">Point</prop>
+    <prop name="Font">
+     <prop name="en_US.iso88591">Arial,-1,13,5,50,0,0,0,0,0</prop>
+    </prop>
+    <prop name="Location">151 401.25</prop>
+    <prop name="Size">166 24</prop>
+    <prop name="BorderStyle">Normal</prop>
+    <prop name="Editable">False</prop>
+    <prop name="TextFormat">[0s,,,ALIGNMENT_BEGINNING]</prop>
+   </properties>
+  </shape>
+  <shape Name="TextFieldMask" shapeType="TEXT_FIELD" layerId="0">
+   <properties>
+    <prop name="serialId">92</prop>
+    <prop name="Type"></prop>
+    <prop name="RefPoint">151 339.25</prop>
+    <prop name="Enable">True</prop>
+    <prop name="Visible">True</prop>
+    <prop name="ForeColor">_WindowText</prop>
+    <prop name="BackColor">_Window</prop>
+    <prop name="TabOrder">57</prop>
+    <prop name="ToolTipText">
+     <prop name="en_US.iso88591">Define data in (in hexadecimal; example: 1A)</prop>
+    </prop>
+    <prop name="layoutAlignment">AlignCenter</prop>
+    <prop name="snapMode">Point</prop>
+    <prop name="Font">
+     <prop name="en_US.iso88591">Arial,-1,13,5,50,0,0,0,0,0</prop>
+    </prop>
+    <prop name="Location">151 339.25</prop>
+    <prop name="Size">166 24</prop>
+    <prop name="BorderStyle">Normal</prop>
+    <prop name="Editable">True</prop>
+    <prop name="TextFormat">[0s,,,ALIGNMENT_BEGINNING]</prop>
+   </properties>
+  </shape>
+  <shape Name="ComboBoxType" shapeType="COMBO_BOX" layerId="0">
+   <properties>
+    <prop name="serialId">94</prop>
+    <prop name="Type"></prop>
+    <prop name="RefPoint">151 220.25</prop>
+    <prop name="Enable">True</prop>
+    <prop name="Visible">True</prop>
+    <prop name="ForeColor">_WindowText</prop>
+    <prop name="BackColor">_Window</prop>
+    <prop name="TabOrder">59</prop>
+    <prop name="ToolTipText">
+     <prop name="en_US.iso88591">Choose type from the list</prop>
+    </prop>
+    <prop name="layoutAlignment">AlignCenter</prop>
+    <prop name="snapMode">Point</prop>
+    <prop name="Font">
+     <prop name="en_US.iso88591">Arial,-1,13,5,50,0,0,0,0,0</prop>
+    </prop>
+    <prop name="Location">151 220.25</prop>
+    <prop name="Size">166 24</prop>
+    <prop name="Listitems">
+     <prop name="Item">
+      <prop name="Text">
+       <prop name="en_US.iso88591">GBTx (default)</prop>
+      </prop>
+      <prop name="Select">True</prop>
+     </prop>
+     <prop name="Item">
+      <prop name="Text">
+       <prop name="en_US.iso88591">SALT8</prop>
+      </prop>
+      <prop name="Select">False</prop>
+     </prop>
+     <prop name="Item">
+      <prop name="Text">
+       <prop name="en_US.iso88591">2 Byte sub-address (10bit address)</prop>
+      </prop>
+      <prop name="Select">False</prop>
+     </prop>
+     <prop name="Item">
+      <prop name="Text">
+       <prop name="en_US.iso88591">1 Byte sub-address (10bit address)</prop>
+      </prop>
+      <prop name="Select">False</prop>
+     </prop>
+     <prop name="Item">
+      <prop name="Text">
+       <prop name="en_US.iso88591">Raw</prop>
+      </prop>
+      <prop name="Select">False</prop>
+     </prop>
+     <prop name="Item">
+      <prop name="Text">
+       <prop name="en_US.iso88591">Raw (10bit address)</prop>
+      </prop>
+      <prop name="Select">False</prop>
+     </prop>
+    </prop>
+    <prop name="Editable">False</prop>
+   </properties>
+  </shape>
+  <shape Name="ButtonActChannel" shapeType="PUSH_BUTTON" layerId="0">
+   <properties>
+    <prop name="serialId">102</prop>
+    <prop name="Type"></prop>
+    <prop name="RefPoint">380 93</prop>
+    <prop name="Enable">True</prop>
+    <prop name="Visible">True</prop>
+    <prop name="ForeColor">_ButtonText</prop>
+    <prop name="BackColor">_Button</prop>
+    <prop name="TabOrder">61</prop>
+    <prop name="ToolTipText">
+     <prop name="en_US.iso88591">Activate Channel</prop>
+    </prop>
+    <prop name="layoutAlignment">AlignCenter</prop>
+    <prop name="snapMode">Point</prop>
+    <prop name="Font">
+     <prop name="en_US.iso88591">Arial,-1,13,5,50,0,0,0,0,0</prop>
+    </prop>
+    <prop name="Location">380 93</prop>
+    <prop name="Size">211 23</prop>
+    <prop name="BorderStyle">Normal</prop>
+    <prop name="Text">
+     <prop name="en_US.iso88591">Activate Channel</prop>
+    </prop>
+   </properties>
+   <events>
+    <script name="Clicked" isEscaped="1"><![CDATA[main()
+{
+
+  if (validSettings(false))
+  {
+    buttonFlag = false;
+    I2CActivateChannel();
+    buttonFlag = true;
+  }
+
+}
+
+]]></script>
+   </events>
+  </shape>
+  <shape Name="PRIMITIVE_TEXT1" shapeType="PRIMITIVE_TEXT" layerId="0">
+   <properties>
+    <prop name="serialId">107</prop>
+    <prop name="Type"></prop>
+    <prop name="RefPoint">52 220.2499999999999</prop>
+    <prop name="Enable">True</prop>
+    <prop name="Visible">True</prop>
+    <prop name="ForeColor">_WindowText</prop>
+    <prop name="BackColor">_Transparent</prop>
+    <prop name="TabOrder">63</prop>
+    <prop name="ToolTipText">
+     <prop name="en_US.iso88591"></prop>
+    </prop>
+    <prop name="layoutAlignment">AlignCenter</prop>
+    <prop name="snapMode">Point</prop>
+    <prop name="DashBackColor">_Transparent</prop>
+    <prop name="AntiAliased">False</prop>
+    <prop name="LineType">[solid,oneColor,JoinMiter,CapButt,1]</prop>
+    <prop name="BorderZoomable">False</prop>
+    <prop name="FillType">[outline]</prop>
+    <prop name="Location">53 251.2499999999999</prop>
+    <prop name="Size">92 17</prop>
+    <prop name="Font">
+     <prop name="en_US.iso88591">Arial,-1,13,5,50,0,0,0,0,0</prop>
+    </prop>
+    <prop name="Text">
+     <prop name="en_US.iso88591">Frequency</prop>
+    </prop>
+    <prop name="Distance">0</prop>
+    <prop name="BorderOffset">2</prop>
+    <prop name="Bordered">False</prop>
+    <prop name="Fit">False</prop>
+    <prop name="Transformable">True</prop>
+    <prop name="TextFormat">[0s,,,ALIGNMENT_BEGINNING]</prop>
+   </properties>
+  </shape>
+  <shape Name="ComboBoxFrequency" shapeType="COMBO_BOX" layerId="0">
+   <properties>
+    <prop name="serialId">108</prop>
+    <prop name="Type"></prop>
+    <prop name="RefPoint">151 249.25</prop>
+    <prop name="Enable">True</prop>
+    <prop name="Visible">True</prop>
+    <prop name="ForeColor">_WindowText</prop>
+    <prop name="BackColor">_Window</prop>
+    <prop name="TabOrder">64</prop>
+    <prop name="ToolTipText">
+     <prop name="en_US.iso88591">Choose type from the list</prop>
+    </prop>
+    <prop name="layoutAlignment">AlignCenter</prop>
+    <prop name="snapMode">Point</prop>
+    <prop name="Font">
+     <prop name="en_US.iso88591">Arial,-1,13,5,50,0,0,0,0,0</prop>
+    </prop>
+    <prop name="Location">151 249.25</prop>
+    <prop name="Size">166 24</prop>
+    <prop name="Listitems">
+     <prop name="Item">
+      <prop name="Text">
+       <prop name="en_US.iso88591">1 MHz</prop>
+      </prop>
+      <prop name="Select">True</prop>
+     </prop>
+     <prop name="Item">
+      <prop name="Text">
+       <prop name="en_US.iso88591">400 KHz</prop>
+      </prop>
+      <prop name="Select">False</prop>
+     </prop>
+     <prop name="Item">
+      <prop name="Text">
+       <prop name="en_US.iso88591">200 KHz</prop>
+      </prop>
+      <prop name="Select">False</prop>
+     </prop>
+     <prop name="Item">
+      <prop name="Text">
+       <prop name="en_US.iso88591">100 KHz</prop>
+      </prop>
+      <prop name="Select">False</prop>
+     </prop>
+    </prop>
+    <prop name="Editable">False</prop>
+   </properties>
+  </shape>
+  <shape Name="TEXT_FIELD_buttonFlag" shapeType="TEXT_FIELD" layerId="0">
+   <properties>
+    <prop name="serialId">118</prop>
+    <prop name="Type"></prop>
+    <prop name="RefPoint">627 427</prop>
+    <prop name="Enable">True</prop>
+    <prop name="Visible">False</prop>
+    <prop name="ForeColor">_WindowText</prop>
+    <prop name="BackColor">_Window</prop>
+    <prop name="TabOrder">67</prop>
+    <prop name="ToolTipText">
+     <prop name="en_US.iso88591"></prop>
+    </prop>
+    <prop name="layoutAlignment">AlignCenter</prop>
+    <prop name="snapMode">Point</prop>
+    <prop name="Font">
+     <prop name="en_US.iso88591">Sans Serif,-1,13,5,50,0,0,0,0,0</prop>
+    </prop>
+    <prop name="Location">627 429</prop>
+    <prop name="Size">11 11</prop>
+    <prop name="BorderStyle">Normal</prop>
+    <prop name="Editable">True</prop>
+    <prop name="TextFormat">[0s,,,ALIGNMENT_BEGINNING]</prop>
+   </properties>
+   <events>
+    <script name="TextChanged" isEscaped="1"><![CDATA[main(string newText)
+{
+  checkFlag(newText);
+}
+
+synchronized checkFlag(string newText)
+{
+  if (strtolower(newText) == &quot;true&quot;)
+    buttonFlag = true;
+  else if (strtolower(newText) == &quot;false&quot;)
+    buttonFlag = false;
+}]]></script>
+   </events>
+  </shape>
+  <shape Name="fileSelectorBtn" shapeType="PUSH_BUTTON" layerId="0">
+   <properties>
+    <prop name="serialId">123</prop>
+    <prop name="Type"></prop>
+    <prop name="RefPoint">316 313.375</prop>
+    <prop name="Enable">True</prop>
+    <prop name="Visible">False</prop>
+    <prop name="ForeColor">_ButtonText</prop>
+    <prop name="BackColor">_Button</prop>
+    <prop name="TabOrder">68</prop>
+    <prop name="ToolTipText">
+     <prop name="en_US.iso88591"></prop>
+    </prop>
+    <prop name="layoutAlignment">AlignNone</prop>
+    <prop name="snapMode">Point</prop>
+    <prop name="Font">
+     <prop name="en_US.iso88591">Sans Serif,-1,13,5,50,0,0,0,0,0</prop>
+    </prop>
+    <prop name="Location">316 309.375</prop>
+    <prop name="Size">21 23</prop>
+    <prop name="BorderStyle">Styled</prop>
+    <prop name="Text">
+     <prop name="en_US.iso88591">...</prop>
+    </prop>
+   </properties>
+   <events>
+    <script name="Clicked" isEscaped="1"><![CDATA[main(mapping event)
+{
+  string filename;
+  fileSelector(filename, PROJ_PATH, false);
+  if (filename!=&quot;&quot;)
+    TextFieldIn.text(&quot;file:&quot;+filename);
+}]]></script>
+    <script name="Initialize" isEscaped="1"><![CDATA[main()
+{
+  string dataIn;
+  while (true) {
+    dataIn = TextFieldIn.text();
+    if (strpos(strltrim(dataIn), &quot;file&quot;)==0) {
+      if (!fileSelectorBtn.visible()) fileSelectorBtn.visible(true);
+    }
+    else {
+      if (fileSelectorBtn.visible()) fileSelectorBtn.visible(false);
+    }
+    delay(1);
+  }
+}]]></script>
+   </events>
+  </shape>
+  <shape Name="ComboBoxGbtNode" shapeType="COMBO_BOX" layerId="0">
+   <properties>
+    <prop name="serialId">130</prop>
+    <prop name="Type"></prop>
+    <prop name="RefPoint">150 70</prop>
+    <prop name="Enable">True</prop>
+    <prop name="Visible">True</prop>
+    <prop name="ForeColor">_WindowText</prop>
+    <prop name="BackColor">_Window</prop>
+    <prop name="TabOrder">71</prop>
+    <prop name="ToolTipText">
+     <prop name="en_US.iso88591">Choose GBT server from the list</prop>
+    </prop>
+    <prop name="layoutAlignment">AlignCenter</prop>
+    <prop name="snapMode">Point</prop>
+    <prop name="Font">
+     <prop name="en_US.iso88591">Arial,-1,13,5,50,0,0,0,0,0</prop>
+    </prop>
+    <prop name="Location">150 70</prop>
+    <prop name="Size">166 24</prop>
+    <prop name="Listitems"/>
+    <prop name="Editable">False</prop>
+   </properties>
+   <events>
+    <script name="Changed" isEscaped="1"><![CDATA[main()
+{
+	updateGbtList();
+}
+
+
+
+
+
+
+
+
+
+
+
+
+]]></script>
+    <script name="Initialize" isEscaped="1"><![CDATA[main()
+{
+  ComboBoxGbtNode.text = &quot;localhost&quot;;
+  updateGbtList();
+}
+
+
+public void updateGbtList()
+{
+	dyn_int tmp;	
+	int     i;
+	int     ret, major, minor, patch;
+  dyn_string gbtIdItems;
+  
+
+	ComboBoxGbtID.deleteAllItems();
+	ComboBoxGbtID.text = &quot;&quot;;		
+//	activeFlag = false;
+	TextFieldStatus.text = &quot;Retrieving master IDs...&quot;;
+//	fwGbt_add(ComboBoxGbtNode.text);
+// 	if (fwGbt_getMasterIDs(ComboBoxGbtNode.text, tmp))
+// 		if (dynlen(tmp) == 0)	
+// 			ChildPanelOnCentralModal(&quot;vision/MessageInfo1&quot;, &quot;Info&quot;, makeDynString(&quot;GBT '&quot; + ComboBoxGbtNode.text + &quot;' doesn't have master IDs!&quot;));	
+// 		else		
+// 			for(i = 1; i &lt;= dynlen(tmp); i++)
+// 				if (tmp[i] &lt; 10)
+// 					ComboBoxGbtID.appendItem(&quot;0&quot; + (string) tmp[i] + &quot;  (PCI: &quot; + (string) ((tmp[i] - 1) / 4) + &quot;  PORT: &quot; + (string) ((tmp[i] - 1) % 4 + 1) + &quot;)&quot;);
+// 				else
+// 					ComboBoxGbtID.appendItem((string) tmp[i] + &quot;  (PCI: &quot; + (string) ((tmp[i] - 1) / 4) + &quot;  PORT: &quot; + (string) ((tmp[i] - 1) % 4 + 1) + &quot;)&quot;);
+// 	else
+// 		ChildPanelOnCentralModal(&quot;vision/MessageWarning&quot;, &quot;Warning&quot;, makeDynString(&quot;Couldn't retrieve master IDs from '&quot; + ComboBoxGbtNode.text + &quot;' GBT!&quot;));	
+
+  for (int i=0; i&lt;=47; ++i) {
+    dynAppend(gbtIdItems, i);
+  }
+  ComboBoxGbtID.items(gbtIdItems);
+
+	TextFieldStatus.text = &quot;&quot;;
+//	activeFlag = true;	
+
+	TextFieldStatus.text = &quot;Getting Server Info...&quot;;
+	ret = fwGbt_getServerVersion(ComboBoxGbtNode.text, major, minor, patch);
+	ServerVersion.text = (major + &quot;-&quot; + minor + &quot;-&quot; + patch);
+	TextFieldStatus.text = &quot;&quot;;
+	
+	if (ret)
+		if ((int) ((string) major + (string) minor + (string) patch) &lt; FWGBT_SERVER_VERSION)
+			ChildPanelOnCentralModal(&quot;vision/MessageWarning&quot;, &quot;Warning&quot;, makeDynString(&quot;The GbtServer could be incompatible with the Gbt Client!&quot;));
+}
+
+
+
+
+
+
+
+]]></script>
+   </events>
+  </shape>
+ </shapes>
+</panel>
