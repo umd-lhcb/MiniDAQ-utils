@@ -2,7 +2,7 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Tue Oct 22, 2019 at 07:02 AM -0400
+# Last Change: Tue Oct 22, 2019 at 07:03 AM -0400
 
 from argparse import ArgumentParser
 from subprocess import call
@@ -86,7 +86,8 @@ def write(gbt, sca, ch, slave, addr, val, mode=0, freq=3):
         '--size', size, '--val', val,
         '--gbt', gbt, '--sca', sca,
         '--slave', slave, '--addr', addr,
-        '--mode', mode, '--ch', ch, '--freq', freq
+        '--mode', mode, '--ch', ch, '--freq', freq,
+        '--write'
     ])
 
 
