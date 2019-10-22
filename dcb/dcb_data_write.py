@@ -2,7 +2,7 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Tue Oct 22, 2019 at 01:00 PM -0400
+# Last Change: Tue Oct 22, 2019 at 03:33 PM -0400
 
 from argparse import ArgumentParser
 from subprocess import call
@@ -79,7 +79,11 @@ def is_hex(s):
         return read_file(s)
 
 
-def write(gbt, sca, ch, slave, addr, val, mode=0, freq=3):
+##################
+# I2C operations #
+##################
+
+def i2c_write(gbt, sca, ch, slave, addr, val, mode=0, freq=3):
     size = num_of_byte(val)
     call([
         'i2c_op',
@@ -91,6 +95,17 @@ def write(gbt, sca, ch, slave, addr, val, mode=0, freq=3):
     ])
 
 
+def i2c_read(gbt, sca, ch, slave, addr, size, mode=0, freq=3):
+    call([
+        'i2c_op',
+        '--size', size,
+        '--gbt', gbt, '--sca', sca,
+        '--slave', slave, '--addr', addr,
+        '--mode', mode, '--ch', ch, '--freq', freq,
+        '--read'
+    ])
+
+
 ########
 # Main #
 ########
@@ -99,4 +114,8 @@ if __name__ == '__main__':
     args = parse_input()
 
     for slave in SLAVE_ADDR:
-        write(args.gbt, args.sca, slave, args.addr, args.val)
+        i2c_write(args.gbt, args.sca, slave, args.addr, args.val)
+
+        # Read back the status
+        status = i2c_read(args.gbt, args.sca, slave, '1AF', 1)
+        print('Data GBTx #{} is in {} state'.format(slave, status))
