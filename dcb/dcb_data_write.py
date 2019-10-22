@@ -2,7 +2,7 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Tue Oct 22, 2019 at 03:33 PM -0400
+# Last Change: Tue Oct 22, 2019 at 03:35 PM -0400
 
 from argparse import ArgumentParser
 from subprocess import call
@@ -114,8 +114,8 @@ if __name__ == '__main__':
     args = parse_input()
 
     for slave in SLAVE_ADDR:
-        i2c_write(args.gbt, args.sca, slave, args.addr, args.val)
+        i2c_write(args.gbt, args.sca, I2C_CH, slave, args.addr, args.val)
 
         # Read back the status
-        status = i2c_read(args.gbt, args.sca, slave, '1AF', 1)
+        status = i2c_read(args.gbt, args.sca, I2C_CH, slave, '1AF', 1)
         print('Data GBTx #{} is in {} state'.format(slave, status))
