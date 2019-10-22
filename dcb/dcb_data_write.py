@@ -2,7 +2,7 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Tue Oct 22, 2019 at 07:03 AM -0400
+# Last Change: Tue Oct 22, 2019 at 01:00 PM -0400
 
 from argparse import ArgumentParser
 from subprocess import call
@@ -83,7 +83,7 @@ def write(gbt, sca, ch, slave, addr, val, mode=0, freq=3):
     size = num_of_byte(val)
     call([
         'i2c_op',
-        '--size', size, '--val', val,
+        '--size', size, '--val', is_hex(val),
         '--gbt', gbt, '--sca', sca,
         '--slave', slave, '--addr', addr,
         '--mode', mode, '--ch', ch, '--freq', freq,
