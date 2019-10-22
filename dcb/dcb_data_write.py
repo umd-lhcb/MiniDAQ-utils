@@ -2,7 +2,7 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Tue Oct 22, 2019 at 03:39 PM -0400
+# Last Change: Tue Oct 22, 2019 at 03:41 PM -0400
 
 from argparse import ArgumentParser
 from subprocess import call
@@ -119,4 +119,4 @@ if __name__ == '__main__':
 
         # Read back the status
         status = i2c_read(args.gbt, args.sca, I2C_CH, slave, '1AF', '1')
-        print('Data GBTx #{} is in {} state'.format(slave, status))
+        print('Data GBTx #{} is in {} state.\n'.format(slave, status))
