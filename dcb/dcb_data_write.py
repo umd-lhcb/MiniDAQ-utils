@@ -2,7 +2,7 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Tue Oct 22, 2019 at 03:35 PM -0400
+# Last Change: Tue Oct 22, 2019 at 03:39 PM -0400
 
 from argparse import ArgumentParser
 from subprocess import call
@@ -11,11 +11,12 @@ from subprocess import call
 ################
 # Configurable #
 ################
+# NOTE: These must be strings
 
-GBT = 5
-SCA = 0
-I2C_CH = 6
-SLAVE_ADDR = [1, 2, 3, 4, 5, 6]
+GBT = '5'
+SCA = '0'
+I2C_CH = '6'
+SLAVE_ADDR = ['1', '2', '3', '4', '5', '6']
 
 
 #################################
@@ -58,7 +59,7 @@ sca index.''')
 ###########
 
 def num_of_byte(s):
-    return len(s) / 2
+    return str(len(s) / 2)
 
 
 def read_file(path, padding=lambda x: '0'+x if len(x) == 1 else x):
@@ -73,7 +74,7 @@ def read_file(path, padding=lambda x: '0'+x if len(x) == 1 else x):
 def is_hex(s):
     try:
         int(s, 16)
-        return s
+        return str(s)
 
     except ValueError:
         return read_file(s)
@@ -83,7 +84,7 @@ def is_hex(s):
 # I2C operations #
 ##################
 
-def i2c_write(gbt, sca, ch, slave, addr, val, mode=0, freq=3):
+def i2c_write(gbt, sca, ch, slave, addr, val, mode='0', freq='3'):
     size = num_of_byte(val)
     call([
         'i2c_op',
@@ -95,7 +96,7 @@ def i2c_write(gbt, sca, ch, slave, addr, val, mode=0, freq=3):
     ])
 
 
-def i2c_read(gbt, sca, ch, slave, addr, size, mode=0, freq=3):
+def i2c_read(gbt, sca, ch, slave, addr, size, mode='0', freq='3'):
     call([
         'i2c_op',
         '--size', size,
@@ -117,5 +118,5 @@ if __name__ == '__main__':
         i2c_write(args.gbt, args.sca, I2C_CH, slave, args.addr, args.val)
 
         # Read back the status
-        status = i2c_read(args.gbt, args.sca, I2C_CH, slave, '1AF', 1)
+        status = i2c_read(args.gbt, args.sca, I2C_CH, slave, '1AF', '1')
         print('Data GBTx #{} is in {} state'.format(slave, status))
