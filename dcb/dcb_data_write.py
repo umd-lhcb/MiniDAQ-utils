@@ -2,7 +2,7 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Thu Oct 24, 2019 at 03:27 PM -0400
+# Last Change: Thu Oct 24, 2019 at 03:31 PM -0400
 
 from argparse import ArgumentParser
 from subprocess import call
@@ -93,6 +93,10 @@ def is_hex(s):
 # I2C operations #
 ##################
 
+def i2c_activate_ch(gbt, sca, ch):
+    call(['sca_test', '--gbt', gbt, '--sca', sca, '--activate-ch', ch])
+
+
 def i2c_write(gbt, sca, ch, slave, addr, val, mode='0', freq='3'):
     val = is_hex(val)
     if validate_input(val) or len(val)/2 == 366:
@@ -128,6 +132,7 @@ def i2c_read(gbt, sca, ch, slave, addr, size, mode='0', freq='3'):
 
 if __name__ == '__main__':
     args = parse_input()
+    i2c_activate_ch(args.gbt, args.sca, I2C_CH)
 
     for slave in SLAVE_ADDR:
         i2c_write(args.gbt, args.sca, I2C_CH, slave, args.addr, args.val)
