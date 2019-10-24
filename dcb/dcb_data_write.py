@@ -2,7 +2,7 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Thu Oct 24, 2019 at 03:14 PM -0400
+# Last Change: Thu Oct 24, 2019 at 03:21 PM -0400
 
 from argparse import ArgumentParser
 from subprocess import call
@@ -95,7 +95,7 @@ def is_hex(s):
 
 def i2c_write(gbt, sca, ch, slave, addr, val, mode='0', freq='3'):
     val = is_hex(val)
-    if validate_input(val):
+    if validate_input(val) or len(val)/2 == 366:
         for four_bytes in chunk(val, 8):
             four_bytes = ''.join(reversed(list(chunk(four_bytes, 2))))
             call([
