@@ -2,10 +2,11 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Tue Oct 22, 2019 at 03:41 PM -0400
+# Last Change: Thu Oct 24, 2019 at 03:03 PM -0400
 
 from argparse import ArgumentParser
 from subprocess import call
+from itertools import zip_longest
 
 
 ################
@@ -58,8 +59,16 @@ sca index.''')
 # Helpers #
 ###########
 
-def num_of_byte(s):
-    return str(len(s) / 2)
+def chunk(iterable, size, padvalue=''):
+    return map(''.join, zip_longest(*[iter(iterable)]*size, fillvalue=padvalue))
+
+
+def validate_input(s):
+    size = len(s) / 2 / 4
+    if int(size) == size:
+        return True
+    else:
+        return False
 
 
 def read_file(path, padding=lambda x: '0'+x if len(x) == 1 else x):
@@ -85,15 +94,17 @@ def is_hex(s):
 ##################
 
 def i2c_write(gbt, sca, ch, slave, addr, val, mode='0', freq='3'):
-    size = num_of_byte(val)
-    call([
-        'i2c_op',
-        '--size', size, '--val', is_hex(val),
-        '--gbt', gbt, '--sca', sca,
-        '--slave', slave, '--addr', addr,
-        '--mode', mode, '--ch', ch, '--freq', freq,
-        '--write'
-    ])
+    val = is_hex(val)
+    if validate_input(val):
+        for four_bytes in chunk(val, 4):
+            call([
+                'i2c_op',
+                '--size', '1', '--val', ''.join(reversed(four_bytes)),
+                '--gbt', gbt, '--sca', sca,
+                '--slave', slave, '--addr', addr,
+                '--mode', mode, '--ch', ch, '--freq', freq,
+                '--write'
+            ])
 
 
 def i2c_read(gbt, sca, ch, slave, addr, size, mode='0', freq='3'):
