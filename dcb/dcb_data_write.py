@@ -2,7 +2,7 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Thu Oct 24, 2019 at 04:19 PM -0400
+# Last Change: Thu Oct 24, 2019 at 04:25 PM -0400
 
 import re
 
@@ -108,6 +108,12 @@ def parse_i2c_stdout(stdout, fields=[r'.*Slave : (0x\d+)',
     return results
 
 
+def enumerate_step(l, start=0, step=1):
+    for i in l:
+        yield start, i
+        start += step
+
+
 ##################
 # I2C operations #
 ##################
@@ -121,10 +127,10 @@ def i2c_write(gbt, sca, ch, slave, addr, val, mode='0', freq='3'):
     val = is_hex(val)
 
     if len(val)/2 == 366 or validate_input(val):
-        for slice_addr, four_bytes in enumerate(chunk(val, 8),
-                                                start=int(addr, 16)):
+        for slice_addr, four_bytes in enumerate_step(
+                chunk(val, 8), start=int(addr, 16), step=4):
             four_bytes = ''.join(reversed(list(chunk(four_bytes, 2))))
-            slice_addr = hex(slice_addr*4)[2:]
+            slice_addr = hex(slice_addr)[2:]
 
             slice_stdout = check_output([
                 'i2c_op',
