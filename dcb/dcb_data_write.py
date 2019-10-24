@@ -2,7 +2,7 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Thu Oct 24, 2019 at 04:13 PM -0400
+# Last Change: Thu Oct 24, 2019 at 04:17 PM -0400
 
 import re
 
@@ -160,7 +160,17 @@ if __name__ == '__main__':
     i2c_activate_ch(args.gbt, args.sca, I2C_CH)
 
     for slave in SLAVE_ADDR:
-        i2c_write(args.gbt, args.sca, I2C_CH, slave, args.addr, args.val)
+        if args.addr == 'prbs':
+            print('PRBS {}...'.format(args.val))
+            if args.val == 'on':
+                i2c_write(args.gbt, args.sca, I2C_CH, slave, '1c', '03151515')
+            elif args.val == 'off':
+                i2c_write(args.gbt, args.sca, I2C_CH, slave, '1c', '00151515')
+            else:
+                i2c_write(args.gbt, args.sca, I2C_CH, slave, '1c', args.val)
+
+        else:
+            i2c_write(args.gbt, args.sca, I2C_CH, slave, args.addr, args.val)
 
         # Read back the status
         status = i2c_read(args.gbt, args.sca, I2C_CH, slave, '1AF', '1')
