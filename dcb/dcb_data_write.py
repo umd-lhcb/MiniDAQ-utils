@@ -1,8 +1,8 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Thu Oct 24, 2019 at 03:03 PM -0400
+# Last Change: Thu Oct 24, 2019 at 03:08 PM -0400
 
 from argparse import ArgumentParser
 from subprocess import call
