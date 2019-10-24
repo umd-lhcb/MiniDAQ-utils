@@ -2,7 +2,7 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Thu Oct 24, 2019 at 03:59 PM -0400
+# Last Change: Thu Oct 24, 2019 at 04:00 PM -0400
 
 import re
 
@@ -131,7 +131,7 @@ def i2c_write(gbt, sca, ch, slave, addr, val, mode='0', freq='3'):
                 '--slave', slave, '--addr', slice_addr,
                 '--mode', mode, '--ch', ch, '--freq', freq,
                 '--write'
-            ])
+            ]).decode('utf-8')
 
             stdout.append(slice_stdout)
 
@@ -146,7 +146,7 @@ def i2c_read(gbt, sca, ch, slave, addr, size, mode='0', freq='3'):
         '--slave', slave, '--addr', addr,
         '--mode', mode, '--ch', ch, '--freq', freq,
         '--read'
-    ])
+    ]).decode('utf-8')
 
 
 ########
