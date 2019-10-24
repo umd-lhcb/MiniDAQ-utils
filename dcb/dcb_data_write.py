@@ -2,10 +2,12 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Thu Oct 24, 2019 at 03:31 PM -0400
+# Last Change: Thu Oct 24, 2019 at 03:57 PM -0400
+
+import re
 
 from argparse import ArgumentParser
-from subprocess import call
+from subprocess import check_output
 from itertools import zip_longest
 
 
@@ -18,6 +20,8 @@ GBT = '5'
 SCA = '0'
 I2C_CH = '6'
 SLAVE_ADDR = ['1', '2', '3', '4', '5', '6']
+
+GBTX_STATES = {'61': 'Idle', '14': 'Pause for config'}
 
 
 #################################
@@ -89,12 +93,25 @@ def is_hex(s):
         return read_file(s)
 
 
+def parse_i2c_stdout(stdout, fields=[r'GBT Link : (0x\d+).*',
+                                     r'I2C Reading: (\d+).*']):
+    results = []
+    for pattern in fields:
+        matched = re.match(pattern, stdout)
+        if matched:
+            results.append(matched.group(1))
+        else:
+            results.append('')
+
+    return results
+
+
 ##################
 # I2C operations #
 ##################
 
 def i2c_activate_ch(gbt, sca, ch):
-    call(['sca_test', '--gbt', gbt, '--sca', sca, '--activate-ch', ch])
+    check_output(['sca_test', '--gbt', gbt, '--sca', sca, '--activate-ch', ch])
 
 
 def i2c_write(gbt, sca, ch, slave, addr, val, mode='0', freq='3'):
@@ -105,7 +122,7 @@ def i2c_write(gbt, sca, ch, slave, addr, val, mode='0', freq='3'):
             four_bytes = ''.join(reversed(list(chunk(four_bytes, 2))))
             slice_addr = hex(slice_addr*4)[2:]
 
-            call([
+            check_output([
                 'i2c_op',
                 '--size', '1', '--val', four_bytes,
                 '--gbt', gbt, '--sca', sca,
@@ -116,7 +133,7 @@ def i2c_write(gbt, sca, ch, slave, addr, val, mode='0', freq='3'):
 
 
 def i2c_read(gbt, sca, ch, slave, addr, size, mode='0', freq='3'):
-    call([
+    check_output([
         'i2c_op',
         '--size', size,
         '--gbt', gbt, '--sca', sca,
@@ -139,4 +156,10 @@ if __name__ == '__main__':
 
         # Read back the status
         status = i2c_read(args.gbt, args.sca, I2C_CH, slave, '1AF', '1')
-        print('Data GBTx #{} is in {} state.\n'.format(slave, status))
+        gbtx_idx, gbtx_state = parse_i2c_stdout(status)
+        try:
+            gbtx_state = GBTX_STATES[gbtx_state]
+        except KeyError:
+            pass
+
+        print('Data GBTx #{} is in {} state.\n'.format(gbtx_idx, gbtx_state))
