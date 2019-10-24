@@ -2,7 +2,7 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Thu Oct 24, 2019 at 04:05 PM -0400
+# Last Change: Thu Oct 24, 2019 at 04:12 PM -0400
 
 import re
 
@@ -93,9 +93,11 @@ def is_hex(s):
         return read_file(s)
 
 
-def parse_i2c_stdout(stdout, fields=[r'.*\nGBT Link : (0x\d+)',
-                                     r'.*\nI2C Reading: (\d+)']):
+def parse_i2c_stdout(stdout, fields=[r'.*GBT Link : (0x\d+)',
+                                     r'.*I2C Reading: (\d+)']):
     results = []
+    stdout = stdout.replace('\n', '')  # Remove lines
+
     for pattern in fields:
         matched = re.match(pattern, stdout)
         if matched:
@@ -168,4 +170,4 @@ if __name__ == '__main__':
         except KeyError:
             pass
 
-        print('Data GBTx #{} is in {} state.'.format(gbtx_idx, gbtx_state))
+        print('Data GBTx {} is in {} state.'.format(gbtx_idx, gbtx_state))
