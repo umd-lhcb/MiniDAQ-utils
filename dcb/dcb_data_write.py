@@ -2,7 +2,7 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Fri Oct 25, 2019 at 05:49 AM -0400
+# Last Change: Fri Oct 25, 2019 at 06:32 PM -0400
 
 import re
 
@@ -93,13 +93,13 @@ def read_file(path, padding=lambda x: '0'+x if len(x) == 1 else x):
     return values
 
 
-def is_hex(s, terminal_recursion=False):
+def is_hex(s, terminate_recursion=False):
     try:
         int(s, 16)
         return str(s)
 
     except ValueError:
-        if not terminal_recursion:
+        if not terminate_recursion:
             return is_hex(read_file(s), True)
         else:
             raise ValueError('Invalid input/file content: {}'.format(s))
