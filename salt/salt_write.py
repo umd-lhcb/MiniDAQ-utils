@@ -2,7 +2,7 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Fri Oct 25, 2019 at 07:14 PM -0400
+# Last Change: Fri Oct 25, 2019 at 07:22 PM -0400
 
 import re
 
@@ -165,7 +165,7 @@ def salt_reg_gen(reg=None):
     return inner
 
 
-def salt_init_seq(gbt, sca, ch, slaves=(0, 3, 5)):
+def salt_init_seq(gbt, sca, ch, slaves=('0', '3', '5')):
     for s in slaves:
         stdout = i2c_read(gbt, sca, ch, s, '0', '10')
         _, val = parse_i2c_stdout(stdout)
