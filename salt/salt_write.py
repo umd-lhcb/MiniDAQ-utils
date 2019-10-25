@@ -2,7 +2,7 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Fri Oct 25, 2019 at 07:22 PM -0400
+# Last Change: Fri Oct 25, 2019 at 07:28 PM -0400
 
 import re
 
@@ -95,7 +95,7 @@ def split_str(s, parts=4):
 
 
 def parse_i2c_stdout(stdout, fields=[r'.*Slave : (0x\d+)',
-                                     r'.*I2C Reading: (\d+)']):
+                                     r'.*I2C Reading: ([\dabcdef]+)']):
     results = []
     stdout = stdout.replace('\n', '')  # Remove lines
 
@@ -138,7 +138,7 @@ def i2c_write(gbt, sca, ch, slave, addr, val, mode='1', freq='0'):
     return stdout
 
 
-def i2c_read(gbt, sca, ch, slave, addr, size, mode='0', freq='3'):
+def i2c_read(gbt, sca, ch, slave, addr, size, mode='1', freq='0'):
     return check_output([
         'i2c_op',
         '--size', size,
