@@ -2,7 +2,7 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Fri Oct 25, 2019 at 04:27 PM -0400
+# Last Change: Fri Oct 25, 2019 at 04:32 PM -0400
 
 import re
 
@@ -46,18 +46,18 @@ salt5 = salt_reg_gen()
 
 
 SALT_INIT_SEQ = [
-    (0, salt0(4, '8c')),
-    (0, salt0(6, '15')),
-    (0, salt0(4, 'cc')),
-    (0, salt0(0, '22')),
-    (0, salt0(1, FIXED_PATTERN)),
-    (0, salt0(8, '01')),
-    (3, salt3(0, '24')),
-    (3, salt3(1, '32')),
-    (3, salt3(0, 'e4')),
-    (0, salt0(2, '0f')),
-    (0, salt0(3, '4c')),
-    (5, salt5(7, '01')),
+    ('0', salt0(4, '8c')),
+    ('0', salt0(6, '15')),
+    ('0', salt0(4, 'cc')),
+    ('0', salt0(0, '22')),
+    ('0', salt0(1, FIXED_PATTERN)),
+    ('0', salt0(8, '01')),
+    ('3', salt3(0, '24')),
+    ('3', salt3(1, '32')),
+    ('3', salt3(0, 'e4')),
+    ('0', salt0(2, '0f')),
+    ('0', salt0(3, '4c')),
+    ('5', salt5(7, '01')),
 ]
 
 
@@ -196,5 +196,5 @@ if __name__ == '__main__':
 
     for asic_addr in ASIC_GROUPS[args.asic_group]:
         for slave, val in SALT_INIT_SEQ:
-            slave = str(slave + asic_addr*10)
-            i2c_write(args.gbt, args.sca, args.ch, slave, '0', val)
+            addr = str(asic_addr*10)
+            i2c_write(args.gbt, args.sca, args.ch, slave, addr, val)
