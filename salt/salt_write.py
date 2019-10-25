@@ -2,7 +2,7 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Fri Oct 25, 2019 at 04:42 PM -0400
+# Last Change: Fri Oct 25, 2019 at 05:15 PM -0400
 
 import re
 
@@ -45,20 +45,21 @@ salt3 = salt_reg_gen()
 salt5 = salt_reg_gen()
 
 
-SALT_INIT_SEQ = [
-    ('0', salt0(4, '8c')),
-    ('0', salt0(6, '15')),
-    ('0', salt0(4, 'cc')),
-    ('0', salt0(0, '22')),
-    ('0', salt0(1, FIXED_PATTERN)),
-    ('0', salt0(8, '01')),
-    ('3', salt3(0, '24')),
-    ('3', salt3(1, '32')),
-    ('3', salt3(0, 'e4')),
-    ('0', salt0(2, '0f')),
-    ('0', salt0(3, '4c')),
-    ('5', salt5(7, '01')),
-]
+def salt_init_seq(fixed_pattern):
+    return [
+        (0, salt0(4, '8c')),
+        (0, salt0(6, '15')),
+        (0, salt0(4, 'cc')),
+        (0, salt0(0, '22')),
+        (0, salt0(1, fixed_pattern)),
+        (0, salt0(8, '01')),
+        (3, salt3(0, '24')),
+        (3, salt3(1, '32')),
+        (3, salt3(0, 'e4')),
+        (0, salt0(2, '0f')),
+        (0, salt0(3, '4c')),
+        (5, salt5(7, '01')),
+    ]
 
 
 #################################
@@ -193,11 +194,9 @@ def i2c_read(gbt, sca, ch, slave, addr, size, mode='0', freq='3'):
 if __name__ == '__main__':
     args = parse_input()
     i2c_activate_ch(args.gbt, args.sca, args.ch)
+    salt_seq = salt_init_seq(args.fixed_pattern)
 
     for asic_addr in ASIC_GROUPS[args.asic_group]:
-        for slave, val in SALT_INIT_SEQ:
-            addr = str(asic_addr*10)
-            i2c_write(args.gbt, args.sca, args.ch, slave, addr, val)
-
-            i2c_write(args.gbt, args.sca, args.ch, slave, addr,
-                      salt0(1, args.fixed_pattern))
+        for slave, val in salt_seq:
+            slave = str(slave + asic_addr*10)
+            i2c_write(args.gbt, args.sca, args.ch, slave, '0', val)
