@@ -2,7 +2,7 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Fri Oct 25, 2019 at 05:15 PM -0400
+# Last Change: Fri Oct 25, 2019 at 07:14 PM -0400
 
 import re
 
@@ -22,44 +22,6 @@ ASIC_GROUPS = {'west': range(4), 'east': range(4, 8)}
 ASIC_GROUP_NAMES = tuple(ASIC_GROUPS.keys())
 
 FIXED_PATTERN = 'f0'
-
-
-#################################
-# SALT initialization directive #
-#################################
-# A single SALT is controlled by 6 10-Byte registers (?). Programming multiple
-# SALTs just means providing different initial addresses (0, 10, 20, etc.).
-
-def salt_reg_gen(reg=None):
-    reg = ['00']*10 if not reg else reg
-
-    def inner(addr, val):
-        reg[addr] = val
-        return ''.join(reg)
-
-    return inner
-
-
-salt0 = salt_reg_gen()
-salt3 = salt_reg_gen()
-salt5 = salt_reg_gen()
-
-
-def salt_init_seq(fixed_pattern):
-    return [
-        (0, salt0(4, '8c')),
-        (0, salt0(6, '15')),
-        (0, salt0(4, 'cc')),
-        (0, salt0(0, '22')),
-        (0, salt0(1, fixed_pattern)),
-        (0, salt0(8, '01')),
-        (3, salt3(0, '24')),
-        (3, salt3(1, '32')),
-        (3, salt3(0, 'e4')),
-        (0, salt0(2, '0f')),
-        (0, salt0(3, '4c')),
-        (5, salt5(7, '01')),
-    ]
 
 
 #################################
@@ -160,7 +122,7 @@ def i2c_write(gbt, sca, ch, slave, addr, val, mode='1', freq='0'):
 
     for slice_addr, four_bytes in enum_const_chunk_size(val, step=8):
         four_bytes = ''.join(reversed(split_str(four_bytes)))
-        slice_addr = hex(slice_addr/2 + int(addr, 16))[2:]
+        slice_addr = hex(slice_addr//2 + int(addr, 16))[2:]
 
         slice_stdout = check_output([
             'i2c_op',
@@ -187,6 +149,46 @@ def i2c_read(gbt, sca, ch, slave, addr, size, mode='0', freq='3'):
     ]).decode('utf-8')
 
 
+#################################
+# SALT initialization directive #
+#################################
+# A single SALT is controlled by 6 10-Byte registers (?). Programming multiple
+# SALTs just means providing different initial addresses (0, 10, 20, etc.).
+
+def salt_reg_gen(reg=None):
+    reg = ['00']*10 if not reg else reg
+
+    def inner(addr, val):
+        reg[addr] = val
+        return ''.join(reg)
+
+    return inner
+
+
+def salt_init_seq(gbt, sca, ch, slaves=(0, 3, 5)):
+    for s in slaves:
+        stdout = i2c_read(gbt, sca, ch, s, '0', '10')
+        _, val = parse_i2c_stdout(stdout)
+        yield salt_reg_gen(split_str(val, 10))
+
+
+def salt_program_seq(fixed_pattern, salt0, salt3, salt5):
+    return [
+        (0, salt0(4, '8c')),
+        (0, salt0(6, '15')),
+        (0, salt0(4, 'cc')),
+        (0, salt0(0, '22')),
+        (0, salt0(1, fixed_pattern)),
+        (0, salt0(8, '01')),
+        (3, salt3(0, '24')),
+        (3, salt3(1, '32')),
+        (3, salt3(0, 'e4')),
+        (0, salt0(2, '0f')),
+        (0, salt0(3, '4c')),
+        (5, salt5(7, '01')),
+    ]
+
+
 ########
 # Main #
 ########
@@ -194,7 +196,9 @@ def i2c_read(gbt, sca, ch, slave, addr, size, mode='0', freq='3'):
 if __name__ == '__main__':
     args = parse_input()
     i2c_activate_ch(args.gbt, args.sca, args.ch)
-    salt_seq = salt_init_seq(args.fixed_pattern)
+
+    salt0, salt3, salt5 = salt_init_seq(args.gbt, args.sca, args.ch)
+    salt_seq = salt_program_seq(args.fixed_pattern, salt0, salt3, salt5)
 
     for asic_addr in ASIC_GROUPS[args.asic_group]:
         for slave, val in salt_seq:
