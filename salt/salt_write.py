@@ -2,7 +2,7 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Fri Oct 25, 2019 at 04:25 PM -0400
+# Last Change: Fri Oct 25, 2019 at 04:27 PM -0400
 
 import re
 
@@ -30,10 +30,13 @@ FIXED_PATTERN = 'f0'
 # A single SALT is controlled by 6 10-Byte registers (?). Programming multiple
 # SALTs just means providing different initial addresses (0, 10, 20, etc.).
 
-def salt_reg_gen(reg=['00']*10):
+def salt_reg_gen(reg=None):
+    reg = ['00']*10 if not reg else reg
+
     def inner(addr, val):
         reg[addr] = val
         return ''.join(reg)
+
     return inner
 
 
