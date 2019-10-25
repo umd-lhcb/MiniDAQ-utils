@@ -2,7 +2,7 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Fri Oct 25, 2019 at 05:27 AM -0400
+# Last Change: Fri Oct 25, 2019 at 05:28 AM -0400
 
 import re
 
@@ -128,7 +128,7 @@ def i2c_write(gbt, sca, ch, slave, addr, val, mode='0', freq='3'):
     val = is_hex(val)
 
     for slice_addr, four_bytes in enum_const_chunk_size(
-            val, start=int(addr, 16), step=4):
+            val, start=int(addr, 16), step=8):
         four_bytes = ''.join(reversed(four_bytes))
         slice_addr = hex(slice_addr)[2:]
 
