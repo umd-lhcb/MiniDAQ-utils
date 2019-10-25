@@ -1,14 +1,13 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Thu Oct 24, 2019 at 04:25 PM -0400
+# Last Change: Fri Oct 25, 2019 at 05:26 AM -0400
 
 import re
 
 from argparse import ArgumentParser
 from subprocess import check_output
-from itertools import zip_longest
 
 
 ################
@@ -21,7 +20,7 @@ SCA = '0'
 I2C_CH = '6'
 SLAVE_ADDR = ['1', '2', '3', '4', '5', '6']
 
-GBTX_STATES = {'61': 'Idle', '14': 'Pause for config'}
+GBTX_STATES = {'61': 'Idle', '15': 'Pause for config'}
 
 
 #################################
@@ -63,16 +62,21 @@ sca index.''')
 # Helpers #
 ###########
 
-def chunk(iterable, size, padvalue=''):
-    return map(''.join, zip_longest(*[iter(iterable)]*size, fillvalue=padvalue))
+def flatten(l):
+    return l[0] if len(l) == 1 else l
 
 
-def validate_input(s):
-    size = len(s) / 2 / 4
-    if int(size) == size:
-        return True
-    else:
-        return False
+# e.g. [1, 2, 3, 4] with step 3 -> [1, 2, 3], [2, 3, 4]
+def enum_const_chunk_size(l, start=0, step=1):
+    max = len(l)
+    for i in range(0, max, step):
+        # 'max' is already not a legit index.
+        if i+step >= max:
+            yield start+max-step, flatten(l[max-step:max])
+            break
+
+        else:
+            yield start+i, flatten(l[i:i+step])
 
 
 def read_file(path, padding=lambda x: '0'+x if len(x) == 1 else x):
@@ -84,13 +88,16 @@ def read_file(path, padding=lambda x: '0'+x if len(x) == 1 else x):
     return values
 
 
-def is_hex(s):
+def is_hex(s, terminal_recursion=False):
     try:
         int(s, 16)
         return str(s)
 
     except ValueError:
-        return read_file(s)
+        if not terminal_recursion:
+            return is_hex(read_file(s), True)
+        else:
+            raise ValueError('Invalid input/file content: {}'.format(s))
 
 
 def parse_i2c_stdout(stdout, fields=[r'.*Slave : (0x\d+)',
@@ -108,12 +115,6 @@ def parse_i2c_stdout(stdout, fields=[r'.*Slave : (0x\d+)',
     return results
 
 
-def enumerate_step(l, start=0, step=1):
-    for i in l:
-        yield start, i
-        start += step
-
-
 ##################
 # I2C operations #
 ##################
@@ -126,25 +127,21 @@ def i2c_write(gbt, sca, ch, slave, addr, val, mode='0', freq='3'):
     stdout = []
     val = is_hex(val)
 
-    if len(val)/2 == 366 or validate_input(val):
-        for slice_addr, four_bytes in enumerate_step(
-                chunk(val, 8), start=int(addr, 16), step=4):
-            four_bytes = ''.join(reversed(list(chunk(four_bytes, 2))))
-            slice_addr = hex(slice_addr)[2:]
+    for slice_addr, four_bytes in enum_const_chunk_size(
+            val, start=int(addr, 16), step=4):
+        four_bytes = ''.join(reversed(four_bytes, 2))
+        slice_addr = hex(slice_addr)[2:]
 
-            slice_stdout = check_output([
-                'i2c_op',
-                '--size', '1', '--val', four_bytes,
-                '--gbt', gbt, '--sca', sca,
-                '--slave', slave, '--addr', slice_addr,
-                '--mode', mode, '--ch', ch, '--freq', freq,
-                '--write'
-            ]).decode('utf-8')
+        slice_stdout = check_output([
+            'i2c_op',
+            '--size', '1', '--val', four_bytes,
+            '--gbt', gbt, '--sca', sca,
+            '--slave', slave, '--addr', slice_addr,
+            '--mode', mode, '--ch', ch, '--freq', freq,
+            '--write'
+        ]).decode('utf-8')
 
-            stdout.append(slice_stdout)
-
-    else:
-        raise ValueError('Invalid input: \n{}'.format(val))
+        stdout.append(slice_stdout)
 
     return stdout
 
