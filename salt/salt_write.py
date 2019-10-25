@@ -2,7 +2,7 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Fri Oct 25, 2019 at 04:30 AM -0400
+# Last Change: Fri Oct 25, 2019 at 04:46 AM -0400
 
 import re
 
@@ -107,6 +107,12 @@ set fixed pattern for 4-ASIC output.''')
 # Helpers #
 ###########
 
+def enumerate_step(l, start=0, step=1):
+    for i in l:
+        yield start, i
+        start += step
+
+
 def chunk(iterable, size, padvalue=''):
     return map(''.join, zip_longest(*[iter(iterable)]*size, fillvalue=padvalue))
 
@@ -131,7 +137,7 @@ def read_file(path, padding=lambda x: '0'+x if len(x) == 1 else x):
 def parse_i2c_stdout(stdout, fields=[r'.*Slave : (0x\d+)',
                                      r'.*I2C Reading: (\d+)']):
     results = []
-    stdout = stdout.replace('\n', '')  # Remove lines
+    stdout = stdout.replace('\n', '')  # Remove EOL for easier regexp'ing.
 
     for pattern in fields:
         matched = re.match(pattern, stdout)
@@ -141,12 +147,6 @@ def parse_i2c_stdout(stdout, fields=[r'.*Slave : (0x\d+)',
             results.append('')
 
     return results
-
-
-def enumerate_step(l, start=0, step=1):
-    for i in l:
-        yield start, i
-        start += step
 
 
 ##################
