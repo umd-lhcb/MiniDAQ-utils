@@ -2,7 +2,7 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Fri Oct 25, 2019 at 05:36 AM -0400
+# Last Change: Fri Oct 25, 2019 at 05:49 AM -0400
 
 import re
 
@@ -79,6 +79,11 @@ def enum_const_chunk_size(l, start=0, step=1):
             yield start+i, flatten(l[i:i+step])
 
 
+def split_str(s, parts=4):
+    chunks, chunk_size = len(s), len(s) // parts
+    return [s[i:i+chunk_size] for i in range(0, chunks, chunk_size)]
+
+
 def read_file(path, padding=lambda x: '0'+x if len(x) == 1 else x):
     values = ''
     with open(path, 'r') as f:
@@ -128,7 +133,7 @@ def i2c_write(gbt, sca, ch, slave, addr, val, mode='0', freq='3'):
     val = is_hex(val)
 
     for slice_addr, four_bytes in enum_const_chunk_size(val, step=8):
-        four_bytes = ''.join(reversed(four_bytes))
+        four_bytes = ''.join(reversed(split_str(four_bytes)))
         slice_addr = hex(slice_addr/2 + int(addr, 16))[2:]
 
         slice_stdout = check_output([
