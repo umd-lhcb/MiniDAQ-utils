@@ -2,7 +2,7 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Fri Oct 25, 2019 at 04:21 PM -0400
+# Last Change: Fri Oct 25, 2019 at 04:25 PM -0400
 
 import re
 
@@ -193,5 +193,5 @@ if __name__ == '__main__':
 
     for asic_addr in ASIC_GROUPS[args.asic_group]:
         for slave, val in SALT_INIT_SEQ:
-            slave = slave + asic_addr*10
+            slave = str(slave + asic_addr*10)
             i2c_write(args.gbt, args.sca, args.ch, slave, '0', val)
