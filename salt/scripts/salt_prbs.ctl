@@ -34,11 +34,11 @@ void runPRBSTest( string dpe, bool value ) {
     DebugTN( __FUNCTION__ );
     DebugTN( "StartTime:", startTime, secondsSinceStart );
     DebugTN( "Reset counters", strjoin( numberOfErrorsPerByte, "|" ) );
-//     dpConnect( "EP_updatePRBSTest", "UTSLICETEST:TELL40_Dev1_2.top_tell40_monitoring.memory.readings" );
-    dpConnect( "EP_updatePRBSTest", "UTSLICETEST:TELL40_Dev1_0.top_tell40_monitoring.memory.readings" );
+    dpConnect( "EP_updatePRBSTest", "UTSLICETEST:TELL40_Dev1_2.top_tell40_monitoring.memory.readings" );
+//    dpConnect( "EP_updatePRBSTest", "UTSLICETEST:TELL40_Dev1_0.top_tell40_monitoring.memory.readings" );
   } else {
-//     if( dpDisconnect( "EP_updatePRBSTest", "UTSLICETEST:TELL40_Dev1_2.top_tell40_monitoring.memory.readings" ) == -1 ) {
-    if( dpDisconnect( "EP_updatePRBSTest", "UTSLICETEST:TELL40_Dev1_0.top_tell40_monitoring.memory.readings" ) == -1 ) {
+    if( dpDisconnect( "EP_updatePRBSTest", "UTSLICETEST:TELL40_Dev1_2.top_tell40_monitoring.memory.readings" ) == -1 ) {
+//    if( dpDisconnect( "EP_updatePRBSTest", "UTSLICETEST:TELL40_Dev1_0.top_tell40_monitoring.memory.readings" ) == -1 ) {
       DebugTN( "Data point was probably not connected" );
     }
   }
