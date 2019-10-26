@@ -1,0 +1,120 @@
+V 14
+2
+LANG:10001 0 
+LANG:1 0 
+PANEL,-1 -1 214 109 N "_3DFace" 0
+E E E E E 1 -1 -1 0  20 27
+""0  1
+E "string dpType = \"SALTPRBS\";
+string dpName = \"SaltPRBSTest\";
+" 0
+ 3
+"CBRef" "1"
+"EClose" E
+"dpi" "96"
+0 0 0
+""
+DISPLAY_LAYER, 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0
+LAYER, 0 
+1
+LANG:10001 0 
+13 0
+"PUSH_BUTTON2"
+""
+1 20 52 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+ E E
+0 0 0 0 0 0
+E E E
+8
+2
+LANG:10001 0 
+LANG:1 0 
+
+1
+"layoutAlignment" "AlignNone"
+2
+LANG:10001 31 Sans Serif,-1,12,5,50,0,0,0,0,0
+LANG:1 31 Sans Serif,-1,12,5,50,0,0,0,0,0
+0  18 27 192 91
+
+T 
+2
+LANG:10001 14 Make PRBS Type
+LANG:1 15 Make Debug Type
+"main(mapping event)
+{
+  createSaltPRBSDPs();
+}
+
+//
+// Creates data points used for Salt PRBS test...
+//
+void createSaltPRBSDPs() {
+  // Create data point type
+  DebugTN( \"Making something\", dpTypeExists( dpType ) );
+  dyn_dyn_string elements;
+  dynAppend( elements, makeDynString( dpType, \"\" ) );
+  dynAppend( elements, makeDynString( \"\", \"nErrorsPerByte\" ) );
+  dynAppend( elements, makeDynString( \"\", \"secondsSinceStart\" ) );
+  dynAppend( elements, makeDynString( \"\", \"nFramesProcessed\" ) );
+  dynAppend( elements, makeDynString( \"\", \"test_is_running\" ) );
+  dynAppend( elements, makeDynString( \"\", \"checkByte\" ) );
+  dynAppend( elements, makeDynString( \"\", \"startTime\" ) );
+  dynAppend( elements, makeDynString( \"\", \"result\" ) );
+
+  dyn_dyn_int types;
+  dynAppend( types, makeDynInt( DPEL_STRUCT ) );
+  dynAppend( types, makeDynInt( 0, DPEL_DYN_ULONG ) );
+  dynAppend( types, makeDynInt( 0, DPEL_ULONG ) );
+  dynAppend( types, makeDynInt( 0, DPEL_ULONG ) );
+  dynAppend( types, makeDynInt( 0, DPEL_BOOL ) );
+  dynAppend( types, makeDynInt( 0, DPEL_DYN_BOOL ) );
+  dynAppend( types, makeDynInt( 0, DPEL_FLOAT ) );
+  dynAppend( types, makeDynInt( 0, DPEL_STRING ) );
+
+  if( ! dpTypeExists(dpType) ) {
+    int ok = dpTypeCreate( elements, types );
+    DebugTN(\"ok?\", ok);
+  } else {
+    DebugTN( \"Data point type already exists!\" );
+  }
+  // Creating data points...
+  if( ! dpExists( dpName ) ) {
+    int ok = dpCreate( dpName, dpType );
+    DebugTN( \"ok?\", ok );
+  } else {
+    DebugTN( \"data point already exists\" );
+  }
+}
+" 0
+ E E E
+0
+LAYER, 1 
+1
+LANG:10001 0 
+0
+LAYER, 2 
+1
+LANG:10001 0 
+0
+LAYER, 3 
+1
+LANG:10001 0 
+0
+LAYER, 4 
+1
+LANG:10001 0 
+0
+LAYER, 5 
+1
+LANG:10001 0 
+0
+LAYER, 6 
+1
+LANG:10001 0 
+0
+LAYER, 7 
+1
+LANG:10001 0 
+0
+0
