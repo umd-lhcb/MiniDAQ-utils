@@ -2,7 +2,7 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Fri Oct 25, 2019 at 06:32 PM -0400
+# Last Change: Fri Oct 25, 2019 at 08:50 PM -0400
 
 import re
 
@@ -47,7 +47,7 @@ value to write. can be either hex values or path to file.''')
                         nargs='?',
                         default=GBT,
                         help='''
-gbt address (fiber index)''')
+gbt address (fiber index).''')
 
     parser.add_argument('--sca',
                         nargs='?',

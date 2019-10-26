@@ -2,7 +2,7 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Fri Oct 25, 2019 at 07:28 PM -0400
+# Last Change: Fri Oct 25, 2019 at 08:50 PM -0400
 
 import re
 
@@ -45,13 +45,13 @@ i2c channel of SALT.''')
                         choices=ASIC_GROUP_NAMES,
                         default=ASIC_GROUP_NAMES[0],
                         help='''
-choose between 4-ASIC group: {}.'''.format(', '.join(ASIC_GROUP_NAMES)))
+choose between 4-ASIC group.''')
 
     parser.add_argument('--gbt',
                         nargs='?',
                         default=GBT,
                         help='''
-gbt address (fiber index)''')
+gbt address (fiber index).''')
 
     parser.add_argument('--sca',
                         nargs='?',
