@@ -1,8 +1,14 @@
-/**
+// vim: ft=cs:
+// Author: Mark Tobin
 
-  Generate the next value of the Salt pseudo-random sequence 0
+main() {
+  DebugTN("here we go!");
+  dpConnect("runPRBSTest", "UTSLICETEST:SaltPRBSTest.test_is_running");
+}
 
-**/
+//
+// Generate the next value of the Salt pseudo-random sequence 0
+//
 char NextValue(char CVal) {
   bool ornot = 0;
   for (int mask = 1; mask != 0x80; mask <<= 1) {
@@ -50,11 +56,6 @@ void runPRBSTest(string dpe, bool value) {
       DebugTN("Data point was probably not connected");
     }
   }
-}
-
-main() {
-  DebugTN("here we go!");
-  dpConnect("runPRBSTest", "UTSLICETEST:SaltPRBSTest.test_is_running");
 }
 
 //
