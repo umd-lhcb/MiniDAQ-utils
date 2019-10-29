@@ -1,10 +1,78 @@
 // vim: ft=cs:
 // Author: Mark Tobin
 
+///////////////////
+// Configuration //
+///////////////////
+
+string dpType = "SALTPRBS";
+string dpName = "SaltPRBSTest";
+string projName = "dist_1";
+
+
 main() {
-  DebugTN("here we go!");
+  DebugTN("SALT PRBS test initilization. Here we go!");
+
+  if (!dpTypeExists(dpType)) {
+    int status = createSaltPrbsDpType(dpType);
+    DebugTN("Data point type "+dpType+" does not exist, creating one..."+status);
+  }
+
+  if (!dpExists(dpName)) {
+    int status = createSaltPrbsDpInstance(dpType, dpName);
+    DebugTN("Data point instance "+dpName+" does not exist, creating one..."+status);
+  }
+
   dpConnect("runPRBSTest", "UTSLICETEST:SaltPRBSTest.test_is_running");
 }
+
+
+//////////////////////
+// DP configuration //
+//////////////////////
+
+// Create data point type used for SALT PRBS test
+int createSaltPrbsDpType(string dpType) {
+  int status;
+  dyn_dyn_string elements;
+  dyn_dyn_int types;
+
+  DebugTN("Making DP type: "+dpType);
+
+  // Name of the elements.
+  dynAppend(elements, makeDynString(dpType, ""));
+  dynAppend(elements, makeDynString("", "nErrorsPerByte"));
+  dynAppend(elements, makeDynString("", "secondsSinceStart"));
+  dynAppend(elements, makeDynString("", "nFramesProcessed"));
+  dynAppend(elements, makeDynString("", "test_is_running"));
+  dynAppend(elements, makeDynString("", "checkByte"));
+  dynAppend(elements, makeDynString("", "startTime"));
+  dynAppend(elements, makeDynString("", "result"));
+
+  // Data types.
+  dynAppend(types, makeDynInt(DPEL_STRUCT));
+  dynAppend(types, makeDynInt(0, DPEL_DYN_ULONG));
+  dynAppend(types, makeDynInt(0, DPEL_ULONG));
+  dynAppend(types, makeDynInt(0, DPEL_ULONG));
+  dynAppend(types, makeDynInt(0, DPEL_BOOL));
+  dynAppend(types, makeDynInt(0, DPEL_DYN_BOOL));
+  dynAppend(types, makeDynInt(0, DPEL_FLOAT));
+  dynAppend(types, makeDynInt(0, DPEL_STRING));
+
+  status = dpTypeCreate(elements, types);
+  return status;
+}
+
+// Create data point instance
+int createSaltPrbsDpInstance(string dpType, string dpName) {
+  int status;
+
+  DebugTN("Making DP type: "+dpType+", DP instance: "+dpName);
+
+  status = dpCreate(dpName, dpType);
+  return status;
+}
+
 
 //
 // Generate the next value of the Salt pseudo-random sequence 0
