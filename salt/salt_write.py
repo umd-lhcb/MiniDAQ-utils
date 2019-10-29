@@ -2,7 +2,7 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Tue Oct 29, 2019 at 06:23 PM -0400
+# Last Change: Tue Oct 29, 2019 at 07:28 PM -0400
 
 import re
 
@@ -222,10 +222,11 @@ if __name__ == '__main__':
 
     elif args.mode == 'append':
         salt0, salt3, salt5 = salt_init_seq(args.gbt, args.sca, args.ch)
-        salt_seq = (
-            (0, salt0(1, args.fixed_pattern)),
-            (0, salt0(8, args.phase))
-        )
+        salt_seq = []
+        if args.fixed_pattern != FIXED_PATTERN:
+            salt_seq.append((0, salt0(1, args.fixed_pattern)))
+        if args.phase != PHASE:
+            salt_seq.append((0, salt0(1, args.fixed_pattern)))
 
         for asic_addr in ASIC_GROUPS[args.asic_group]:
             for slave, val in salt_seq:
