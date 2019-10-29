@@ -1846,7 +1846,7 @@ LANG:1 0
 "layoutAlignment" "AlignCenter"
 "dashclr"N "_Transparent"
 "antiAliased" "0"
-E E 0 1 1 0 1 E 1.21875 0 0.5789473684210519 -501.8750000000001 -47.89473684210503 0 E 420 100 740 290
+E E 0 1 1 0 1 E 1.1875 0 0.5789473684210519 -488.7500000000002 -47.89473684210503 0 E 420 100 740 290
 2 603
 "PRIMITIVE_TEXT151"
 ""
@@ -1862,7 +1862,7 @@ LANG:1 0
 "layoutAlignment" "AlignCenter"
 "dashclr"N "_Transparent"
 "antiAliased" "0"
-E E 0 1 1 0 1 E U  1 E 174.9999999999999 1.000000000000156 234.9999999999999 19.00000000000016
+E E 0 1 1 0 1 E U  1 E 174.9999999999999 1.000000000000156 234 19
 0 2 0 "0s" 0 0 0 192 0 0  174.9999999999999 1.000000000000156 1
 1
 LANG:1 26 Arial,-1,16,5,50,0,0,0,0,0
@@ -1901,7 +1901,7 @@ LANG:1 28 Start checking Fixed pattern
 13 607
 "PUSH_BUTTON21"
 ""
-1 238 36.24999999999998 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+1 220 36.24999999999998 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
  E E
 643 0 0 0 0 0
 E E E
@@ -1913,7 +1913,7 @@ LANG:1 0
 "layoutAlignment" "AlignCenter"
 1
 LANG:1 31 Sans Serif,-1,12,5,50,0,0,0,0,0
-0  236 28 389.9999999999999 61.99999999999999
+0  218 28 371.9999999999999 61.99999999999999
 
 T 
 1
@@ -1931,7 +1931,7 @@ LANG:1 17 Stop all checkers
 13 608
 "PUSH_BUTTON22"
 ""
-1 239 77.875 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+1 220.0000000000001 78.99107142857142 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
  E E
 644 0 0 0 0 0
 E E E
@@ -1943,7 +1943,7 @@ LANG:1 0
 "layoutAlignment" "AlignCenter"
 1
 LANG:1 31 Sans Serif,-1,12,5,50,0,0,0,0,0
-0  237 69 390.9999999999999 106
+0  218.0000000000001 70.11607142857142 371.9999999999999 107.1160714285714
 
 T 
 1
@@ -2003,7 +2003,7 @@ LANG:1 0
 "layoutAlignment" "AlignCenter"
 "dashclr"N "_Transparent"
 "antiAliased" "0"
-E E 0 1 1 0 1 E 1.74375 0 0.5789473684210519 -310.3749999999999 -47.89473684210503 0 E 420 100 740 290
+E E 0 1 1 0 1 E 1.74375 0 0.5789473684210519 -325.3749999999999 -47.89473684210503 0 E 420 100 740 290
 2 612
 "PRIMITIVE_TEXT152"
 ""
@@ -6622,7 +6622,7 @@ E E
 E14 806
 "setFixedPattern"
 ""
-1 641.0000000000001 77.30442176870751 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+1 626.0000000000001 77.30442176870751 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
  E E
 842 0 0 0 0 0
 E E E
@@ -6634,7 +6634,7 @@ LANG:1 0
 "layoutAlignment" "AlignNone"
 1
 LANG:1 31 Sans Serif,-1,12,5,50,0,0,0,0,0
-0  639.0000000000001 69.96428571428568 714.5 102
+0  624.0000000000001 69.96428571428568 699.5 102
 3 "0s" 0 0 0 2 0 -1  E "main()
 {
   dyn_int Value;
@@ -6650,7 +6650,7 @@ LANG:1 31 Sans Serif,-1,12,5,50,0,0,0,0,0
 13 807
 "PUSH_BUTTON8"
 ""
-1 435 76.8469387755103 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
+1 420 76.8469387755103 E E E 1 E 1 E N "_ButtonText" E N "_Button" E E
  E E
 843 0 0 0 0 0
 E E E
@@ -6662,7 +6662,7 @@ LANG:1 0
 "layoutAlignment" "AlignNone"
 1
 LANG:1 31 Sans Serif,-1,12,5,50,0,0,0,0,0
-0  433 68.92857142857147 630.5000000000002 104
+0  418 68.92857142857147 615.5000000000002 104
 
 T 
 1
@@ -6675,7 +6675,7 @@ LANG:1 27 Set Fixed pattern per Elink
 14 808
 "txtFixedPattern"
 ""
-1 725 72.23214285714283 E E E 1 E 1 E N "_WindowText" E N {204,204,204} E E
+1 710 72.23214285714283 E E E 1 E 1 E N "_WindowText" E N {204,204,204} E E
  E E
 844 0 0 0 0 0
 E E E
@@ -6687,7 +6687,7 @@ LANG:1 0
 "layoutAlignment" "AlignCenter"
 1
 LANG:1 26 Arial,-1,13,5,50,0,0,0,0,0
-0  723 70.23214285714283 802 100
+0  708 70.23214285714283 787 100
 2 "0s" 0 0 0 2 0 -1  E "main()
 {
   dpConnect(\"SetValue2\", true, DeviceNameTop+\".TOPFrontEnd.P_FE_REG3\", DeviceNameTop+\".TOPFrontEnd.P_FE_REG4\", DeviceNameTop+\".TOPFrontEnd.P_FE_REG5\", DeviceNameTop+\".TOPFrontEnd.P_FE_REG6\" );
@@ -6704,7 +6704,7 @@ SetValue2(string dp1, int Value1, string dp2, int Value2, string dp3, int Value3
 20 809
 "CHECK_BOX_bytes"
 ""
-1 538.25 35 E E E 1 E 1 E N "_3DText" E N "_3DFace" E E
+1 523.25 35 E E E 1 E 1 E N "_3DText" E N "_3DFace" E E
  E E
 845 0 0 0 0 0
 E E E
@@ -6719,7 +6719,7 @@ LANG:10001 0
 2
 LANG:1 31 Sans Serif,-1,12,5,50,0,0,0,0,0
 LANG:10001 31 Sans Serif,-1,12,5,50,0,0,0,0,0
-0  536.25 33 980.25 57
+0  521.25 33 965.25 57
 12
 T 
 2
@@ -6854,7 +6854,7 @@ E E
 E2 810
 "PRIMITIVE_TEXT1"
 ""
-1 438.2499999999999 35 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
+1 423.2499999999999 35 E E E 1 E 1 E N "_WindowText" E N "_Window" E E
  E E
 846 0 0 0 0 0
 E E E
@@ -6868,8 +6868,8 @@ LANG:10001 0
 "dashclr"N "_Transparent"
 "antiAliased" "0"
 "transformable" "0"
-E E 0 1 3 2 1 E U  0 E 438.2499999999999 35 578.25 55
-0 2 2 "0s" 0 0 0 64 0 0  438.2499999999999 35 1
+E E 0 1 3 2 1 E U  0 E 423.2499999999999 35 563.25 55
+0 2 2 "0s" 0 0 0 64 0 0  423.2499999999999 35 1
 2
 LANG:1 31 Sans Serif,-1,12,5,50,0,0,0,0,0
 LANG:10001 31 Sans Serif,-1,12,5,50,0,0,0,0,0
