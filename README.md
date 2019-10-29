@@ -26,3 +26,9 @@ Note that `5` is the I2C address.
 cd ~/src/MiniDAQ-utils/salt
 ./salt_write.py append 5 --phase 16
 ```
+
+## To ask SALT to generate PRBS 0
+```
+cd ~/src/MiniDAQ-utils/salt
+./salt_write.py append 5 --ser-src 03
+```
