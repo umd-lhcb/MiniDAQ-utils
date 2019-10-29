@@ -2,7 +2,7 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Tue Oct 29, 2019 at 07:28 PM -0400
+# Last Change: Tue Oct 29, 2019 at 07:47 PM -0400
 
 import re
 
@@ -23,6 +23,7 @@ ASIC_GROUP_NAMES = tuple(ASIC_GROUPS.keys())
 
 FIXED_PATTERN = 'f0'
 PHASE = '00'
+SER_SRC = '22'
 
 
 #################################
@@ -64,6 +65,12 @@ gbt address (fiber index).''')
                         default=SCA,
                         help='''
 sca index.''')
+
+    parser.add_argument('--ser-src',
+                        nargs='?',
+                        default=SER_SRC,
+                        help='''
+set output source register for 4-ASIC output.''')
 
     parser.add_argument('--fixed-pattern',
                         nargs='?',
@@ -184,12 +191,12 @@ def salt_init_seq(gbt, sca, ch, slaves=('0', '3', '5')):
         yield salt_reg_gen(split_str(val, 10))
 
 
-def salt_program_seq(fixed_pattern, phase, salt0, salt3, salt5):
+def salt_program_seq(ser_source, fixed_pattern, phase, salt0, salt3, salt5):
     return [
         (0, salt0(4, '8c')),
         (0, salt0(6, '15')),
         (0, salt0(4, 'cc')),
-        (0, salt0(0, '22')),
+        (0, salt0(0, ser_source)),
         (0, salt0(1, fixed_pattern)),
         (0, salt0(8, '01')),
         (3, salt3(0, '24')),
@@ -212,7 +219,8 @@ if __name__ == '__main__':
 
     if args.mode == 'init':
         salt0, salt3, salt5 = salt_init_seq(args.gbt, args.sca, args.ch)
-        salt_seq = salt_program_seq(args.fixed_pattern, args.phase,
+        salt_seq = salt_program_seq(args.ser_src, args.fixed_pattern,
+                                    args.phase,
                                     salt0, salt3, salt5)
 
         for asic_addr in ASIC_GROUPS[args.asic_group]:
@@ -223,6 +231,8 @@ if __name__ == '__main__':
     elif args.mode == 'append':
         salt0, salt3, salt5 = salt_init_seq(args.gbt, args.sca, args.ch)
         salt_seq = []
+        if args.ser_src != SER_SRC:
+            salt_seq.append((0, salt0(0, args.ser_src)))
         if args.fixed_pattern != FIXED_PATTERN:
             salt_seq.append((0, salt0(1, args.fixed_pattern)))
         if args.phase != PHASE:
