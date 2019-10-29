@@ -223,7 +223,7 @@ if __name__ == '__main__':
     elif args.mode == 'append':
         salt0, salt3, salt5 = salt_init_seq(args.gbt, args.sca, args.ch)
         salt_seq = (
-            (0, salt0(1, args.fixed_pattern))
+            (0, salt0(1, args.fixed_pattern)),
             (0, salt0(8, args.phase))
         )
 
