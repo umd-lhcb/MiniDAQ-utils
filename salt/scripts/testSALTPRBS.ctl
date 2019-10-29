@@ -1,5 +1,8 @@
 // vim: ft=cs:
 // Author: Mark Tobin
+// Last Change: Tue Oct 29, 2019 at 04:21 PM -0400
+
+#uses "wizardFramework.ctl"
 
 ///////////////////
 // Configuration //
