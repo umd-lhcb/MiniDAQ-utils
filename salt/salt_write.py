@@ -2,7 +2,7 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Fri Oct 25, 2019 at 08:50 PM -0400
+# Last Change: Tue Oct 29, 2019 at 06:23 PM -0400
 
 import re
 
@@ -22,6 +22,7 @@ ASIC_GROUPS = {'west': range(4), 'east': range(4, 8)}
 ASIC_GROUP_NAMES = tuple(ASIC_GROUPS.keys())
 
 FIXED_PATTERN = 'f0'
+PHASE = '00'
 
 
 #################################
@@ -35,6 +36,11 @@ write to a single 4-ASIC group (west/east).
 
 def parse_input(descr=DESCR):
     parser = ArgumentParser(description=descr)
+
+    parser.add_argument('mode',
+                        choices=('init', 'append'),
+                        help='''
+operation mode.''')
 
     parser.add_argument('ch',
                         help='''
@@ -64,6 +70,12 @@ sca index.''')
                         default=FIXED_PATTERN,
                         help='''
 set fixed pattern for 4-ASIC output.''')
+
+    parser.add_argument('--phase',
+                        nargs='?',
+                        default=PHASE,
+                        help='''
+set aligning phase for 4-ASIC output.''')
 
     return parser.parse_args()
 
@@ -172,7 +184,7 @@ def salt_init_seq(gbt, sca, ch, slaves=('0', '3', '5')):
         yield salt_reg_gen(split_str(val, 10))
 
 
-def salt_program_seq(fixed_pattern, salt0, salt3, salt5):
+def salt_program_seq(fixed_pattern, phase, salt0, salt3, salt5):
     return [
         (0, salt0(4, '8c')),
         (0, salt0(6, '15')),
@@ -186,6 +198,7 @@ def salt_program_seq(fixed_pattern, salt0, salt3, salt5):
         (0, salt0(2, '0f')),
         (0, salt0(3, '4c')),
         (5, salt5(7, '01')),
+        (0, salt0(8, phase)),
     ]
 
 
@@ -197,10 +210,24 @@ if __name__ == '__main__':
     args = parse_input()
     i2c_activate_ch(args.gbt, args.sca, args.ch)
 
-    salt0, salt3, salt5 = salt_init_seq(args.gbt, args.sca, args.ch)
-    salt_seq = salt_program_seq(args.fixed_pattern, salt0, salt3, salt5)
+    if args.mode == 'init':
+        salt0, salt3, salt5 = salt_init_seq(args.gbt, args.sca, args.ch)
+        salt_seq = salt_program_seq(args.fixed_pattern, args.phase,
+                                    salt0, salt3, salt5)
 
-    for asic_addr in ASIC_GROUPS[args.asic_group]:
-        for slave, val in salt_seq:
-            slave = str(slave + asic_addr*10)
-            i2c_write(args.gbt, args.sca, args.ch, slave, '0', val)
+        for asic_addr in ASIC_GROUPS[args.asic_group]:
+            for slave, val in salt_seq:
+                slave = str(slave + asic_addr*10)
+                i2c_write(args.gbt, args.sca, args.ch, slave, '0', val)
+
+    elif args.mode == 'append':
+        salt0, salt3, salt5 = salt_init_seq(args.gbt, args.sca, args.ch)
+        salt_seq = (
+            (0, salt0(1, args.fixed_pattern))
+            (0, salt0(8, args.phase))
+        )
+
+        for asic_addr in ASIC_GROUPS[args.asic_group]:
+            for slave, val in salt_seq:
+                slave = str(slave + asic_addr*10)
+                i2c_write(args.gbt, args.sca, args.ch, slave, '0', val)
