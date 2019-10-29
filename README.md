@@ -16,7 +16,13 @@ cd ~/src/MiniDAQ-utils/dcb
 ## To program a single 4-ASIC group (4 SALTs)
 ```
 cd ~/src/MiniDAQ-utils/salt
-./salt_write.py 5
+./salt_write.py init 5
 ```
 
 Note that `5` is the I2C address.
+
+## To adjust phase of a single 4-ASIC group
+```
+cd ~/src/MiniDAQ-utils/salt
+./salt_write.py append 5 --phase 16
+```
