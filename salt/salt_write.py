@@ -204,6 +204,7 @@ def salt_program_seq(ser_source, fixed_pattern, phase, salt0, salt3, salt5):
         (3, salt3(0, 'e4')),
         (0, salt0(2, '0f')),
         (0, salt0(3, '4c')),
+        (5, salt5(6, '01')),  # Enable SALT elink 4.
         (5, salt5(7, '01')),
         (0, salt0(8, phase)),
     ]
@@ -236,7 +237,7 @@ if __name__ == '__main__':
         if args.fixed_pattern != FIXED_PATTERN:
             salt_seq.append((0, salt0(1, args.fixed_pattern)))
         if args.phase != PHASE:
-            salt_seq.append((0, salt0(1, args.fixed_pattern)))
+            salt_seq.append((0, salt0(8, args.phase)))
 
         for asic_addr in ASIC_GROUPS[args.asic_group]:
             for slave, val in salt_seq:
