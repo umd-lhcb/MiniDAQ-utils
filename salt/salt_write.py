@@ -2,7 +2,7 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Tue Nov 05, 2019 at 04:19 PM -0500
+# Last Change: Tue Nov 05, 2019 at 05:22 PM -0500
 
 import re
 
@@ -210,6 +210,13 @@ def salt_program_seq(ser_source, fixed_pattern, phase, salt0, salt3, salt5):
     ]
 
 
+def padding(s):
+    if len(s) == 1:
+        return '0'+s
+    else:
+        return s
+
+
 ########
 # Main #
 ########
@@ -220,8 +227,9 @@ if __name__ == '__main__':
 
     if args.mode == 'init':
         salt0, salt3, salt5 = salt_init_seq(args.gbt, args.sca, args.ch)
-        salt_seq = salt_program_seq(args.ser_src, args.fixed_pattern,
-                                    args.phase,
+        salt_seq = salt_program_seq(padding(args.ser_src),
+                                    padding(args.fixed_pattern),
+                                    padding(args.phase),
                                     salt0, salt3, salt5)
 
         for asic_addr in ASIC_GROUPS[args.asic_group]:
@@ -233,11 +241,11 @@ if __name__ == '__main__':
         salt0, salt3, salt5 = salt_init_seq(args.gbt, args.sca, args.ch)
         salt_seq = []
         if args.ser_src != SER_SRC:
-            salt_seq.append((0, salt0(0, args.ser_src)))
+            salt_seq.append((0, salt0(0, padding(args.ser_src))))
         if args.fixed_pattern != FIXED_PATTERN:
-            salt_seq.append((0, salt0(1, args.fixed_pattern)))
+            salt_seq.append((0, salt0(1, padding(args.fixed_pattern))))
         if args.phase != PHASE:
-            salt_seq.append((0, salt0(8, args.phase)))
+            salt_seq.append((0, salt0(8, padding(args.phase))))
 
         for asic_addr in ASIC_GROUPS[args.asic_group]:
             for slave, val in salt_seq:
