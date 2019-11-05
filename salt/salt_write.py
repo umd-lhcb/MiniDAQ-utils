@@ -2,7 +2,7 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Tue Oct 29, 2019 at 07:47 PM -0400
+# Last Change: Tue Nov 05, 2019 at 04:19 PM -0500
 
 import re
 
@@ -21,7 +21,7 @@ SCA = '0'
 ASIC_GROUPS = {'west': range(4), 'east': range(4, 8)}
 ASIC_GROUP_NAMES = tuple(ASIC_GROUPS.keys())
 
-FIXED_PATTERN = 'f0'
+FIXED_PATTERN = 'c4'
 PHASE = '00'
 SER_SRC = '22'
 
