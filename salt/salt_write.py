@@ -2,7 +2,7 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Tue Nov 05, 2019 at 05:22 PM -0500
+# Last Change: Wed Nov 06, 2019 at 03:02 PM -0500
 
 import re
 
@@ -19,6 +19,9 @@ GBT = '5'
 SCA = '0'
 
 ASIC_GROUPS = {'west': range(4), 'east': range(4, 8)}
+for salt_addr in range(8):
+    ASIC_GROUPS.update({str(salt_addr): [salt_addr]})
+
 ASIC_GROUP_NAMES = tuple(ASIC_GROUPS.keys())
 
 FIXED_PATTERN = 'c4'
