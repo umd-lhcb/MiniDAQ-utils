@@ -54,7 +54,7 @@ i2c channel of SALT.''')
     parser.add_argument('--asic-group',
                         nargs='?',
                         choices=ASIC_GROUP_NAMES,
-                        default=ASIC_GROUP_NAMES[0],
+                        default='west',
                         help='''
 choose between 4-ASIC group.''')
 
