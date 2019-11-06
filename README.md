@@ -19,7 +19,7 @@ cd ~/src/MiniDAQ-utils/salt
 ./salt_write.py init 5
 ```
 
-Note that `5` is the I2C address.
+Note that `5` is the I2C bus.
 
 ## To adjust phase of a single 4-ASIC group
 ```
