@@ -2,12 +2,13 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Wed Nov 06, 2019 at 03:02 PM -0500
+# Last Change: Wed Nov 06, 2019 at 03:10 PM -0500
 
 import re
 
 from argparse import ArgumentParser
 from subprocess import check_output
+from time import sleep
 
 
 ################
@@ -135,8 +136,9 @@ def parse_i2c_stdout(stdout, fields=[r'.*Slave : (0x\d+)',
 # I2C operations #
 ##################
 
-def i2c_activate_ch(gbt, sca, ch):
+def i2c_activate_ch(gbt, sca, ch, t=0.2):
     check_output(['sca_test', '--gbt', gbt, '--sca', sca, '--activate-ch', ch])
+    sleep(t)
 
 
 def i2c_write(gbt, sca, ch, slave, addr, val, mode='1', freq='0'):
