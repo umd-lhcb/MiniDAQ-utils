@@ -1,10 +1,10 @@
 # MiniDAQ-utils
 MiniDAQ utilities for programming and controlling DCB and SALT.
 
-## To program all data GBTxs
+## To program all data GBTxs on fiber 5
 ```
 cd ~/src/MiniDAQ-utils/dcb
-./dcb_data_write.py 0 ~/src/gbtx_config/slave-Tx-wrong_termination.txt
+./dcb_data_write.py 0 ~/src/gbtx_config/slave-Tx-wrong_termination.txt --gbt 5
 ```
 
 ## To turn on/off DCB PRBS
