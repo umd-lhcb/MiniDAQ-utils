@@ -1,6 +1,6 @@
 // vim: ft=cs:
 // Author: Mark Tobin
-// Last Change: Thu Nov 07, 2019 at 04:45 PM -0500
+// Last Change: Thu Nov 07, 2019 at 04:51 PM -0500
 
 #uses "wizardFramework.ctl"
 
@@ -84,7 +84,7 @@ int createSaltPrbsDpInstance(string dpType, string dpName) {
 //////////
 
 // Generate the next value of the Salt pseudo-random sequence 0
-char nextValue(char cVal) {
+char nextPrbsValue(char cVal) {
   bool ornot = 0;
 
   for (int mask = 1; mask != 0x80; mask <<= 1) {
@@ -186,7 +186,7 @@ void updateSaltPrbsTest(string dp, dyn_char readings) {
   // check PRBS for each byte
   for (int iByte = 1; iByte <= dynlen(data); iByte++) {
     for (int iCycle = 2; iCycle <= dynlen(data[iByte]); iCycle++) {
-      char expectedValue = NextValue(data[iByte][iCycle - 1]);
+      char expectedValue = nextPrbsValue(data[iByte][iCycle - 1]);
       if (data[iByte][iCycle] != expectedValue) {
         if (numberOfErrorsPerByte[iByte] < 100) {
           DebugTN("Error on byte " + iByte + " and cycle " + iCycle,
