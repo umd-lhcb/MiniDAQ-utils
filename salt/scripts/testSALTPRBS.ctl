@@ -1,6 +1,6 @@
 // vim: ft=cs:
 // Author: Mark Tobin
-// Last Change: Thu Nov 07, 2019 at 07:52 PM -0500
+// Last Change: Thu Nov 07, 2019 at 07:54 PM -0500
 
 #uses "wizardFramework.ctl"
 
@@ -166,10 +166,12 @@ void updateSaltPrbsTest(string dp, dyn_char readings) {
     dynAppend(data, myData);
   }
 
-  numberOfFramesProcessed += 1;
 
   // Check PRBS for each byte.
   for (int iCycle = 2; iCycle <= dynlen(data); iCycle++) {
+    // Update total number of processed frames.
+    numberOfFramesProcessed += 1;
+
     for (int iByte = 1; iByte <= dynlen(data[iCycle]); iByte++) {
       if (checkByte[iByte]) { // Only check ticked bytes.
         char currentVal = data[iCycle][iByte];
