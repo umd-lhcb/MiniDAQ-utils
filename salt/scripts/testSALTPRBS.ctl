@@ -1,6 +1,6 @@
 // vim: ft=cs:
 // Author: Mark Tobin
-// Last Change: Thu Nov 07, 2019 at 07:57 PM -0500
+// Last Change: Thu Nov 07, 2019 at 08:33 PM -0500
 
 #uses "wizardFramework.ctl"
 
@@ -166,7 +166,6 @@ void updateSaltPrbsTest(string dp, dyn_char readings) {
     dynAppend(data, elinkDataBytes);
   }
 
-
   // Check PRBS for each byte.
   for (int iCycle = 2; iCycle <= dynlen(data); iCycle++) {
     // Update total number of processed frames.
@@ -180,10 +179,10 @@ void updateSaltPrbsTest(string dp, dyn_char readings) {
 
         if (currentVal != expectedVal) {
           int elinkCh = 12 - iByte;
-          DebugTN("Error on elink " + elinkCh + " and cycle " + iCycle + ". Current: " +
-                  fwGbt_convertByteToHex(currentVal) + ". Previous: " + 
-                  fwGbt_convertByteToHex(previousVal) + ". Expected: " + 
-                  fwGbt_convertByteToHex(expectedVal));
+          DebugTN("Error on elink " + elinkCh + " and cycle " + iCycle +
+                  ". Current: " + fwGbt_convertByteToHex(currentVal) +
+                  ". Previous: " + fwGbt_convertByteToHex(previousVal) +
+                  ". Expected: " + fwGbt_convertByteToHex(expectedVal));
           numberOfErrorsPerByte[iByte] += 1;
         }
       }
