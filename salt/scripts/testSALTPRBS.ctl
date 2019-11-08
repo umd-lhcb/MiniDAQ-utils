@@ -151,7 +151,7 @@ void updateSaltPrbsTest(string dp, dyn_char readings) {
   dpGet(projName + ":SaltPRBSTest.nErrorsPerByte", numberOfErrorsPerByte);
   dpGet(projName + ":SaltPRBSTest.checkByte", checkByte);
 
-  dyn_char data;
+  dyn_dyn_char data;
 
   string aux = fwGbt_convertByteToHex(readings);
   for (int i = 0; i < strlen(aux); i = i + 32) {
@@ -161,9 +161,9 @@ void updateSaltPrbsTest(string dp, dyn_char readings) {
         strjoin(makeDynString(substr(aux, i + 16, 8), substr(aux, i + 8, 8),
                               substr(aux, i, 8)),
                 "");
-    dyn_char myData = fwGbt_convertHexToByte(elinkData);
+    dyn_char elinkDataBytes = fwGbt_convertHexToByte(elinkData);
     // Keep all elink data.
-    dynAppend(data, myData);
+    dynAppend(data, elinkDataBytes);
   }
 
 
@@ -172,16 +172,18 @@ void updateSaltPrbsTest(string dp, dyn_char readings) {
     // Update total number of processed frames.
     numberOfFramesProcessed += 1;
 
-    for (int iByte = 1; iByte <= strlen(data[iCycle]); iByte++) {
+    for (int iByte = 1; iByte <= dynlen(data[iCycle]); iByte++) {
       if (checkByte[iByte]) { // Only check ticked bytes.
         char currentVal = data[iCycle][iByte];
         char previousVal = data[iCycle - 1][iByte];
         char expectedVal = nextPrbsValue(previousVal);
-        DebugTN("Current value: "+currentVal);
 
-        if (data[iByte][iCycle] != expectedValue) {
-          DebugTN("Error on byte " + iByte + " and cycle " + iCycle,
-                  data[iByte][iCycle], data[iByte][iCycle - 1], expectedValue);
+        if (currentVal != expectedVal) {
+          int elinkCh = 12 - iByte;
+          DebugTN("Error on elink " + elinkCh + " and cycle " + iCycle + ". Current: " +
+                  fwGbt_convertByteToHex(currentVal) + ". Previous: " + 
+                  fwGbt_convertByteToHex(previousVal) + ". Expected: " + 
+                  fwGbt_convertByteToHex(expectedVal));
           numberOfErrorsPerByte[iByte] += 1;
         }
       }
