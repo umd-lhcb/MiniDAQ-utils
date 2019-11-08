@@ -1,6 +1,6 @@
 // vim: ft=cs:
 // Author: Mark Tobin
-// Last Change: Thu Nov 07, 2019 at 05:36 PM -0500
+// Last Change: Thu Nov 07, 2019 at 07:52 PM -0500
 
 #uses "wizardFramework.ctl"
 
@@ -35,7 +35,7 @@ main() {
 // DP configuration //
 //////////////////////
 
-// Create data point type used for SALT PRBS test
+// Create data point type used for SALT PRBS test.
 int createSaltPrbsDpType(string dpType) {
   int status;
   dyn_dyn_string elements;
@@ -68,7 +68,7 @@ int createSaltPrbsDpType(string dpType) {
   return status;
 }
 
-// Create data point instance
+// Create data point instances.
 int createSaltPrbsDpInstance(string dpType, string dpName) {
   int status;
 
@@ -82,7 +82,7 @@ int createSaltPrbsDpInstance(string dpType, string dpName) {
 // PRBS //
 //////////
 
-// Generate the next value of the Salt pseudo-random sequence 0
+// Generate the next value of the SALT pseudo-random sequence 0.
 char nextPrbsValue(char cVal) {
   bool ornot = 0;
 
@@ -104,7 +104,7 @@ char nextPrbsValue(char cVal) {
 // Call back functions //
 /////////////////////////
 
-// Call back function to start running PRBS test
+// Call back function to start running PRBS test.
 void runSaltPrbsTest(string dpe, bool testIsRunning) {
   DebugTN("runTest" + dpe + testIsRunning + dpSubStr(dpe, DPSUB_DP));
   if (testIsRunning) {
@@ -137,7 +137,7 @@ void runSaltPrbsTest(string dpe, bool testIsRunning) {
   }
 }
 
-// Call back function when reading memory from Tell40
+// Call back function when reading memory from TELL40.
 void updateSaltPrbsTest(string dp, dyn_char readings) {
   float startTime;
   ulong secondsSinceStart;
@@ -155,20 +155,20 @@ void updateSaltPrbsTest(string dp, dyn_char readings) {
 
   string aux = fwGbt_convertByteToHex(readings);
   for (int i = 0; i < strlen(aux); i = i + 32) {
-    // salt asic data on bytes 0 to 11 only... the first 4-bytes are probably
+    // SALT ASIC data on bytes 0 to 11 only... the first 4-bytes are probably
     // the GBT header...
     string elinkData =
         strjoin(makeDynString(substr(aux, i + 16, 8), substr(aux, i + 8, 8),
                               substr(aux, i, 8)),
                 "");
     dyn_char myData = fwGbt_convertHexToByte(elinkData);
-    // Keep all elink data
+    // Keep all elink data.
     dynAppend(data, myData);
   }
 
   numberOfFramesProcessed += 1;
 
-  // Check PRBS for each byte
+  // Check PRBS for each byte.
   for (int iCycle = 2; iCycle <= dynlen(data); iCycle++) {
     for (int iByte = 1; iByte <= dynlen(data[iCycle]); iByte++) {
       if (checkByte[iByte]) { // Only check ticked bytes.
@@ -185,7 +185,7 @@ void updateSaltPrbsTest(string dp, dyn_char readings) {
     }
   }
 
-  // Update text fields
+  // Update text fields.
   time t = getCurrentTime();
   ulong secondsSinceStart = (ulong)(timeToInterval(t) - startTime);
   string status = "";
