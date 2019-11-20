@@ -11,7 +11,7 @@
 const string dpType = "SALTPRBS";
 const string dpName = "SaltPRBSTest";
 const string projName = "dist_1";
-const string tell40Name = "TELL40_Dev1_1";
+const string tell40Name = "TELL40_Dev1_0";
 
 main() {
   DebugTN("SALT PRBS test initilization. Here we go!");
