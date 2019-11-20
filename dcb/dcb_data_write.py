@@ -2,7 +2,7 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Wed Nov 06, 2019 at 03:10 PM -0500
+# Last Change: Wed Nov 20, 2019 at 03:32 PM -0500
 
 import re
 
@@ -16,7 +16,7 @@ from time import sleep
 ################
 # NOTE: These must be strings
 
-GBT = '5'
+GBT = '0'
 SCA = '0'
 I2C_CH = '6'
 SLAVE_ADDR = ['1', '2', '3', '4', '5', '6']
