@@ -2,7 +2,7 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Tue Nov 26, 2019 at 04:09 PM -0500
+# Last Change: Tue Nov 26, 2019 at 04:14 PM -0500
 
 import re
 import sys
@@ -193,7 +193,7 @@ if __name__ == '__main__':
                           'aabbffff')
             elif args.val == '6':
                 i2c_write(args.gbt, args.sca, I2C_CH, slave, '37',
-                          '87991988FFFF0400')
+                          '87992588FFFF0400')
                 i2c_write(args.gbt, args.sca, I2C_CH, slave, 'fd',
                           '7e730000')
                 i2c_write(args.gbt, args.sca, I2C_CH, slave, '184',
