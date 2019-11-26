@@ -2,9 +2,10 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Wed Nov 20, 2019 at 03:32 PM -0500
+# Last Change: Tue Nov 26, 2019 at 04:09 PM -0500
 
 import re
+import sys
 
 from argparse import ArgumentParser
 from subprocess import check_output
@@ -180,6 +181,26 @@ if __name__ == '__main__':
                 i2c_write(args.gbt, args.sca, I2C_CH, slave, '1c', '00151515')
             else:
                 i2c_write(args.gbt, args.sca, I2C_CH, slave, '1c', args.val)
+
+        elif args.addr == 'bias_current':
+            print('Bias current {} mA...'.format(args.val))
+            if args.val == '5':
+                i2c_write(args.gbt, args.sca, I2C_CH, slave, '37',
+                          '87991988FFFF0400')
+                i2c_write(args.gbt, args.sca, I2C_CH, slave, 'fd',
+                          '7e730000')
+                i2c_write(args.gbt, args.sca, I2C_CH, slave, '184',
+                          'aabbffff')
+            elif args.val == '6':
+                i2c_write(args.gbt, args.sca, I2C_CH, slave, '37',
+                          '87991988FFFF0400')
+                i2c_write(args.gbt, args.sca, I2C_CH, slave, 'fd',
+                          '7e730000')
+                i2c_write(args.gbt, args.sca, I2C_CH, slave, '184',
+                          'aabbffff')
+            else:
+                print('{} mA is not supported! Giving up')
+                sys.exit(1)
 
         else:
             i2c_write(args.gbt, args.sca, I2C_CH, slave, args.addr, args.val)
