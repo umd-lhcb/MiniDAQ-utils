@@ -1,6 +1,8 @@
 # MiniDAQ-utils
 MiniDAQ utilities for programming and controlling DCB and SALT.
 
+export CPLUS_INCLUDE_PATH=/usr/local/include/dim
+
 ## To program all data GBTxs on fiber 5
 ```
 cd ~/src/MiniDAQ-utils/dcb
