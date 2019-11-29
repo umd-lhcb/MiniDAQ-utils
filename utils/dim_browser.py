@@ -1,7 +1,7 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 #
 # License: BSD 2-clause
-# Last Change: Fri Nov 29, 2019 at 03:33 AM -0500
+# Last Change: Fri Nov 29, 2019 at 03:34 AM -0500
 # Stolen from: http://lhcbdoc.web.cern.ch/lhcbdoc/pydim/guide/tutorial.html#using-dim-services
 
 import pydim
