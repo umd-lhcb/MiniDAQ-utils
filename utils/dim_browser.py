@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 #
 # License: BSD 2-clause
-# Last Change: Fri Nov 29, 2019 at 03:34 AM -0500
+# Last Change: Sun Dec 01, 2019 at 08:47 PM -0500
 # Stolen from: http://lhcbdoc.web.cern.ch/lhcbdoc/pydim/guide/tutorial.html#using-dim-services
 
 import pydim
@@ -29,12 +29,9 @@ def print_all_services_known_by_dns(dbr):
         # getNextService().next() returns a tuple
         service_tuple = next(dbr.getNextService())
         print(
-            (
-                "Service {0} : Type of service = {1} name = {2}, format = {3}".format(
-                    i + 1, service_tuple[0], service_tuple[1], service_tuple[2]
-                )
-            )
-        )
+            "Service {0} : Type of service = {1} name = {2}, format = {3}".format(
+                i + 1, service_tuple[0], service_tuple[1], service_tuple[2]
+            ))
     print("")
 
 
@@ -49,12 +46,9 @@ def print_all_servers_known_by_dns(dbr):
         # getNextServer().next() returns a tuple
         server_tuple = next(dbr.getNextServer())
         print(
-            (
-                "Server {0}, name = {1}, Node name = {2}".format(
-                    i + 1, server_tuple[0], server_tuple[1]
-                )
-            )
-        )
+            "Server {0}, name = {1}, Node name = {2}".format(
+                i + 1, server_tuple[0], server_tuple[1]
+            ))
     print("")
 
 
@@ -69,15 +63,12 @@ def print_all_services_provided_by_server(dbr):
         # getNextServerServices().next() returns a tuple
         service_server_tuple = next(dbr.getNextServerService())
         print(
-            (
-                "Service {0} Type of service {1}, service name = {2}, format = {3}".format(
-                    i + 1,
-                    service_server_tuple[0],
-                    service_server_tuple[1],
-                    service_server_tuple[2],
-                )
-            )
-        )
+            "Service {0} Type of service {1}, service name = {2}, format = {3}".format(
+                i + 1,
+                service_server_tuple[0],
+                service_server_tuple[1],
+                service_server_tuple[2],
+            ))
     print("")
 
 
@@ -92,12 +83,9 @@ def print_all_clients_connected_to_server(dbr):
     for client_tuple in dbr.getNextServerClient():
         if client_tuple is not None:
             print(
-                (
-                    "Client name = {0}, node name = {1}".format(
-                        client_tuple[0], client_tuple[1]
-                    )
-                )
-            )
+                "Client name = {0}, node name = {1}".format(
+                    client_tuple[0], client_tuple[1]
+                ))
     print("")
 
 
