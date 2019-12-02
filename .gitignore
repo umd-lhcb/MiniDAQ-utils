@@ -1,3 +1,6 @@
 .lvimrc
 *.bak
 .python-version
+
+__pycache__
+*.pyc
