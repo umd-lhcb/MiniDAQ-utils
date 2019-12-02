@@ -1,13 +1,27 @@
 #!/usr/bin/env python3
 #
 # License: BSD 2-clause
-# Last Change: Sun Dec 01, 2019 at 08:47 PM -0500
+# Last Change: Sun Dec 01, 2019 at 08:58 PM -0500
 # Stolen from: http://lhcbdoc.web.cern.ch/lhcbdoc/pydim/guide/tutorial.html#using-dim-services
 
 import pydim
 import sys
 
 from dimbrowser import DimBrowser
+
+
+class Tee(object):
+    def __init__(self, *files):
+        self.files = files
+
+    def write(self, obj):
+        for f in self.files:
+            f.write(obj)
+            f.flush()
+
+    def flush(self):
+        for f in self.files:
+            f.flush()
 
 
 def menu():
@@ -89,7 +103,15 @@ def print_all_clients_connected_to_server(dbr):
     print("")
 
 
-def main():
+if __name__ == "__main__":
+    # If a filename is provided from the command line, write screen printouts to
+    # that file as well:
+    try:
+        f = open(sys.argv[1], 'w')
+        sys.stdout = Tee(sys.stdout, f)
+    except Exception:
+        pass
+
     # Check if DIM_DNS_NODE variable has been set
     if not pydim.dis_get_dns_node():
         print("No Dim DNS node found. Please set the environment variable DIM_DNS_NODE")
@@ -115,7 +137,3 @@ def main():
 
     del dbr
     print("Goodbye")
-
-
-if __name__ == "__main__":
-    main()
