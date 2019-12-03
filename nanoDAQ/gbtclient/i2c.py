@@ -2,7 +2,7 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Tue Dec 03, 2019 at 12:16 AM -0500
+# Last Change: Tue Dec 03, 2019 at 01:02 AM -0500
 
 import pydim
 import logging
@@ -35,7 +35,7 @@ I2C_FREQ = {
 def i2c_op(mode, gbt, sca, bus, addr, sub_addr, size,
            i2c_type, i2c_freq,
            scl='0',
-           data='', filepath=None,
+           data='\0', filepath=None,
            gbt_pref=GBT_PREF, gbt_serv=GBT_SERV):
     cmd = ','.join((mode, gbt, sca, bus, addr, sub_addr, size,
                    i2c_type, i2c_freq, scl))
