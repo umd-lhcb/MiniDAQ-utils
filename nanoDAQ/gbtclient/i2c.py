@@ -2,7 +2,7 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Mon Dec 02, 2019 at 11:27 PM -0500
+# Last Change: Mon Dec 02, 2019 at 11:32 PM -0500
 
 import pydim
 
@@ -34,8 +34,8 @@ def i2c_op(mode, gbt, sca, bus, addr, sub_addr, size,
            scl='0',
            data='', filepath=None,
            gbt_pref=GBT_PREF, gbt_serv=GBT_SERV):
-    cmd = ','.join(mode, gbt, sca, bus, addr, sub_addr, size,
-                   i2c_type, i2c_freq, scl)
+    cmd = ','.join((mode, gbt, sca, bus, addr, sub_addr, size,
+                   i2c_type, i2c_freq, scl))
     if filepath:
         cmd += ',{}'.format(filepath)
 
@@ -45,3 +45,11 @@ def i2c_op(mode, gbt, sca, bus, addr, sub_addr, size,
         args, 'C:128;C')
 
     return res
+
+
+def i2c_write(*args, **kwargs):
+    return i2c_op(I2C_OP_MODES['write'], *args, **kwargs)
+
+
+def i2c_read(*args, **kwargs):
+    return i2c_op(I2C_OP_MODES['read'], *args, **kwargs)
