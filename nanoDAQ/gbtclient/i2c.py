@@ -2,11 +2,13 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Mon Dec 02, 2019 at 11:32 PM -0500
+# Last Change: Tue Dec 03, 2019 at 12:07 AM -0500
 
 import pydim
 
 from .common import GBT_PREF, GBT_SERV
+from .common import fill
+
 
 I2C_OP_MODES = {
     'write':         '0',
@@ -39,7 +41,7 @@ def i2c_op(mode, gbt, sca, bus, addr, sub_addr, size,
     if filepath:
         cmd += ',{}'.format(filepath)
 
-    args = (cmd, data)
+    args = (fill(cmd), data)
     res = pydim.dic_sync_cmnd_service(
         '{}/{}/CmndI2COperation'.format(gbt_pref, gbt_serv),
         args, 'C:128;C')
