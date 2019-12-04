@@ -2,7 +2,7 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Wed Dec 04, 2019 at 03:32 AM -0500
+# Last Change: Wed Dec 04, 2019 at 03:40 AM -0500
 
 import pydim
 import logging
@@ -12,26 +12,39 @@ from .common import fill, hex_to_bytes
 from .common import default_dim_regulator as ddr
 
 
+#############
+# Constants #
+#############
+
 I2C_OP_MODES = {
     'write':         0,
     'read':          1,
     'writeread':     2,
     'activate_ch':   3,
-    'deactivate_ch': 4
+    'deactivate_ch': 4,
 }
 
 I2C_TYPE = {
     'gbtx': 0,
-    'salt': 1
+    'salt': 1,
 }
 
 I2C_FREQ = {
-    '1MHz':   3,
-    '400KHz': 2,
+    '100KHz': 0,
     '200KHz': 1,
-    '100KHz': 0
+    '400KHz': 2,
+    '1MHz':   3,
 }
 
+I2C_ERROR_CODE = {
+    3:   'Master GBT not locked.',
+    512: 'I2C channel not activated.',
+}
+
+
+##################
+# I2C Operations #
+##################
 
 def i2c_op(mode, gbt, sca, bus, addr, sub_addr, size,
            i2c_type, i2c_freq,
