@@ -2,13 +2,13 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Wed Dec 04, 2019 at 03:15 AM -0500
+# Last Change: Wed Dec 04, 2019 at 03:32 AM -0500
 
 import pydim
 import logging
 
 from .common import GBT_PREF, GBT_SERV
-from .common import fill
+from .common import fill, hex_to_bytes
 from .common import default_dim_regulator as ddr
 
 
@@ -46,7 +46,8 @@ def i2c_op(mode, gbt, sca, bus, addr, sub_addr, size,
     cmd = fill(cmd)
 
     if not data:
-        data = '\0'
+        data = '0'
+    data = hex_to_bytes(data)
 
     logging.debug('First argument: {}'.format(cmd))
     logging.debug('Second argument: {}'.format(data))

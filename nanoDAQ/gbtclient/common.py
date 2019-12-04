@@ -2,7 +2,7 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Wed Dec 04, 2019 at 03:15 AM -0500
+# Last Change: Wed Dec 04, 2019 at 03:31 AM -0500
 
 
 #############
@@ -36,9 +36,15 @@ def hex_rep(lst_of_num):
     return ''.join(map(hex_pad, lst_of_num))
 
 
-#################################
-# Regulate DIM retrieved result #
-#################################
+#############################
+# Regulate DIM input/output #
+#############################
+
+def hex_to_bytes(val):
+    if len(val) % 2 == 1:
+        val = '0'+val
+    return bytes.fromhex(val)
+
 
 def str_to_hex(val):
     if isinstance(val, int):
