@@ -2,13 +2,14 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Wed Dec 04, 2019 at 02:47 AM -0500
+# Last Change: Wed Dec 04, 2019 at 02:57 AM -0500
 
 import pydim
 import logging
 
 from .common import GBT_PREF, GBT_SERV
-from .common import fill, normalize
+from .common import fill
+from .common import default_dim_regulator as ddr
 
 
 I2C_OP_MODES = {
@@ -60,21 +61,21 @@ def i2c_op(mode, gbt, sca, bus, addr, sub_addr, size,
     return res
 
 
-def i2c_write(*args, gbt_serv=GBT_SERV, **kwargs):
+def i2c_write(*args, gbt_serv=GBT_SERV, regulator=ddr, **kwargs):
     status = i2c_op(I2C_OP_MODES['write'], *args, gbt_serv=gbt_serv, **kwargs)
 
     if status:
-        return normalize(pydim.dic_sync_info_service('{}/{}/SrvcI2CWrite'.format(
+        return regulator(pydim.dic_sync_info_service('{}/{}/SrvcI2CWrite'.format(
             GBT_PREF, gbt_serv)))
     else:
         raise ValueError('The command was not successfully sent.')
 
 
-def i2c_read(*args, gbt_serv=GBT_SERV, **kwargs):
+def i2c_read(*args, gbt_serv=GBT_SERV, regulator=ddr, **kwargs):
     status = i2c_op(I2C_OP_MODES['read'], *args, gbt_serv=gbt_serv, **kwargs)
 
     if status:
-        return normalize(pydim.dic_sync_info_service('{}/{}/SrvcI2CRead'.format(
+        return regulator(pydim.dic_sync_info_service('{}/{}/SrvcI2CRead'.format(
             GBT_PREF, gbt_serv)))
     else:
         raise ValueError('The command was not successfully sent.')
