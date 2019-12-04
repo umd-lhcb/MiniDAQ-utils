@@ -2,7 +2,7 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Wed Dec 04, 2019 at 03:03 AM -0500
+# Last Change: Wed Dec 04, 2019 at 03:07 AM -0500
 
 
 #############
@@ -24,8 +24,16 @@ def fill(s, max_len=128, char='\0'):
         return s.ljust(max_len, char)
 
 
+def hex_pad(n):
+    s = hex(n)[2:]
+    if len(s) % 2 == 1:
+        return '0'+s
+    else:
+        return s
+
+
 def hex_rep(lst_of_num):
-    return ''.join(map(lambda x: hex(x)[2:], lst_of_num))
+    return ''.join(map(hex_pad, lst_of_num))
 
 
 #################################
