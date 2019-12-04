@@ -2,7 +2,7 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Tue Dec 03, 2019 at 01:02 AM -0500
+# Last Change: Wed Dec 04, 2019 at 02:01 AM -0500
 
 import pydim
 import logging
@@ -36,7 +36,7 @@ def i2c_op(mode, gbt, sca, bus, addr, sub_addr, size,
            i2c_type, i2c_freq,
            scl='0',
            data='\0', filepath=None,
-           gbt_pref=GBT_PREF, gbt_serv=GBT_SERV):
+           gbt_serv=GBT_SERV):
     cmd = ','.join((mode, gbt, sca, bus, addr, sub_addr, size,
                    i2c_type, i2c_freq, scl))
     if filepath:
@@ -48,15 +48,27 @@ def i2c_op(mode, gbt, sca, bus, addr, sub_addr, size,
 
     args = (cmd, data)
     res = pydim.dic_sync_cmnd_service(
-        '{}/{}/CmndI2COperation'.format(gbt_pref, gbt_serv),
+        '{}/{}/CmndI2COperation'.format(GBT_PREF, gbt_serv),
         args, 'C:128;C')
 
     return res
 
 
-def i2c_write(*args, **kwargs):
-    return i2c_op(I2C_OP_MODES['write'], *args, **kwargs)
+def i2c_write(*args, gbt_serv=GBT_SERV, **kwargs):
+    status = i2c_op(I2C_OP_MODES['write'], *args, gbt_serv=gbt_serv, **kwargs)
+
+    if status:
+        return pydim.dic_sync_info_service('{}/{}/SrvcI2CWrite'.format(
+            GBT_PREF, gbt_serv))
+    else:
+        raise ValueError('The command was not successfully sent.')
 
 
-def i2c_read(*args, **kwargs):
-    return i2c_op(I2C_OP_MODES['read'], *args, **kwargs)
+def i2c_read(*args, gbt_serv=GBT_SERV, **kwargs):
+    status = i2c_op(I2C_OP_MODES['read'], *args, gbt_serv=gbt_serv, **kwargs)
+
+    if status:
+        return pydim.dic_sync_info_service('{}/{}/SrvcI2CRead'.format(
+            GBT_PREF, gbt_serv))
+    else:
+        raise ValueError('The command was not successfully sent.')
