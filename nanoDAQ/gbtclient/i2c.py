@@ -2,7 +2,7 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Wed Dec 04, 2019 at 02:57 AM -0500
+# Last Change: Wed Dec 04, 2019 at 03:15 AM -0500
 
 import pydim
 import logging
@@ -45,9 +45,7 @@ def i2c_op(mode, gbt, sca, bus, addr, sub_addr, size,
         cmd += ',{}'.format(filepath)
     cmd = fill(cmd)
 
-    if data:
-        data = ''.join(map(str, data))
-    else:
+    if not data:
         data = '\0'
 
     logging.debug('First argument: {}'.format(cmd))

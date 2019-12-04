@@ -2,7 +2,7 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Wed Dec 04, 2019 at 03:07 AM -0500
+# Last Change: Wed Dec 04, 2019 at 03:15 AM -0500
 
 
 #############
@@ -40,14 +40,14 @@ def hex_rep(lst_of_num):
 # Regulate DIM retrieved result #
 #################################
 
-def str_to_int(val):
+def str_to_hex(val):
     if isinstance(val, int):
         return val
     elif isinstance(val, bytes):
-        return [int(c) for c in val]
+        return hex_rep([int(c) for c in val])
     else:
-        return [int('{:2x}'.format(ord(c)), base=16) for c in val]
+        return hex_rep([int('{:2x}'.format(ord(c)), base=16) for c in val])
 
 
 def default_dim_regulator(tp):
-    return [str_to_int(e) for e in tp]
+    return [str_to_hex(e) for e in tp]
