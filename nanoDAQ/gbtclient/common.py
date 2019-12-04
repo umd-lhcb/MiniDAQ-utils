@@ -2,7 +2,7 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Wed Dec 04, 2019 at 03:01 AM -0500
+# Last Change: Wed Dec 04, 2019 at 03:03 AM -0500
 
 
 #############
@@ -36,7 +36,7 @@ def str_to_int(val):
     if isinstance(val, int):
         return val
     elif isinstance(val, bytes):
-        return val
+        return [int(c) for c in val]
     else:
         return [int('{:2x}'.format(ord(c)), base=16) for c in val]
 
