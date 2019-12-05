@@ -2,7 +2,7 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Thu Dec 05, 2019 at 12:45 AM -0500
+# Last Change: Thu Dec 05, 2019 at 12:46 AM -0500
 
 import pydim
 
@@ -16,7 +16,7 @@ from .common import default_dim_regulator as ddr
 # Constants #
 #############
 
-I2C_OP_MODES = {
+I2C_OP_MODE = {
     'write':         0,
     'read':          1,
     'writeread':     2,
@@ -68,7 +68,7 @@ def i2c_op(mode, gbt, sca, bus, addr, sub_addr, size, i2c_type, i2c_freq,
 
 
 def i2c_write(*args, gbt_serv=GBT_SERV, regulator=ddr, **kwargs):
-    i2c_op(I2C_OP_MODES['write'], *args, gbt_serv=gbt_serv, **kwargs)
+    i2c_op(I2C_OP_MODE['write'], *args, gbt_serv=gbt_serv, **kwargs)
     ret = pydim.dic_sync_info_service(
         '{}/{}/SrvcI2CWrite'.format(GBT_PREF, gbt_serv),
         'I:1'
@@ -77,7 +77,7 @@ def i2c_write(*args, gbt_serv=GBT_SERV, regulator=ddr, **kwargs):
 
 
 def i2c_read(*args, gbt_serv=GBT_SERV, regulator=ddr, **kwargs):
-    i2c_op(I2C_OP_MODES['read'], *args, gbt_serv=gbt_serv, **kwargs)
+    i2c_op(I2C_OP_MODE['read'], *args, gbt_serv=gbt_serv, **kwargs)
     ret = pydim.dic_sync_info_service(
         '{}/{}/SrvcI2CRead'.format(GBT_PREF, gbt_serv),
         'I:1;C'
@@ -86,4 +86,4 @@ def i2c_read(*args, gbt_serv=GBT_SERV, regulator=ddr, **kwargs):
 
 
 def i2c_activate_ch(gbt, sca, bus):
-    i2c_op(I2C_OP_MODES['activate_ch'], gbt, sca, bus, 0, 0, 0, 0, 0)
+    i2c_op(I2C_OP_MODE['activate_ch'], gbt, sca, bus, 0, 0, 0, 0, 0)
