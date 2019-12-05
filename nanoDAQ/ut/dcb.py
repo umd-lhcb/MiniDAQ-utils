@@ -2,7 +2,7 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Thu Dec 05, 2019 at 06:05 AM -0500
+# Last Change: Thu Dec 05, 2019 at 06:06 AM -0500
 
 import os.path as p
 
@@ -69,6 +69,7 @@ class DCB(object):
         for s in self.slaves:
             status = i2c_read(self.gbt, self.sca, self.bus, s, 0x1af, 1,
                               self.i2c_type, self.i2c_freq)
+            status = GBTX_STATUS[status]
             table.append([str(s), status])
         print(tabulate(table, headers=['slave', 'status']))
 
