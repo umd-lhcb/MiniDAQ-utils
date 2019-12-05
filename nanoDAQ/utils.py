@@ -1,8 +1,8 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Thu Dec 05, 2019 at 03:43 AM -0500
+# Last Change: Thu Dec 05, 2019 at 03:44 AM -0500
 
 
 def hex_pad(n):
