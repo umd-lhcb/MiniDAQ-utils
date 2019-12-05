@@ -2,7 +2,7 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Thu Dec 05, 2019 at 06:31 AM -0500
+# Last Change: Thu Dec 05, 2019 at 06:32 AM -0500
 
 from nanoDAQ.ut.dcb import DCB
 from nanoDAQ.utils import parse_input as proto_parse_input
@@ -69,6 +69,7 @@ if __name__ == '__main__':
             dcb.gpio_reset(args.reset)
         else:
             dcb.gpio_status()
+
     elif args.cmd == 'prbs':
         if args.mode == 'on':
             dcb.write(0x1c, '03', args.slaves)
