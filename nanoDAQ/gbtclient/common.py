@@ -2,7 +2,7 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Thu Dec 05, 2019 at 12:43 AM -0500
+# Last Change: Thu Dec 05, 2019 at 12:47 AM -0500
 
 from collections import defaultdict
 
@@ -65,7 +65,7 @@ def default_dim_regulator(tp):
 # Return value error handling #
 ###############################
 
-def errs_factory(known_errs, default='Unknown error.'):
+def errs_factory(known_errs={}, default='Unknown error.'):
     d = defaultdict(lambda: default)
     d.update(known_errs)
     return d
