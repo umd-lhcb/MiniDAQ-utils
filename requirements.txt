@@ -1,2 +1,3 @@
 pydim3
-pyyaml
+sty
+tabulate
