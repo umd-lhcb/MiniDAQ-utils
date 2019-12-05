@@ -2,7 +2,7 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Thu Dec 05, 2019 at 12:39 AM -0500
+# Last Change: Thu Dec 05, 2019 at 12:41 AM -0500
 
 import pydim
 
@@ -36,7 +36,7 @@ I2C_FREQ = {
     '1MHz':   3,
 }
 
-I2C_ERROR_CODE = errs_factory({
+I2C_ERR_CODE = errs_factory({
     3:   'Master GBT not locked.',
     512: 'I2C channel not activated.',
 })
@@ -73,7 +73,7 @@ def i2c_write(*args, gbt_serv=GBT_SERV, regulator=ddr, **kwargs):
         '{}/{}/SrvcI2CWrite'.format(GBT_PREF, gbt_serv),
         'I:1'
     )
-    return dim_dic_err(regulator(ret), I2C_ERROR_CODE)
+    return dim_dic_err(regulator(ret), I2C_ERR_CODE)
 
 
 def i2c_read(*args, gbt_serv=GBT_SERV, regulator=ddr, **kwargs):
@@ -82,7 +82,7 @@ def i2c_read(*args, gbt_serv=GBT_SERV, regulator=ddr, **kwargs):
         '{}/{}/SrvcI2CRead'.format(GBT_PREF, gbt_serv),
         'I:1;C'
     )
-    return dim_dic_err(regulator(ret), I2C_ERROR_CODE)
+    return dim_dic_err(regulator(ret), I2C_ERR_CODE)
 
 
 def i2c_activate_ch(gbt, sca, bus):
