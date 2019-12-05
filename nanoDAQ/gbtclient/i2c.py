@@ -2,7 +2,7 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Thu Dec 05, 2019 at 12:46 AM -0500
+# Last Change: Thu Dec 05, 2019 at 12:52 AM -0500
 
 import pydim
 
@@ -85,5 +85,5 @@ def i2c_read(*args, gbt_serv=GBT_SERV, regulator=ddr, **kwargs):
     return dim_dic_err(regulator(ret), I2C_ERR_CODE)
 
 
-def i2c_activate_ch(gbt, sca, bus):
-    i2c_op(I2C_OP_MODE['activate_ch'], gbt, sca, bus, 0, 0, 0, 0, 0)
+def i2c_activate_ch(gbt, sca, bus, **kwargs):
+    i2c_op(I2C_OP_MODE['activate_ch'], gbt, sca, bus, 0, 0, 0, 0, 0, **kwargs)
