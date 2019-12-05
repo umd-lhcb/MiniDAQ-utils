@@ -2,11 +2,9 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Thu Dec 05, 2019 at 03:42 AM -0500
+# Last Change: Thu Dec 05, 2019 at 04:19 AM -0500
 
-from collections import defaultdict
-
-from ..utils import hex_rep
+from ..utils import hex_rep, dict_factory
 
 
 #############
@@ -69,9 +67,7 @@ def default_dim_regulator(tp):
 ###############################
 
 def errs_factory(known_errs={}, default='Unknown error.'):
-    d = defaultdict(lambda: default)
-    d.update(known_errs)
-    return d
+    return dict_factory(known_errs, default)
 
 
 def dim_cmd_err(ret_code, expected=1):
