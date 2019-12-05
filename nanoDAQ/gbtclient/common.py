@@ -2,7 +2,7 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Thu Dec 05, 2019 at 01:14 AM -0500
+# Last Change: Thu Dec 05, 2019 at 01:43 AM -0500
 
 from collections import defaultdict
 
@@ -91,8 +91,8 @@ def dim_cmd_err(ret_code, expected=1):
 def dim_dic_err(ret, errs, expected=0):
     try:
         ret_code, result = ret[0], ret[1]
-    except TypeError:
-        ret_code = result = ret
+    except IndexError:
+        ret_code = result = ret[0]
 
     if ret_code != expected:
         raise ValueError(errs[ret_code])
