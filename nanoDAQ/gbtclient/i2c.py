@@ -2,7 +2,7 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Thu Dec 05, 2019 at 01:11 AM -0500
+# Last Change: Thu Dec 05, 2019 at 06:11 AM -0500
 
 import pydim
 
@@ -29,8 +29,9 @@ I2C_FREQ = {
 }
 
 I2C_ERR_CODE = errs_factory({
-    0x3:   'Master GBT not locked.',
-    0x200: 'I2C channel not activated.',
+    0x3:    'Master GBT not locked.',
+    0x200:  'I2C channel not activated.',
+    0x8000: 'Last operation not acknowledged by the I2C slave.'
 })
 
 
