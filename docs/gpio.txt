@@ -1,0 +1,3 @@
+Service 10399 : Type of service = 2 name = Gbt/UMDlab/CmndGPIOOperation, format = C:128;C
+Service 13020 : Type of service = 1 name = Gbt/UMDlab/SrvcGPIORead, format = I:1;C
+Service 23146 : Type of service = 1 name = Gbt/UMDlab/SrvcGPIOWrite, format = I:1
