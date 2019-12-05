@@ -2,7 +2,7 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Wed Dec 04, 2019 at 03:40 AM -0500
+# Last Change: Wed Dec 04, 2019 at 10:38 PM -0500
 
 import pydim
 import logging
@@ -91,3 +91,7 @@ def i2c_read(*args, gbt_serv=GBT_SERV, regulator=ddr, **kwargs):
             GBT_PREF, gbt_serv)))
     else:
         raise ValueError('The command was not successfully sent.')
+
+
+def i2c_activate_ch(gbt, sca, bus):
+    return i2c_op(I2C_OP_MODES['activate_ch'], gbt, sca, bus, 0, 0, 0, 0, 0)
