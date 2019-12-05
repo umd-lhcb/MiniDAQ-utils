@@ -1,8 +1,8 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Thu Dec 05, 2019 at 05:29 AM -0500
+# Last Change: Thu Dec 05, 2019 at 05:32 AM -0500
 
 from nanoDAQ.ut.dcb import DCB
 from nanoDAQ.utils import parse_input as proto_parse_input
