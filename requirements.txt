@@ -1,3 +1,2 @@
-pydim3
 sty
 tabulate
