@@ -2,7 +2,7 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Thu Dec 05, 2019 at 12:57 AM -0500
+# Last Change: Thu Dec 05, 2019 at 01:14 AM -0500
 
 from collections import defaultdict
 
@@ -13,6 +13,18 @@ from collections import defaultdict
 
 GBT_PREF = 'Gbt'
 GBT_SERV = 'UMDlab'
+
+SCA_OP_MODE = {
+    'write':         0,
+    'read':          1,
+    'writeread':     2,
+    'activate_ch':   3,
+    'deactivate_ch': 4,
+    'gpio_setdir':   5,
+    'gpio_getdir':   6,
+    'gpio_setline':  7,
+    'gpio_getline':  8,
+}
 
 
 ###########
