@@ -2,10 +2,9 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Wed Dec 04, 2019 at 10:38 PM -0500
+# Last Change: Wed Dec 04, 2019 at 11:08 PM -0500
 
 import pydim
-import logging
 
 from .common import GBT_PREF, GBT_SERV
 from .common import fill, hex_to_bytes
@@ -61,9 +60,6 @@ def i2c_op(mode, gbt, sca, bus, addr, sub_addr, size,
     if not data:
         data = '0'
     data = hex_to_bytes(data)
-
-    logging.debug('First argument: {}'.format(cmd))
-    logging.debug('Second argument: {}'.format(data))
 
     args = (cmd, data)
     res = pydim.dic_sync_cmnd_service(
