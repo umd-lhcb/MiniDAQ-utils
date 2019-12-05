@@ -2,7 +2,7 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Thu Dec 05, 2019 at 06:06 AM -0500
+# Last Change: Thu Dec 05, 2019 at 06:07 AM -0500
 
 import os.path as p
 
@@ -20,8 +20,8 @@ from ..utils import dict_factory, num_of_byte
 
 
 GBTX_STATUS = dict_factory({
-    0x61: fg.green+ef.bold+'Idle'+rs.bold_dim+fg.rs,
-    0x15: fg.yellow+ef.bold+'Pause for config'+rs.bold_dim+fg.rs,
+    '61': fg.green+ef.bold+'Idle'+rs.bold_dim+fg.rs,
+    '15': fg.yellow+ef.bold+'Pause for config'+rs.bold_dim+fg.rs,
 }, 'Unknown state')
 
 
