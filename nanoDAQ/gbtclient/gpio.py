@@ -2,7 +2,7 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Thu Dec 05, 2019 at 01:39 AM -0500
+# Last Change: Thu Dec 05, 2019 at 01:49 AM -0500
 
 import pydim
 
@@ -76,8 +76,8 @@ def gpio_read(*args, gbt_serv=GBT_SERV, regulator=ddr, **kwargs):
     return dim_dic_err(regulator(ret), GPIO_ERR_CODE)
 
 
-def gpio_activate_ch(*args, **kwargs):
-    gpio_op(SCA_OP_MODE['activate_ch'], *args, **kwargs)
+def gpio_activate_ch(gbt, sca, **kwargs):
+    gpio_op(SCA_OP_MODE['activate_ch'], gbt, sca, 0, **kwargs)
 
 
 ######################
@@ -86,12 +86,12 @@ def gpio_activate_ch(*args, **kwargs):
 
 def gpio_setdir(*args, direction='out', **kwargs):
     gpio_op(SCA_OP_MODE['gpio_setdir'], *args,
-            data=GPIO_DIR(direction), **kwargs)
+            data=GPIO_DIR[direction], **kwargs)
 
 
 def gpio_setline(*args, level='high', **kwargs):
     gpio_op(SCA_OP_MODE['gpio_setline'], *args,
-            data=GPIO_LEVEL(level), **kwargs)
+            data=GPIO_LEVEL[level], **kwargs)
 
 
 def gpio_getdir(*args, gbt_serv=GBT_SERV, regulator=ddr, **kwargs):
