@@ -2,7 +2,7 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Thu Dec 05, 2019 at 12:41 AM -0500
+# Last Change: Thu Dec 05, 2019 at 12:43 AM -0500
 
 import pydim
 
@@ -64,7 +64,7 @@ def i2c_op(mode, gbt, sca, bus, addr, sub_addr, size, i2c_type, i2c_freq,
     ret_code = pydim.dic_sync_cmnd_service(
         '{}/{}/CmndI2COperation'.format(GBT_PREF, gbt_serv),
         args, 'C:128;C')
-    return dim_cmd_err(ret_code)
+    dim_cmd_err(ret_code)
 
 
 def i2c_write(*args, gbt_serv=GBT_SERV, regulator=ddr, **kwargs):
@@ -86,4 +86,4 @@ def i2c_read(*args, gbt_serv=GBT_SERV, regulator=ddr, **kwargs):
 
 
 def i2c_activate_ch(gbt, sca, bus):
-    return i2c_op(I2C_OP_MODES['activate_ch'], gbt, sca, bus, 0, 0, 0, 0, 0)
+    i2c_op(I2C_OP_MODES['activate_ch'], gbt, sca, bus, 0, 0, 0, 0, 0)

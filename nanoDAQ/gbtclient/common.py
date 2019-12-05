@@ -2,7 +2,7 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Thu Dec 05, 2019 at 12:39 AM -0500
+# Last Change: Thu Dec 05, 2019 at 12:43 AM -0500
 
 from collections import defaultdict
 
@@ -74,8 +74,6 @@ def errs_factory(known_errs, default='Unknown error.'):
 def dim_cmd_err(ret_code, expected=1):
     if ret_code != expected:
         raise ValueError('The command was not successfully sent.')
-    else:
-        return 0
 
 
 def dim_dic_error(ret, errs, expected=0):
