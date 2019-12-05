@@ -2,7 +2,7 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Thu Dec 05, 2019 at 12:47 AM -0500
+# Last Change: Thu Dec 05, 2019 at 12:57 AM -0500
 
 from collections import defaultdict
 
@@ -76,7 +76,7 @@ def dim_cmd_err(ret_code, expected=1):
         raise ValueError('The command was not successfully sent.')
 
 
-def dim_dic_error(ret, errs, expected=0):
+def dim_dic_err(ret, errs, expected=0):
     try:
         ret_code, result = ret[0], ret[1]
     except TypeError:
