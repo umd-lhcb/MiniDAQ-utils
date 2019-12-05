@@ -2,7 +2,7 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Thu Dec 05, 2019 at 05:59 AM -0500
+# Last Change: Thu Dec 05, 2019 at 06:03 AM -0500
 
 import os.path as p
 
@@ -12,6 +12,7 @@ from tabulate import tabulate
 from ..gbtclient.i2c import I2C_TYPE, I2C_FREQ
 from ..gbtclient.i2c import i2c_activate_ch, i2c_read, i2c_write
 
+from ..gbtclient.gpio import GPIO_LEVEL_LOOKUP
 from ..gbtclient.gpio import gpio_activate_ch, gpio_setdir, gpio_setline, \
     gpio_getline
 
@@ -75,7 +76,8 @@ class DCB(object):
         self.activate_gpio()
         table = []
         for g in self.gpio_chs:
-            status = gpio_getline(self.gbt, self.sca, g)
+            status = int(gpio_getline(self.gbt, self.sca, g))
+            status = GPIO_LEVEL_LOOKUP[status]
             table.append([str(g), status])
         print(tabulate(table, headers=['GPIO', 'status']))
 

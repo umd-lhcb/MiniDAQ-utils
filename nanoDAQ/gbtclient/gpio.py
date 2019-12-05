@@ -2,7 +2,7 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Thu Dec 05, 2019 at 01:54 AM -0500
+# Last Change: Thu Dec 05, 2019 at 06:02 AM -0500
 
 import pydim
 
@@ -31,8 +31,8 @@ GPIO_LEVEL = {
 }
 
 GPIO_LEVEL_LOOKUP = {
-    '00000001': fg.green+ef.bold+'H'+rs.bold_dim+fg.rs,
-    '00000000': fg.red+ef.bold+'L'+rs.bold_dim+fg.rs,
+    1: fg.green+ef.bold+'H'+rs.bold_dim+fg.rs,
+    0: fg.red+ef.bold+'L'+rs.bold_dim+fg.rs,
 }
 
 

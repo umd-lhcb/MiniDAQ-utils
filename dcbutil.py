@@ -2,7 +2,7 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Thu Dec 05, 2019 at 05:55 AM -0500
+# Last Change: Thu Dec 05, 2019 at 06:04 AM -0500
 
 from nanoDAQ.ut.dcb import DCB
 from nanoDAQ.utils import parse_input as proto_parse_input
@@ -13,7 +13,7 @@ from nanoDAQ.utils import parse_input as proto_parse_input
 #################################
 
 DESCR = '''
-DCB utility.
+DCB utility. print current DCB status by default.
 '''
 
 
@@ -60,3 +60,6 @@ if __name__ == '__main__':
             dcb.gpio_reset(args.reset)
         else:
             dcb.gpio_status()
+
+    else:
+        dcb.slave_status()
