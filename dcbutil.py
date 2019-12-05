@@ -2,7 +2,7 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Thu Dec 05, 2019 at 06:23 AM -0500
+# Last Change: Thu Dec 05, 2019 at 06:29 AM -0500
 
 from nanoDAQ.ut.dcb import DCB
 from nanoDAQ.utils import parse_input as proto_parse_input
@@ -50,6 +50,7 @@ specify GPIO lines to reset. default to print out current value of GPIO 0-6.
 control PRBS register.
 ''')
     prbs_cmd.add_argument('mode',
+                          type=str,
                           help='''
 specify the PRBS register value. on|off supported.
     ''')
