@@ -2,7 +2,7 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Thu Dec 05, 2019 at 04:44 AM -0500
+# Last Change: Thu Dec 05, 2019 at 05:28 AM -0500
 
 import os.path as p
 
@@ -39,10 +39,11 @@ class DCB(object):
 
         self.i2c_activated = False
 
-    def init(self, filepath):
+    def init(self, filepath, slaves=None):
+        slaves = self.slaves if slaves is None else slaves
         self.activate_i2c()
         filepath = p.abspath(p.expanduser(filepath))
-        for s in self.slaves:
+        for s in slaves:
             i2c_write(self.gbt, self.sca, self.bus, s, 0, 366,
                       self.i2c_type, self.i2c_freq, filepath=filepath)
 
