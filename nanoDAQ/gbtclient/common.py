@@ -2,7 +2,7 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Thu Dec 05, 2019 at 01:43 AM -0500
+# Last Change: Thu Dec 05, 2019 at 02:17 AM -0500
 
 from collections import defaultdict
 
@@ -13,6 +13,7 @@ from collections import defaultdict
 
 GBT_PREF = 'Gbt'
 GBT_SERV = 'UMDlab'
+TELL40   = 'TELL40_Dev1_0'
 
 SCA_OP_MODE = {
     'write':         0,
