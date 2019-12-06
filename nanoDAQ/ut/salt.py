@@ -26,7 +26,7 @@ SALT_INIT_SEQ = {
     (0, 4, 'cc'),
     (0, 0, SALT_SER_SRC_MODE['fixed']),
     (0, 1, 'c4'),  # Fixed pattern to 0xC4
-    (0, 8, '01'),  # Phase
+    (0, 8, '00'),  # Phase
     (3, 0, '24'),
     (3, 1, '32'),
     (3, 0, 'e4'),
