@@ -2,7 +2,7 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Fri Dec 06, 2019 at 03:18 AM -0500
+# Last Change: Fri Dec 06, 2019 at 03:19 AM -0500
 
 from tabulate import tabulate
 
@@ -54,6 +54,7 @@ class SALT(object):
         asics = self.asics if asics is None else asics
         self.activate_i2c()
         self.activate_gpio()
+        self.reset()
         for s in asics:
             for addr, subaddr, val in SALT_INIT_SEQ:
                 i2c_write(self.gbt, self.sca, self.bus, addr+s*10, subaddr, 1,
