@@ -2,9 +2,10 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Fri Dec 06, 2019 at 02:24 AM -0500
+# Last Change: Fri Dec 06, 2019 at 03:44 AM -0500
 
 from collections import defaultdict
+from argsparse import Action
 
 
 ###########
@@ -63,3 +64,8 @@ specify GBT server hostname.
 ''')
 
     return cmd
+
+
+class HexToIntAction(Action):
+    def __call__(self, parser, namespace, value, option_string=None):
+        setattr(namespace, self.dest, int(value, base=16))

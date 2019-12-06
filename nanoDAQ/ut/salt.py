@@ -2,7 +2,7 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Fri Dec 06, 2019 at 03:19 AM -0500
+# Last Change: Fri Dec 06, 2019 at 03:34 AM -0500
 
 from tabulate import tabulate
 
@@ -83,11 +83,11 @@ class SALT(object):
         else:
             return table
 
-    def reset(self):
+    def reset(self, final_state='hight'):
         self.activate_gpio()
         gpio_setdir(self.gbt, self.sca, self.bus)
         gpio_setline(self.gbt, self.sca, self.bus, level='low')
-        gpio_setline(self.gbt, self.sca, self.bus, level='high')
+        gpio_setline(self.gbt, self.sca, self.bus, level=final_state)
 
     def phase(self, ph, asics=None):
         asics = self.asics if asics is None else asics
