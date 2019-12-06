@@ -2,7 +2,7 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Fri Dec 06, 2019 at 12:59 AM -0500
+# Last Change: Fri Dec 06, 2019 at 01:04 AM -0500
 
 import sys
 
@@ -72,7 +72,7 @@ specify the PRBS register value. on|off supported.
     ''')
 
     write_cmd = add_default_subparser(cmd, 'write', description='''
-specify GBTx register address and value to write
+specify GBTx register address and value to write.
 ''')
     write_cmd.add_argument('reg',
                            action=HexToIntAction,
@@ -82,6 +82,23 @@ specify GBTx register address.
     write_cmd.add_argument('val',
                            help='''
 specify GBTx register value.
+''')
+
+    add_default_subparser(cmd, 'status', description='''
+print slave GBTxs status.
+''')
+
+    read_cmd = add_default_subparser(cmd, 'write', description='''
+specify GBTx register address and size to read.
+''')
+    read_cmd.add_argument('reg',
+                          action=HexToIntAction,
+                          help='''
+specify GBTx register address.
+''')
+    read_cmd.add_argument('size',
+                          help='''
+specify number of registers to read.
 ''')
 
     add_default_subparser(cmd, 'status', description='''
@@ -118,3 +135,6 @@ if __name__ == '__main__':
 
     elif args.cmd == 'write':
         dcb.write(args.reg, args.val, args.slaves)
+
+    elif args.cmd == 'write':
+        dcb.read(args.reg, args.size, args.slaves)

@@ -2,7 +2,7 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Fri Dec 06, 2019 at 12:28 AM -0500
+# Last Change: Fri Dec 06, 2019 at 01:02 AM -0500
 
 import os.path as p
 
@@ -55,6 +55,16 @@ class DCB(object):
             i2c_write(self.gbt, self.sca, self.bus, s, subaddr,
                       num_of_byte(data),
                       self.i2c_type, self.i2c_freq, data=data)
+
+    def read(self, subaddr, size, slaves=None):
+        slaves = self.slaves if slaves is None else slaves
+        self.activate_i2c()
+        table = []
+        for s in slaves:
+            value = i2c_read(self.gbt, self.sca, self.bus, s, subaddr, size,
+                             self.i2c_type, self.i2c_freq)
+            table.append([str(s), value])
+        print(tabulate(table, headers=['slave', 'value']))
 
     def gpio_reset(self, chs):
         self.activate_gpio()
