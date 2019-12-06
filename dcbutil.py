@@ -2,7 +2,7 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Fri Dec 06, 2019 at 12:46 AM -0500
+# Last Change: Fri Dec 06, 2019 at 12:59 AM -0500
 
 import sys
 
@@ -32,6 +32,11 @@ class PRBSAction(Action):
         except KeyError:
             reg = value
         setattr(namespace, self.dest, reg)
+
+
+class HexToIntAction(Action):
+    def __call__(self, parser, namespace, value, option_string=None):
+        setattr(namespace, self.dest, int(value, base=16))
 
 
 def parse_input(descr=DESCR):
@@ -66,6 +71,19 @@ control PRBS register.
 specify the PRBS register value. on|off supported.
     ''')
 
+    write_cmd = add_default_subparser(cmd, 'write', description='''
+specify GBTx register address and value to write
+''')
+    write_cmd.add_argument('reg',
+                           action=HexToIntAction,
+                           help='''
+specify GBTx register address.
+''')
+    write_cmd.add_argument('val',
+                           help='''
+specify GBTx register value.
+''')
+
     add_default_subparser(cmd, 'status', description='''
 print slave GBTxs status.
 ''')
@@ -97,3 +115,6 @@ if __name__ == '__main__':
 
     elif args.cmd == 'status':
         dcb.slave_status(args.slaves)
+
+    elif args.cmd == 'write':
+        dcb.write(args.reg, args.val, args.slaves)
