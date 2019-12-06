@@ -2,7 +2,7 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Fri Dec 06, 2019 at 04:35 AM -0500
+# Last Change: Fri Dec 06, 2019 at 04:39 AM -0500
 
 from tabulate import tabulate
 
@@ -122,7 +122,7 @@ class SALT(object):
             i2c_write(self.gbt, self.sca, self.bus,
                       self.addr_shift(0, s),
                       0x00, 1,
-                      self.i2c_type, self.i2c_freq, mode)
+                      self.i2c_type, self.i2c_freq, data=mode)
 
     def activate_i2c(self):
         if not self.i2c_activated:
