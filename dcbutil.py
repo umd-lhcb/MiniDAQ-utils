@@ -2,42 +2,19 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Fri Dec 06, 2019 at 02:25 AM -0500
+# Last Change: Fri Dec 06, 2019 at 05:16 AM -0500
 
 import sys
 
-from argparse import ArgumentParser, Action
+from argparse import ArgumentParser
 
 from nanoDAQ.ut.dcb import DCB
-from nanoDAQ.utils import add_default_subparser
+from nanoDAQ.utils import add_default_subparser, HexToIntAction
 
 
 #################################
 # Command line arguments parser #
 #################################
-
-DESCR = '''
-DCB utility. print current DCB status by default.
-'''
-
-
-class PRBSAction(Action):
-    def __call__(self, parser, namespace, value, option_string=None):
-        known_mode = {
-            'on':  '03',
-            'off': '00'
-        }
-        try:
-            reg = known_mode[value]
-        except KeyError:
-            reg = value
-        setattr(namespace, self.dest, reg)
-
-
-class HexToIntAction(Action):
-    def __call__(self, parser, namespace, value, option_string=None):
-        setattr(namespace, self.dest, int(value, base=16))
-
 
 def add_dcb_default_subparser(*args, add_slave=True, **kwargs):
     cmd = add_default_subparser(*args, **kwargs)
@@ -53,7 +30,7 @@ def add_dcb_default_subparser(*args, add_slave=True, **kwargs):
     return cmd
 
 
-def parse_input(descr=DESCR):
+def parse_input(descr='DCB programming and controlling utility.'):
     parser = ArgumentParser(description=descr)
     cmd = parser.add_subparsers(dest='cmd')
 
@@ -80,9 +57,8 @@ specify GPIO lines to reset. default to print out current value of GPIO 0-6.
 control PRBS register.
 ''')
     prbs_cmd.add_argument('mode',
-                          action=PRBSAction,
                           help='''
-specify the PRBS register value. on|off supported.
+specify the PRBS register value. supported shortcuts: {}.
     ''')
 
     write_cmd = add_dcb_default_subparser(cmd, 'write', description='''
@@ -139,7 +115,7 @@ if __name__ == '__main__':
             dcb.gpio_status()
 
     elif args.cmd == 'prbs':
-        dcb.write(0x1c, args.mode, args.slaves)
+        dcb.prbs(args.mode, args.slaves)
 
     elif args.cmd == 'status':
         dcb.slave_status(args.slaves)

@@ -2,7 +2,7 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Fri Dec 06, 2019 at 04:49 AM -0500
+# Last Change: Fri Dec 06, 2019 at 05:15 AM -0500
 
 import sys
 
@@ -46,7 +46,7 @@ initialize specified ASICs with default configuration.
     ser_src_cmd = add_salt_default_subparser(cmd, 'ser_src', description='''
 control serializer register.
 ''')
-    ser_src_cmd.add_argument('mode',
+    ser_src_cmd.add_argument('src',
                              help='''
 specify the serializer register value. supported shortcuts: {}.
     '''.format('|'.join(SALT_SER_SRC_MODE.keys())))
@@ -123,7 +123,7 @@ if __name__ == '__main__':
         salt.init(args.asics)
 
     elif args.cmd == 'ser_src':
-        salt.ser_src(args.mode, args.asics)
+        salt.ser_src(args.src, args.asics)
 
     elif args.cmd == 'write':
         salt.write(args.addr, args.reg, args.val, args.asics)
