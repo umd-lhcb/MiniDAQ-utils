@@ -19,17 +19,17 @@ When in doubt, use `-h` of each sub-command for help.
 
 ### To program all data GBTxs on GBT 3
 ```
-./dcbutils.py init ./gbtx_config/slave-Tx-wrong_termination.txt --g 3
+./dcbutils.py init ./gbtx_config/slave-Tx-wrong_termination.txt -g 3
 ```
 
 ### To program data GBTxs 1 and 2 on GBT 3
 ```
-./dcbutils.py init ./gbtx_config/slave-Tx-wrong_termination.txt --g 3 -s 1 2
+./dcbutils.py init ./gbtx_config/slave-Tx-wrong_termination.txt -g 3 -s 1 2
 ```
 
 ### To write register `0x1c` with a value of `0x01` to all data GBTxs on GBT 3
 ```
-./dcbutils.py write 1c 1 --g 3
+./dcbutils.py write 1c 1 -g 3
 ```
 
 ### To read 4 registers starting from `0x1c` on all data GBTxs
