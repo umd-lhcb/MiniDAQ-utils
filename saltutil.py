@@ -2,7 +2,7 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Fri Dec 06, 2019 at 04:48 AM -0500
+# Last Change: Fri Dec 06, 2019 at 04:49 AM -0500
 
 import sys
 
@@ -103,7 +103,6 @@ specify the final state after pulling GPIO to low.''')
 reset SALT.
 ''')
     phase_cmd.add_argument('ph',
-                           action=HexToIntAction,
                            help='''
 specify the phase of SALT.''')
 
