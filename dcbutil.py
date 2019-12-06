@@ -2,7 +2,7 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Fri Dec 06, 2019 at 12:41 AM -0500
+# Last Change: Fri Dec 06, 2019 at 12:45 AM -0500
 
 from argparse import ArgumentParser, Action
 
@@ -74,7 +74,9 @@ print slave GBTxs status.
 if __name__ == '__main__':
     parser = parse_input()
     args = parser.parse_args()
-    dcb = DCB(args.gbt)
+
+    if args.cmd:
+        dcb = DCB(args.gbt)
 
     if args.cmd == 'init':
         dcb.init(args.filepath, args.slaves)
@@ -90,6 +92,3 @@ if __name__ == '__main__':
 
     elif args.cmd == 'status':
         dcb.slave_status(args.slaves)
-
-    else:
-        parser.print_help()
