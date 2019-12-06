@@ -2,7 +2,7 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Fri Dec 06, 2019 at 04:28 AM -0500
+# Last Change: Fri Dec 06, 2019 at 04:29 AM -0500
 
 import pydim
 
@@ -112,4 +112,4 @@ def gpio_getline(*args, gbt_serv=GBT_SERV, regulator=ddr, **kwargs):
         '{}/{}/SrvcGPIORead'.format(GBT_PREF, gbt_serv),
         'I:1;C'
     )
-    return ord(dim_dic_err(regulator(ret), GPIO_ERR_CODE)[-1])
+    return int(dim_dic_err(regulator(ret), GPIO_ERR_CODE), base=16)
