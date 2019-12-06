@@ -2,7 +2,9 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Fri Dec 06, 2019 at 12:45 AM -0500
+# Last Change: Fri Dec 06, 2019 at 12:46 AM -0500
+
+import sys
 
 from argparse import ArgumentParser, Action
 
@@ -77,6 +79,9 @@ if __name__ == '__main__':
 
     if args.cmd:
         dcb = DCB(args.gbt)
+    else:
+        parser.print_help()
+        sys.exit(1)
 
     if args.cmd == 'init':
         dcb.init(args.filepath, args.slaves)
