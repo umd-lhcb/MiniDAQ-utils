@@ -2,7 +2,7 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Fri Dec 06, 2019 at 12:39 AM -0500
+# Last Change: Fri Dec 06, 2019 at 12:41 AM -0500
 
 from argparse import ArgumentParser, Action
 
@@ -68,11 +68,12 @@ specify the PRBS register value. on|off supported.
 print slave GBTxs status.
 ''')
 
-    return parser.parse_args()
+    return parser
 
 
 if __name__ == '__main__':
-    args = parse_input()
+    parser = parse_input()
+    args = parser.parse_args()
     dcb = DCB(args.gbt)
 
     if args.cmd == 'init':
@@ -91,4 +92,4 @@ if __name__ == '__main__':
         dcb.slave_status(args.slaves)
 
     else:
-        dcb.slave_status()
+        parser.print_help()
