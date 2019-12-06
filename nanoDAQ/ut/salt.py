@@ -2,13 +2,14 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Fri Dec 06, 2019 at 04:12 AM -0500
+# Last Change: Fri Dec 06, 2019 at 04:20 AM -0500
 
 from tabulate import tabulate
 
 from ..gbtclient.i2c import I2C_TYPE, I2C_FREQ
 from ..gbtclient.i2c import i2c_activate_ch, i2c_read, i2c_write
 
+from ..gbtclient.gpio import GPIO_LEVEL_INVERSE
 from ..gbtclient.gpio import gpio_activate_ch, gpio_setdir, gpio_setline, \
     gpio_getline
 
@@ -88,7 +89,8 @@ class SALT(object):
         gpio_setline(self.gbt, self.sca, self.bus, level='low')
         gpio_setline(self.gbt, self.sca, self.bus, level=final_state)
 
-        line_state = gpio_getline(self.gbt, self.sca, self.bus)
+        line_state = GPIO_LEVEL_INVERSE[gpio_getline(
+            self.gbt, self.sca, self.bus)]
         if line_state != final_state:
             print('GPIO reported state {}, which differs from specfied state {}'.format(
                 line_state, final_state

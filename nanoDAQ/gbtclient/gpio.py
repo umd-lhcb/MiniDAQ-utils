@@ -2,7 +2,7 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Thu Dec 05, 2019 at 06:02 AM -0500
+# Last Change: Fri Dec 06, 2019 at 04:18 AM -0500
 
 import pydim
 
@@ -29,6 +29,8 @@ GPIO_LEVEL = {
     'high': '00000001',
     'low':  '00000000',
 }
+
+GPIO_LEVEL_INVERSE = {int(v): k for k, v in GPIO_LEVEL.items()}
 
 GPIO_LEVEL_LOOKUP = {
     1: fg.green+ef.bold+'H'+rs.bold_dim+fg.rs,
@@ -67,7 +69,8 @@ def gpio_write(*args, gbt_serv=GBT_SERV, regulator=ddr, **kwargs):
     return dim_dic_err(regulator(ret), GPIO_ERR_CODE)
 
 
-def gpio_read(*args, gbt_serv=GBT_SERV, regulator=ddr, **kwargs):
+def gpio_read(*args, gbt_serv=GBT_SERV, regulator=lambda x: tuple(map(int, x)),
+              **kwargs):
     gpio_op(SCA_OP_MODE['read'], *args, gbt_serv=gbt_serv, **kwargs)
     ret = pydim.dic_sync_info_service(
         '{}/{}/SrvcGPIORead'.format(GBT_PREF, gbt_serv),
