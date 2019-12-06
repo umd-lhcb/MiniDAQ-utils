@@ -2,7 +2,7 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Fri Dec 06, 2019 at 05:10 AM -0500
+# Last Change: Fri Dec 06, 2019 at 03:07 PM -0500
 
 from tabulate import tabulate
 
@@ -52,9 +52,8 @@ class SALT(object):
         self.i2c_activated = False
 
     def init(self, asics=None):
-        self.activate_i2c()
-        self.activate_gpio()
         self.reset()
+        self.activate_i2c()
 
         for s in self.dyn_asics(asics):
             for addr, subaddr, val in SALT_INIT_SEQ:
