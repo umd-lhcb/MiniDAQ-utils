@@ -5,7 +5,7 @@ Currently, the implemented functions are:
 * GBT I2C
 * GBT GPIO
 
-On our server `UMDlab`, this project should be in `$HOME/src`.
+On our server `UMDlab`, this project should be in `$HOME/src/nanoDAQ`.
 
 
 ## `dcbutils.py`
