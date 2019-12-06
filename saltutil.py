@@ -2,7 +2,7 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Fri Dec 06, 2019 at 04:41 AM -0500
+# Last Change: Fri Dec 06, 2019 at 04:48 AM -0500
 
 import sys
 
@@ -99,6 +99,14 @@ reset SALT.
                            help='''
 specify the final state after pulling GPIO to low.''')
 
+    phase_cmd = add_salt_default_subparser(cmd, 'phase', description='''
+reset SALT.
+''')
+    phase_cmd.add_argument('ph',
+                           action=HexToIntAction,
+                           help='''
+specify the phase of SALT.''')
+
     return parser
 
 
@@ -126,3 +134,6 @@ if __name__ == '__main__':
 
     elif args.cmd == 'reset':
         salt.reset(args.final_state)
+
+    elif args.cmd == 'phase':
+        salt.phase(args.ph, args.asics)
