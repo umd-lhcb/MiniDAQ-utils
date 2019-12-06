@@ -2,7 +2,7 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Fri Dec 06, 2019 at 01:02 AM -0500
+# Last Change: Fri Dec 06, 2019 at 01:11 AM -0500
 
 import os.path as p
 
@@ -56,7 +56,7 @@ class DCB(object):
                       num_of_byte(data),
                       self.i2c_type, self.i2c_freq, data=data)
 
-    def read(self, subaddr, size, slaves=None):
+    def read(self, subaddr, size, slaves=None, output=True):
         slaves = self.slaves if slaves is None else slaves
         self.activate_i2c()
         table = []
@@ -64,7 +64,11 @@ class DCB(object):
             value = i2c_read(self.gbt, self.sca, self.bus, s, subaddr, size,
                              self.i2c_type, self.i2c_freq)
             table.append([str(s), value])
-        print(tabulate(table, headers=['slave', 'value']))
+
+        if output:
+            print(tabulate(table, headers=['slave', 'value']))
+        else:
+            return table
 
     def gpio_reset(self, chs):
         self.activate_gpio()
@@ -73,7 +77,7 @@ class DCB(object):
             gpio_setline(self.gbt, self.sca, c, level='low')
             gpio_setline(self.gbt, self.sca, c, level='high')
 
-    def slave_status(self, slaves=None):
+    def slave_status(self, slaves=None, output=True):
         slaves = self.slaves if slaves is None else slaves
         self.activate_i2c()
         table = []
@@ -82,7 +86,11 @@ class DCB(object):
                               self.i2c_type, self.i2c_freq)
             status = GBTX_STATUS[status]
             table.append([str(s), status])
-        print(tabulate(table, headers=['slave', 'status']))
+
+        if output:
+            print(tabulate(table, headers=['slave', 'value']))
+        else:
+            return table
 
     def gpio_status(self):
         self.activate_gpio()
