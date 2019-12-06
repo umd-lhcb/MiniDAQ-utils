@@ -2,10 +2,10 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Fri Dec 06, 2019 at 03:44 AM -0500
+# Last Change: Fri Dec 06, 2019 at 03:47 AM -0500
 
 from collections import defaultdict
-from argsparse import Action
+from argparse import Action
 
 
 ###########
