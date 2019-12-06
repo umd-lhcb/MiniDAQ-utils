@@ -2,7 +2,7 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Fri Dec 06, 2019 at 01:05 AM -0500
+# Last Change: Fri Dec 06, 2019 at 01:06 AM -0500
 
 import sys
 
@@ -84,11 +84,7 @@ specify GBTx register address.
 specify GBTx register value.
 ''')
 
-    add_default_subparser(cmd, 'status', description='''
-print slave GBTxs status.
-''')
-
-    read_cmd = add_default_subparser(cmd, 'write', description='''
+    read_cmd = add_default_subparser(cmd, 'read', description='''
 specify GBTx register address and size to read.
 ''')
     read_cmd.add_argument('reg',
