@@ -2,7 +2,7 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Fri Dec 06, 2019 at 02:19 AM -0500
+# Last Change: Fri Dec 06, 2019 at 02:47 AM -0500
 
 import os.path as op
 
@@ -109,4 +109,4 @@ class DCB(object):
     def activate_gpio(self):
         if not self.gpio_activated:
             gpio_activate_ch(self.gbt, self.sca)
-            self.i2c_activated = True
+            self.gpio_activated = True
