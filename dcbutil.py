@@ -2,7 +2,7 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Fri Dec 06, 2019 at 01:07 AM -0500
+# Last Change: Fri Dec 06, 2019 at 02:25 AM -0500
 
 import sys
 
@@ -39,11 +39,25 @@ class HexToIntAction(Action):
         setattr(namespace, self.dest, int(value, base=16))
 
 
+def add_dcb_default_subparser(*args, add_slave=True, **kwargs):
+    cmd = add_default_subparser(*args, **kwargs)
+    if add_slave:
+        cmd.add_argument('-s', '--slaves',
+                         nargs='+',
+                         type=int,
+                         default=None,
+                         help='''
+    specify slave GBTxs to be programed.
+    ''')
+
+    return cmd
+
+
 def parse_input(descr=DESCR):
     parser = ArgumentParser(description=descr)
     cmd = parser.add_subparsers(dest='cmd')
 
-    init_cmd = add_default_subparser(cmd, 'init', description='''
+    init_cmd = add_dcb_default_subparser(cmd, 'init', description='''
 initialize specified slave GBTxs with a configuration file.
     ''')
     init_cmd.add_argument('filepath',
@@ -51,9 +65,9 @@ initialize specified slave GBTxs with a configuration file.
 path to GBTx config file.
     ''')
 
-    gpio_cmd = add_default_subparser(cmd, 'gpio', description='''
+    gpio_cmd = add_dcb_default_subparser(cmd, 'gpio', description='''
 GPIO status and reset.
-''')
+''', add_slave=False)
     gpio_cmd.add_argument('--reset',
                           nargs='+',
                           type=int,
@@ -62,7 +76,7 @@ GPIO status and reset.
 specify GPIO lines to reset. default to print out current value of GPIO 0-6.
     ''')
 
-    prbs_cmd = add_default_subparser(cmd, 'prbs', description='''
+    prbs_cmd = add_dcb_default_subparser(cmd, 'prbs', description='''
 control PRBS register.
 ''')
     prbs_cmd.add_argument('mode',
@@ -71,7 +85,7 @@ control PRBS register.
 specify the PRBS register value. on|off supported.
     ''')
 
-    write_cmd = add_default_subparser(cmd, 'write', description='''
+    write_cmd = add_dcb_default_subparser(cmd, 'write', description='''
 specify GBTx register address and value to write.
 ''')
     write_cmd.add_argument('reg',
@@ -84,7 +98,7 @@ specify GBTx register address.
 specify GBTx register value.
 ''')
 
-    read_cmd = add_default_subparser(cmd, 'read', description='''
+    read_cmd = add_dcb_default_subparser(cmd, 'read', description='''
 specify GBTx register address and size to read.
 ''')
     read_cmd.add_argument('reg',
@@ -98,7 +112,7 @@ specify GBTx register address.
 specify number of registers to read.
 ''')
 
-    add_default_subparser(cmd, 'status', description='''
+    add_dcb_default_subparser(cmd, 'status', description='''
 print slave GBTxs status.
 ''')
 

@@ -2,7 +2,7 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Fri Dec 06, 2019 at 12:12 AM -0500
+# Last Change: Fri Dec 06, 2019 at 02:24 AM -0500
 
 from collections import defaultdict
 
@@ -53,14 +53,6 @@ def add_default_subparser(subparsers, name, description):
                      default=0,
                      help='''
 specify GBT index.
-''')
-
-    cmd.add_argument('-s', '--slaves',
-                     nargs='+',
-                     type=int,
-                     default=None,
-                     help='''
-specify slave GBTxs to be programed.
 ''')
 
     cmd.add_argument('--host',
