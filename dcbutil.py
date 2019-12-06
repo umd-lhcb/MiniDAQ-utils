@@ -2,10 +2,12 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Thu Dec 05, 2019 at 06:32 AM -0500
+# Last Change: Fri Dec 06, 2019 at 12:13 AM -0500
+
+from argparse import ArgumentParser
 
 from nanoDAQ.ut.dcb import DCB
-from nanoDAQ.utils import parse_input as proto_parse_input
+from nanoDAQ.utils import add_default_subparser
 
 
 #################################
@@ -18,24 +20,18 @@ DCB utility. print current DCB status by default.
 
 
 def parse_input(descr=DESCR):
-    parser = proto_parse_input(descr)
-
-    parser.add_argument('-s', '--slaves',
-                        nargs='+',
-                        type=int,
-                        default=None)
-
+    parser = ArgumentParser(description=descr)
     cmd = parser.add_subparsers(dest='cmd')
 
-    init_cmd = cmd.add_parser('init', description='''
+    init_cmd = add_default_subparser(cmd, 'init', description='''
 initialize specified slave GBTxs with a configuration file.
-''')
+    ''')
     init_cmd.add_argument('filepath',
                           help='''
 path to GBTx config file.
     ''')
 
-    gpio_cmd = cmd.add_parser('gpio', description='''
+    gpio_cmd = add_default_subparser(cmd, 'gpio', description='''
 GPIO status and reset.
 ''')
     gpio_cmd.add_argument('--reset',
@@ -46,7 +42,7 @@ GPIO status and reset.
 specify GPIO lines to reset. default to print out current value of GPIO 0-6.
     ''')
 
-    prbs_cmd = cmd.add_parser('prbs', description='''
+    prbs_cmd = add_default_subparser(cmd, 'prbs', description='''
 control PRBS register.
 ''')
     prbs_cmd.add_argument('mode',

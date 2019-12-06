@@ -2,9 +2,8 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Thu Dec 05, 2019 at 06:27 AM -0500
+# Last Change: Fri Dec 06, 2019 at 12:12 AM -0500
 
-from argparse import ArgumentParser
 from collections import defaultdict
 
 
@@ -45,22 +44,30 @@ def dict_factory(known, default):
 # Command line parser #
 #######################
 
-def parse_input(descr, parser=None):
-    parser = ArgumentParser(description=descr) if parser is None else parser
+def add_default_subparser(subparsers, name, description):
+    cmd = subparsers.add_parser(name, description=description)
 
-    parser.add_argument('-g', '--gbt',
-                        nargs='?',
-                        type=int,
-                        default=0,
-                        help='''
+    cmd.add_argument('-g', '--gbt',
+                     nargs='?',
+                     type=int,
+                     default=0,
+                     help='''
 specify GBT index.
 ''')
 
-    parser.add_argument('--host',
-                        nargs='?',
-                        default='UMDlab',
-                        help='''
+    cmd.add_argument('-s', '--slaves',
+                     nargs='+',
+                     type=int,
+                     default=None,
+                     help='''
+specify slave GBTxs to be programed.
+''')
+
+    cmd.add_argument('--host',
+                     nargs='?',
+                     default='UMDlab',
+                     help='''
 specify GBT server hostname.
 ''')
 
-    return parser
+    return cmd
