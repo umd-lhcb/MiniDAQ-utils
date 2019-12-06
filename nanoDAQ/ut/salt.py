@@ -2,7 +2,7 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Fri Dec 06, 2019 at 04:20 AM -0500
+# Last Change: Fri Dec 06, 2019 at 04:35 AM -0500
 
 from tabulate import tabulate
 
@@ -58,14 +58,18 @@ class SALT(object):
         self.reset()
         for s in asics:
             for addr, subaddr, val in SALT_INIT_SEQ:
-                i2c_write(self.gbt, self.sca, self.bus, addr+s*10, subaddr, 1,
+                i2c_write(self.gbt, self.sca, self.bus,
+                          self.addr_shift(addr, s),
+                          subaddr, 1,
                           self.i2c_type, self.i2c_freq, data=val)
 
     def write(self, addr, subaddr, data, asics=None):
         asics = self.asics if asics is None else asics
         self.activate_i2c()
         for s in asics:
-            i2c_write(self.gbt, self.sca, self.bus, addr+s*10, subaddr,
+            i2c_write(self.gbt, self.sca, self.bus,
+                      self.addr_shift(addr, s),
+                      subaddr,
                       num_of_byte(data),
                       self.i2c_type, self.i2c_freq, data=data)
 
@@ -74,7 +78,9 @@ class SALT(object):
         self.activate_i2c()
         table = []
         for s in asics:
-            value = i2c_read(self.gbt, self.sca, self.bus, addr+s*10, subaddr,
+            value = i2c_read(self.gbt, self.sca, self.bus,
+                             self.addr_shift(addr, s),
+                             subaddr,
                              size, self.i2c_type, self.i2c_freq)
             table.append([str(s), value])
 
@@ -101,7 +107,9 @@ class SALT(object):
     def phase(self, ph, asics=None):
         asics = self.asics if asics is None else asics
         for s in asics:
-            i2c_write(self.gbt, self.sca, self.bus, 0+s*10, 0x08, 1,
+            i2c_write(self.gbt, self.sca, self.bus,
+                      self.addr_shift(0, s),
+                      0x08, 1,
                       self.i2c_type, self.i2c_freq, data=ph)
 
     def ser_src(self, src, asics=None):
@@ -111,7 +119,9 @@ class SALT(object):
         except KeyError:
             mode = src
         for s in asics:
-            i2c_write(self.gbt, self.sca, self.bus, 0+s*10, 0x00, 1,
+            i2c_write(self.gbt, self.sca, self.bus,
+                      self.addr_shift(0, s),
+                      0x00, 1,
                       self.i2c_type, self.i2c_freq, mode)
 
     def activate_i2c(self):
@@ -123,3 +133,7 @@ class SALT(object):
         if not self.gpio_activated:
             gpio_activate_ch(self.gbt, self.sca)
             self.gpio_activated = True
+
+    @staticmethod
+    def addr_shift(addr, shift, base=16):
+        return addr + shift*base
