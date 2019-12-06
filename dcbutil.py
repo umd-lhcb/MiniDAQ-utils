@@ -2,7 +2,7 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Fri Dec 06, 2019 at 01:06 AM -0500
+# Last Change: Fri Dec 06, 2019 at 01:07 AM -0500
 
 import sys
 
@@ -93,6 +93,7 @@ specify GBTx register address and size to read.
 specify GBTx register address.
 ''')
     read_cmd.add_argument('size',
+                          type=int,
                           help='''
 specify number of registers to read.
 ''')
