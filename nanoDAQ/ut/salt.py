@@ -2,14 +2,15 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Fri Dec 06, 2019 at 03:52 AM -0500
+# Last Change: Fri Dec 06, 2019 at 04:12 AM -0500
 
 from tabulate import tabulate
 
 from ..gbtclient.i2c import I2C_TYPE, I2C_FREQ
 from ..gbtclient.i2c import i2c_activate_ch, i2c_read, i2c_write
 
-from ..gbtclient.gpio import gpio_activate_ch, gpio_setdir, gpio_setline
+from ..gbtclient.gpio import gpio_activate_ch, gpio_setdir, gpio_setline, \
+    gpio_getline
 
 from ..utils import num_of_byte
 
@@ -25,7 +26,7 @@ SALT_INIT_SEQ = {
     (0, 4, 'cc'),
     (0, 0, SALT_SER_SRC_MODE['fixed']),
     (0, 1, 'c4'),  # Fixed pattern to 0xC4
-    (0, 8, '01'),
+    (0, 8, '01'),  # Phase
     (3, 0, '24'),
     (3, 1, '32'),
     (3, 0, 'e4'),
@@ -33,7 +34,6 @@ SALT_INIT_SEQ = {
     (0, 3, '4c'),
     (5, 6, '01'),
     (5, 7, '01'),
-    (0, 8, '00'),  # Phase
 }
 
 
@@ -73,13 +73,12 @@ class SALT(object):
         self.activate_i2c()
         table = []
         for s in asics:
-            addr += s*10
-            value = i2c_read(self.gbt, self.sca, self.bus, addr, subaddr,
+            value = i2c_read(self.gbt, self.sca, self.bus, addr+s*10, subaddr,
                              size, self.i2c_type, self.i2c_freq)
-            table.append([str(s), hex(addr), value])
+            table.append([str(s), value])
 
         if output:
-            print(tabulate(table, headers=['SALT', 'address', 'value']))
+            print(tabulate(table, headers=['SALT', 'value']))
         else:
             return table
 
@@ -88,6 +87,14 @@ class SALT(object):
         gpio_setdir(self.gbt, self.sca, self.bus)
         gpio_setline(self.gbt, self.sca, self.bus, level='low')
         gpio_setline(self.gbt, self.sca, self.bus, level=final_state)
+
+        line_state = gpio_getline(self.gbt, self.sca, self.bus)
+        if line_state != final_state:
+            print('GPIO reported state {}, which differs from specfied state {}'.format(
+                line_state, final_state
+            ))
+
+        return line_state
 
     def phase(self, ph, asics=None):
         asics = self.asics if asics is None else asics
