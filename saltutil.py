@@ -2,7 +2,7 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Fri Dec 06, 2019 at 03:44 AM -0500
+# Last Change: Fri Dec 06, 2019 at 03:48 AM -0500
 
 import sys
 
@@ -92,6 +92,8 @@ specify number of registers to read.
 reset SALT.
 ''')
     reset_cmd.add_argument('final_state',
+                           nargs='?',
+                           const='high',
                            choices=['high', 'low'],
                            default='high',
                            help='''
