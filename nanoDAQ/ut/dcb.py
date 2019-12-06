@@ -2,9 +2,9 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Fri Dec 06, 2019 at 01:11 AM -0500
+# Last Change: Fri Dec 06, 2019 at 02:19 AM -0500
 
-import os.path as p
+import os.path as op
 
 from sty import fg, ef, rs
 from tabulate import tabulate
@@ -43,7 +43,7 @@ class DCB(object):
     def init(self, filepath, slaves=None):
         slaves = self.slaves if slaves is None else slaves
         self.activate_i2c()
-        filepath = p.abspath(p.expanduser(filepath))
+        filepath = op.abspath(op.expanduser(filepath))
         for s in slaves:
             i2c_write(self.gbt, self.sca, self.bus, s, 0, 366,
                       self.i2c_type, self.i2c_freq, filepath=filepath)
