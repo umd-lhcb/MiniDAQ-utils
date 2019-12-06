@@ -2,9 +2,10 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Thu Dec 05, 2019 at 04:19 AM -0500
+# Last Change: Fri Dec 06, 2019 at 12:51 AM -0500
 
 from ..utils import hex_rep, dict_factory
+from ..exceptions import DIMError, GBTError
 
 
 #############
@@ -72,7 +73,7 @@ def errs_factory(known_errs={}, default='Unknown error.'):
 
 def dim_cmd_err(ret_code, expected=1):
     if ret_code != expected:
-        raise ValueError('The command was not successfully sent.')
+        raise DIMError('The command was not successfully sent.')
 
 
 def dim_dic_err(ret, errs, expected=0):
@@ -82,6 +83,6 @@ def dim_dic_err(ret, errs, expected=0):
         ret_code = result = ret[0]
 
     if ret_code != expected:
-        raise ValueError(errs[ret_code])
+        raise GBTError(errs[ret_code])
     else:
         return result
