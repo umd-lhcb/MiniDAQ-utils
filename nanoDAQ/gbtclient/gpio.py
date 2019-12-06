@@ -2,7 +2,7 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Fri Dec 06, 2019 at 04:22 AM -0500
+# Last Change: Fri Dec 06, 2019 at 04:26 AM -0500
 
 import pydim
 
@@ -107,7 +107,7 @@ def gpio_getdir(*args, gbt_serv=GBT_SERV, regulator=ddr, **kwargs):
 
 
 def gpio_getline(*args, gbt_serv=GBT_SERV,
-                 regulator=lambda x: tuple(map(int, x)), **kwargs):
+                 regulator=lambda x, y: (x, ord(y[-1])), **kwargs):
     gpio_op(SCA_OP_MODE['gpio_getline'], *args, **kwargs)
     ret = pydim.dic_sync_info_service(
         '{}/{}/SrvcGPIORead'.format(GBT_PREF, gbt_serv),

@@ -2,7 +2,7 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Fri Dec 06, 2019 at 02:47 AM -0500
+# Last Change: Fri Dec 06, 2019 at 04:23 AM -0500
 
 import os.path as op
 
@@ -96,8 +96,7 @@ class DCB(object):
         self.activate_gpio()
         table = []
         for g in self.gpio_chs:
-            status = int(gpio_getline(self.gbt, self.sca, g))
-            status = GPIO_LEVEL_LOOKUP[status]
+            status = GPIO_LEVEL_LOOKUP[gpio_getline(self.gbt, self.sca, g)]
             table.append([str(g), status])
         print(tabulate(table, headers=['GPIO', 'status']))
 
