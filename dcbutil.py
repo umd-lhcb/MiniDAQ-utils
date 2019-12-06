@@ -2,7 +2,7 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Fri Dec 06, 2019 at 05:16 AM -0500
+# Last Change: Fri Dec 06, 2019 at 05:22 AM -0500
 
 import sys
 
@@ -92,6 +92,17 @@ specify number of registers to read.
 print slave GBTxs status.
 ''')
 
+    reset_cmd = add_dcb_default_subparser(cmd, 'reset', description='''
+reset slave GBTxs.
+''')
+    reset_cmd.add_argument('final_state',
+                           nargs='?',
+                           const='high',
+                           choices=['high', 'low'],
+                           default='high',
+                           help='''
+specify the final state after pulling GPIO to low.''')
+
     return parser
 
 
@@ -125,3 +136,6 @@ if __name__ == '__main__':
 
     elif args.cmd == 'read':
         dcb.read(args.reg, args.size, args.slaves)
+
+    elif args.cmd == 'reset':
+        dcb.reset(args.final_state)
