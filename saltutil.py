@@ -2,7 +2,7 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Fri Dec 06, 2019 at 03:48 AM -0500
+# Last Change: Fri Dec 06, 2019 at 04:41 AM -0500
 
 import sys
 
@@ -116,7 +116,7 @@ if __name__ == '__main__':
         salt.init(args.asics)
 
     elif args.cmd == 'ser_src':
-        salt.write(0x1c, args.mode, args.asics)
+        salt.ser_src(args.mode, args.asics)
 
     elif args.cmd == 'write':
         salt.write(args.addr, args.reg, args.val, args.asics)
