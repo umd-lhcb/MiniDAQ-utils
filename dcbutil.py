@@ -2,7 +2,7 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Fri Dec 06, 2019 at 01:04 AM -0500
+# Last Change: Fri Dec 06, 2019 at 01:05 AM -0500
 
 import sys
 
@@ -136,5 +136,5 @@ if __name__ == '__main__':
     elif args.cmd == 'write':
         dcb.write(args.reg, args.val, args.slaves)
 
-    elif args.cmd == 'write':
+    elif args.cmd == 'read':
         dcb.read(args.reg, args.size, args.slaves)
