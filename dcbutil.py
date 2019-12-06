@@ -2,7 +2,7 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Fri Dec 06, 2019 at 05:22 AM -0500
+# Last Change: Fri Dec 06, 2019 at 05:24 AM -0500
 
 import sys
 
@@ -94,7 +94,7 @@ print slave GBTxs status.
 
     reset_cmd = add_dcb_default_subparser(cmd, 'reset', description='''
 reset slave GBTxs.
-''')
+''', add_slave=False)
     reset_cmd.add_argument('final_state',
                            nargs='?',
                            const='high',
