@@ -2,7 +2,7 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Fri Dec 06, 2019 at 03:34 AM -0500
+# Last Change: Fri Dec 06, 2019 at 03:52 AM -0500
 
 from tabulate import tabulate
 
@@ -83,7 +83,7 @@ class SALT(object):
         else:
             return table
 
-    def reset(self, final_state='hight'):
+    def reset(self, final_state='high'):
         self.activate_gpio()
         gpio_setdir(self.gbt, self.sca, self.bus)
         gpio_setline(self.gbt, self.sca, self.bus, level='low')
