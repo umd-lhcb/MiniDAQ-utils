@@ -1,7 +1,13 @@
-# MiniDAQ-utils
-MiniDAQ utilities for programming and controlling DCB and SALT.
+# nanoDAQ
+nanoDAQ implements a small fraction of MiniDAQ's functionality in Python.
+Currently, the implemented functions are:
+
+* GBT I2C
+* GBT GPIO
 
 export CPLUS_INCLUDE_PATH=/usr/local/include/dim
+
+## `dcbutils.py`
 
 ## To program all data GBTxs on fiber 5
 ```
