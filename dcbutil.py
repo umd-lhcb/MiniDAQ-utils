@@ -2,9 +2,9 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Fri Dec 06, 2019 at 12:13 AM -0500
+# Last Change: Fri Dec 06, 2019 at 12:39 AM -0500
 
-from argparse import ArgumentParser
+from argparse import ArgumentParser, Action
 
 from nanoDAQ.ut.dcb import DCB
 from nanoDAQ.utils import add_default_subparser
@@ -17,6 +17,19 @@ from nanoDAQ.utils import add_default_subparser
 DESCR = '''
 DCB utility. print current DCB status by default.
 '''
+
+
+class PRBSAction(Action):
+    def __call__(self, parser, namespace, value, option_string=None):
+        known_mode = {
+            'on':  '03',
+            'off': '00'
+        }
+        try:
+            reg = known_mode[value]
+        except KeyError:
+            reg = value
+        setattr(namespace, self.dest, reg)
 
 
 def parse_input(descr=DESCR):
@@ -46,9 +59,14 @@ specify GPIO lines to reset. default to print out current value of GPIO 0-6.
 control PRBS register.
 ''')
     prbs_cmd.add_argument('mode',
+                          action=PRBSAction,
                           help='''
 specify the PRBS register value. on|off supported.
     ''')
+
+    add_default_subparser(cmd, 'status', description='''
+print slave GBTxs status.
+''')
 
     return parser.parse_args()
 
@@ -67,12 +85,10 @@ if __name__ == '__main__':
             dcb.gpio_status()
 
     elif args.cmd == 'prbs':
-        if args.mode == 'on':
-            dcb.write(0x1c, '03', args.slaves)
-        elif args.mode == 'off':
-            dcb.write(0x1c, '00', args.slaves)
-        else:
-            dcb.write(0x1c, args.mode, args.slaves)
+        dcb.write(0x1c, args.mode, args.slaves)
+
+    elif args.cmd == 'status':
+        dcb.slave_status(args.slaves)
 
     else:
         dcb.slave_status()
