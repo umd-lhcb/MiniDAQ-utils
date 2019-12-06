@@ -8,7 +8,7 @@ Currently, the implemented functions are:
 On our server `UMDlab`, this project should be in `$HOME/src/nanoDAQ`.
 
 
-## `dcbutils.py`
+## `dcbutil.py`
 **Note**: The following flags are available in most sub-commands:
 
 * `-g` or `--gbt`: GBT index, default to 0.
@@ -19,42 +19,42 @@ When in doubt, use `-h` of each sub-command for help.
 
 ### To program all data GBTxs on GBT 3
 ```
-./dcbutils.py init ./gbtx_config/slave-Tx-wrong_termination.txt -g 3
+./dcbutil.py init ./gbtx_config/slave-Tx-wrong_termination.txt -g 3
 ```
 
 ### To program data GBTxs 1 and 2 on GBT 3
 ```
-./dcbutils.py init ./gbtx_config/slave-Tx-wrong_termination.txt -g 3 -s 1 2
+./dcbutil.py init ./gbtx_config/slave-Tx-wrong_termination.txt -g 3 -s 1 2
 ```
 
 ### To write register `0x1c` with a value of `0x01` to all data GBTxs on GBT 3
 ```
-./dcbutils.py write 1c 1 -g 3
+./dcbutil.py write 1c 1 -g 3
 ```
 
 ### To read 4 registers starting from `0x1c` on all data GBTxs
 ```
-./dcbutils.py read 1c 1
+./dcbutil.py read 1c 1
 ```
 
 ### To turn on/off PRBS of slave 1 and 3
 ```
-./dcbutils.py prbs on|off -s 1 3
+./dcbutil.py prbs on|off -s 1 3
 ```
 
 ### To check DCB status
 ```
-./dcbutils.py status
+./dcbutil.py status
 ```
 
 ### To check GPIO status
 ```
-./dcbutils.py gpio
+./dcbutil.py gpio
 ```
 
 ### To do a manual reset on GPIO line 3 and 4
 ```
-./dcbutils.py gpio --reset 3 4
+./dcbutil.py gpio --reset 3 4
 ```
 
 
