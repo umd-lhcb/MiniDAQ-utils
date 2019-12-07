@@ -2,7 +2,7 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Fri Dec 06, 2019 at 12:51 AM -0500
+# Last Change: Sat Dec 07, 2019 at 02:57 AM -0500
 
 
 class DIMError(Exception):
@@ -10,4 +10,8 @@ class DIMError(Exception):
 
 
 class GBTError(Exception):
+    pass
+
+
+class SALTError(Exception):
     pass

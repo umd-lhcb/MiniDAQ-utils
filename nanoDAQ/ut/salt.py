@@ -2,7 +2,7 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Fri Dec 06, 2019 at 03:07 PM -0500
+# Last Change: Sat Dec 07, 2019 at 02:57 AM -0500
 
 from tabulate import tabulate
 
@@ -13,7 +13,8 @@ from ..gbtclient.gpio import GPIO_LEVEL_INVERSE
 from ..gbtclient.gpio import gpio_activate_ch, gpio_setdir, gpio_setline, \
     gpio_getline
 
-from ..utils import num_of_byte
+from ..utils import num_of_byte, hex_pad
+from ..exceptions import SALTError
 
 SALT_SER_SRC_MODE = {
     'fixed': '22',
@@ -51,16 +52,29 @@ class SALT(object):
         self.gpio_activated = False
         self.i2c_activated = False
 
-    def init(self, asics=None):
+    def init(self, asics=None, max_retry=3):
         self.reset()
         self.activate_i2c()
 
         for s in self.dyn_asics(asics):
             for addr, subaddr, val in SALT_INIT_SEQ:
-                i2c_write(self.gbt, self.sca, self.bus,
-                          self.addr_shift(addr, s),
-                          subaddr, 1,
-                          self.i2c_type, self.i2c_freq, data=val)
+                trial = 0
+                while trial < max_retry:
+                    addr = self.addr_shift(addr, s)
+                    i2c_write(self.gbt, self.sca, self.bus, addr, subaddr, 1,
+                              self.i2c_type, self.i2c_freq, data=val)
+                    result = hex_pad(i2c_read(
+                        self.gbt, self.sca, self.bus, addr, subaddr, 1,
+                        self.i2c_type, self.i2c_freq))
+                    if result == val:
+                        break
+                    else:
+                        trial += 1
+
+                if result != val:
+                    raise SALTError('Programming unsuccessful: addr: {}, subaddr {}, val {}'.format(
+                        addr, subaddr, val
+                    ))
 
     def write(self, addr, subaddr, data, asics=None):
         self.activate_i2c()
