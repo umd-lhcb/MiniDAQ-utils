@@ -8,6 +8,17 @@ Currently, the implemented functions are:
 On our server `UMDlab`, this project should be in `$HOME/src/nanoDAQ`.
 
 
+## Installation
+Only CentOS 7 is supported. To install:
+```
+cd utils
+./install.sh --user  # Install required Python dependencies in user home
+```
+
+Note that this script will try to install required `rpm` pacakges, so sudo
+permission is needed.
+
+
 ## `dcbutil.py`
 **Note**: The following flags are available in most sub-commands:
 
