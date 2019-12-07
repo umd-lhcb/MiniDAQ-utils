@@ -2,7 +2,7 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Sat Dec 07, 2019 at 03:40 AM -0500
+# Last Change: Sat Dec 07, 2019 at 03:56 AM -0500
 
 import pydim
 
@@ -10,6 +10,8 @@ from .common import GBT_PREF, GBT_SERV, SCA_OP_MODE
 from .common import hex_to_bytes
 from .common import errs_factory, dim_cmd_err, dim_dic_err
 from .common import default_dim_regulator as ddr
+
+from ..exceptions import GBTError
 
 
 #############
@@ -79,3 +81,25 @@ def i2c_read(*args, gbt_serv=GBT_SERV, regulator=ddr, **kwargs):
 
 def i2c_activate_ch(gbt, sca, bus, **kwargs):
     i2c_op(SCA_OP_MODE['activate_ch'], gbt, sca, bus, 0, 0, 0, 0, 0, **kwargs)
+
+
+#############################
+# High-level I2C Operations #
+#############################
+
+def i2c_write_verify(*args, filepath=None, max_retry=5, error=GBTError,
+                     **kwargs):
+    trial = 0
+    while trial < max_retry:
+        i2c_write(*args, **kwargs)
+        reg_val = i2c_read(*args, **kwargs)
+
+        if reg_val == i2c_write:
+            break
+        else:
+            trial += 1
+
+    if reg_val != kwargs['data']:
+        raise error('Program failed at {}:{}. Expect {} but got {}'.format(
+            args[3], args[4], kwargs['data'], reg_val
+        ))

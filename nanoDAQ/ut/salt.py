@@ -2,12 +2,13 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Sat Dec 07, 2019 at 02:58 AM -0500
+# Last Change: Sat Dec 07, 2019 at 04:00 AM -0500
 
 from tabulate import tabulate
 
 from ..gbtclient.i2c import I2C_TYPE, I2C_FREQ
-from ..gbtclient.i2c import i2c_activate_ch, i2c_read, i2c_write
+from ..gbtclient.i2c import i2c_activate_ch, i2c_read, i2c_write, \
+    i2c_write_verify
 
 from ..gbtclient.gpio import GPIO_LEVEL_INVERSE
 from ..gbtclient.gpio import gpio_activate_ch, gpio_setdir, gpio_setline, \
@@ -52,39 +53,37 @@ class SALT(object):
         self.gpio_activated = False
         self.i2c_activated = False
 
-    def init(self, asics=None, max_retry=3):
+    def init(self, asics=None, verify=True):
         self.reset()
         self.activate_i2c()
 
         for s in self.dyn_asics(asics):
             for addr, subaddr, val in SALT_INIT_SEQ:
-                trial = 0
-                while trial < max_retry:
-                    addr = self.addr_shift(addr, s)
+                addr = self.addr_shift(addr, s)
+                if verify:
+                    i2c_write_verify(self.gbt, self.sca, self.bus,
+                                     addr, subaddr, 1,
+                                     self.i2c_type, self.i2c_freq, data=val)
+                else:
                     i2c_write(self.gbt, self.sca, self.bus, addr, subaddr, 1,
                               self.i2c_type, self.i2c_freq, data=val)
-                    result = pad(i2c_read(
-                        self.gbt, self.sca, self.bus, addr, subaddr, 1,
-                        self.i2c_type, self.i2c_freq))
-                    if result == val:
-                        break
-                    else:
-                        trial += 1
 
-                if result != val:
-                    raise SALTError('Programming unsuccessful: addr: {}, subaddr {}, val {}'.format(
-                        addr, subaddr, val
-                    ))
-
-    def write(self, addr, subaddr, data, asics=None):
+    def write(self, addr, subaddr, data, asics=None, verify=True):
         self.activate_i2c()
 
         for s in self.dyn_asics(asics):
-            i2c_write(self.gbt, self.sca, self.bus,
-                      self.addr_shift(addr, s),
-                      subaddr,
-                      num_of_byte(data),
-                      self.i2c_type, self.i2c_freq, data=data)
+            if verify:
+                i2c_write_verify(self.gbt, self.sca, self.bus,
+                                 self.addr_shift(addr, s),
+                                 subaddr,
+                                 num_of_byte(data),
+                                 self.i2c_type, self.i2c_freq, data=data)
+            else:
+                i2c_write(self.gbt, self.sca, self.bus,
+                          self.addr_shift(addr, s),
+                          subaddr,
+                          num_of_byte(data),
+                          self.i2c_type, self.i2c_freq, data=data)
 
     def read(self, addr, subaddr, size, asics=None, output=True):
         self.activate_i2c()
