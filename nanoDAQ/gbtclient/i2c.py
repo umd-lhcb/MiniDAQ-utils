@@ -2,7 +2,7 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Thu Dec 05, 2019 at 06:11 AM -0500
+# Last Change: Sat Dec 07, 2019 at 03:36 AM -0500
 
 import pydim
 
@@ -47,7 +47,7 @@ def i2c_op(mode, gbt, sca, bus, addr, sub_addr, size, i2c_type, i2c_freq,
                         i2c_type, i2c_freq, scl)))
     if filepath:
         cmd += ',{}'.format(filepath)
-    cmd = fill(cmd)
+    # cmd = fill(cmd)
 
     if not data:
         data = '0'
