@@ -2,7 +2,7 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Sat Dec 07, 2019 at 03:56 AM -0500
+# Last Change: Sat Dec 07, 2019 at 04:07 AM -0500
 
 import pydim
 
@@ -90,16 +90,17 @@ def i2c_activate_ch(gbt, sca, bus, **kwargs):
 def i2c_write_verify(*args, filepath=None, max_retry=5, error=GBTError,
                      **kwargs):
     trial = 0
+    data = kwargs['data']
     while trial < max_retry:
         i2c_write(*args, **kwargs)
         reg_val = i2c_read(*args, **kwargs)
 
-        if reg_val == i2c_write:
+        if reg_val == data:
             break
         else:
             trial += 1
 
-    if reg_val != kwargs['data']:
+    if reg_val != data:
         raise error('Program failed at {}:{}. Expect {} but got {}'.format(
-            args[3], args[4], kwargs['data'], reg_val
+            args[3], args[4], data, reg_val
         ))
