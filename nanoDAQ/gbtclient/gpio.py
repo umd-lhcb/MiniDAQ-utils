@@ -2,7 +2,7 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Sat Dec 07, 2019 at 01:18 AM -0500
+# Last Change: Sat Dec 07, 2019 at 01:49 AM -0500
 
 import pydim
 
@@ -24,6 +24,8 @@ GPIO_DIR = {
     'out': '00000001',
     'in':  '00000000',
 }
+
+GPIO_DIR_LOOKUP = {int(v): k for k, v in GPIO_DIR.items()}
 
 GPIO_LEVEL = {
     'high': '00000001',

@@ -2,7 +2,7 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Sat Dec 07, 2019 at 01:26 AM -0500
+# Last Change: Sat Dec 07, 2019 at 01:51 AM -0500
 
 import os.path as op
 
@@ -12,7 +12,7 @@ from tabulate import tabulate
 from ..gbtclient.i2c import I2C_TYPE, I2C_FREQ
 from ..gbtclient.i2c import i2c_activate_ch, i2c_read, i2c_write
 
-from ..gbtclient.gpio import GPIO_LEVEL_LOOKUP
+from ..gbtclient.gpio import GPIO_DIR_LOOKUP, GPIO_LEVEL_LOOKUP
 from ..gbtclient.gpio import gpio_activate_ch, gpio_setdir, gpio_setline, \
     gpio_getdir, gpio_getline
 
@@ -104,16 +104,16 @@ class DCB(object):
         table = []
 
         for g in self.gpio_chs:
-            dir_raw = gpio_getdir(self.gbt, self.sca, g)
+            dir = gpio_getdir(self.gbt, self.sca, g)
+            line = gpio_getline(self.gbt, self.sca, g)
 
-            line_raw = gpio_getline(self.gbt, self.sca, g)
-            line = GPIO_LEVEL_LOOKUP[line_raw]
-
-            table_raw.append([g, dir_raw, line_raw])
-            table.append([str(g), str(dir_raw), line])
+            table_raw.append([g, dir, line])
+            table.append([str(g), GPIO_DIR_LOOKUP[dir],
+                          GPIO_LEVEL_LOOKUP[line]])
 
         if output:
-            print(tabulate(table, headers=['GPIO', 'direction', 'status']))
+            print(tabulate(table, headers=['GPIO', 'direction', 'status'],
+                           colalign=['right', 'left', 'left']))
         else:
             return table_raw
 
