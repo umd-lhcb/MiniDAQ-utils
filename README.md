@@ -65,7 +65,7 @@ When in doubt, use `-h` of each sub-command for help.
 * `-a` or `--asics`: ASICs to be programmed, default to `0 1 2 3` (**WEST**).
 * `--host`: Hostname of the machine (not needed if you are at UMD).
 
-## To program a single hybrid at I2C 5
+## To program a single hybrid on I2C 5
 ```
 ./saltutil.py 5 init
 ```
@@ -73,12 +73,12 @@ When in doubt, use `-h` of each sub-command for help.
 Note that the SALT will be GPIO-reset automatically when `init`. Also, `5` is
 the I2C bus. This argument is **mandatory**.
 
-## To program SALT `0x0` `0x8` with value `0x1122` on SALTs 1 and 3, on I2C 5
+## To program SALT `0x0` `0x8` with value `0x1122` on SALTs 1 and 3, I2C 5
 ```
 ./saltutil.py 5 write 0 8 1122 -s 1 3
 ```
 
-## To read 2 SALT registers starting from `0x0` `0x8` on all SALTs, on I2C 5
+## To read 2 SALT registers starting from `0x0` `0x8` on all SALTs, I2C 5
 ```
 ./saltutil.py 5 read 0 8 2
 ```
