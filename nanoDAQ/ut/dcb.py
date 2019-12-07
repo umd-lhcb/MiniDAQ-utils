@@ -2,7 +2,7 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Fri Dec 06, 2019 at 05:20 AM -0500
+# Last Change: Sat Dec 07, 2019 at 01:26 AM -0500
 
 import os.path as op
 
@@ -14,7 +14,7 @@ from ..gbtclient.i2c import i2c_activate_ch, i2c_read, i2c_write
 
 from ..gbtclient.gpio import GPIO_LEVEL_LOOKUP
 from ..gbtclient.gpio import gpio_activate_ch, gpio_setdir, gpio_setline, \
-    gpio_getline
+    gpio_getdir, gpio_getline
 
 from ..utils import dict_factory, num_of_byte
 
@@ -98,14 +98,24 @@ class DCB(object):
         else:
             return table
 
-    def gpio_status(self):
+    def gpio_status(self, output=True):
         self.activate_gpio()
+        table_raw = []
         table = []
 
         for g in self.gpio_chs:
-            status = GPIO_LEVEL_LOOKUP[gpio_getline(self.gbt, self.sca, g)]
-            table.append([str(g), status])
-        print(tabulate(table, headers=['GPIO', 'status']))
+            dir_raw = gpio_getdir(self.gbt, self.sca, g)
+
+            line_raw = gpio_getline(self.gbt, self.sca, g)
+            line = GPIO_LEVEL_LOOKUP[line_raw]
+
+            table_raw.append([g, dir_raw, line_raw])
+            table.append([str(g), str(dir_raw), line])
+
+        if output:
+            print(tabulate(table, headers=['GPIO', 'direction', 'status']))
+        else:
+            return table_raw
 
     def prbs(self, mode, slaves=None):
         try:

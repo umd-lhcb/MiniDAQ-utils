@@ -2,7 +2,7 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Fri Dec 06, 2019 at 04:29 AM -0500
+# Last Change: Sat Dec 07, 2019 at 01:18 AM -0500
 
 import pydim
 
@@ -103,7 +103,7 @@ def gpio_getdir(*args, gbt_serv=GBT_SERV, regulator=ddr, **kwargs):
         '{}/{}/SrvcGPIORead'.format(GBT_PREF, gbt_serv),
         'I:1;C'
     )
-    return dim_dic_err(regulator(ret), GPIO_ERR_CODE)
+    return int(dim_dic_err(regulator(ret), GPIO_ERR_CODE), base=16)
 
 
 def gpio_getline(*args, gbt_serv=GBT_SERV, regulator=ddr, **kwargs):
