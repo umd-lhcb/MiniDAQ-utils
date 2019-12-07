@@ -2,7 +2,7 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Sat Dec 07, 2019 at 04:05 AM -0500
+# Last Change: Sat Dec 07, 2019 at 04:17 AM -0500
 
 from tabulate import tabulate
 
@@ -23,7 +23,7 @@ SALT_SER_SRC_MODE = {
     'tfc':   '01',
 }
 
-SALT_INIT_SEQ = {
+SALT_INIT_SEQ = [
     (0, 4, '8c'),
     (0, 6, '15'),
     (0, 4, 'cc'),
@@ -37,7 +37,7 @@ SALT_INIT_SEQ = {
     (0, 3, '4c'),
     (5, 6, '01'),
     (5, 7, '01'),
-}
+]
 
 
 class SALT(object):
