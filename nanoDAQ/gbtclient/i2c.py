@@ -2,12 +2,12 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Sat Dec 07, 2019 at 03:36 AM -0500
+# Last Change: Sat Dec 07, 2019 at 03:40 AM -0500
 
 import pydim
 
 from .common import GBT_PREF, GBT_SERV, SCA_OP_MODE
-from .common import fill, hex_to_bytes
+from .common import hex_to_bytes
 from .common import errs_factory, dim_cmd_err, dim_dic_err
 from .common import default_dim_regulator as ddr
 
@@ -47,7 +47,6 @@ def i2c_op(mode, gbt, sca, bus, addr, sub_addr, size, i2c_type, i2c_freq,
                         i2c_type, i2c_freq, scl)))
     if filepath:
         cmd += ',{}'.format(filepath)
-    # cmd = fill(cmd)
 
     if not data:
         data = '0'

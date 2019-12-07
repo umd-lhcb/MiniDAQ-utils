@@ -2,14 +2,14 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Sat Dec 07, 2019 at 01:49 AM -0500
+# Last Change: Sat Dec 07, 2019 at 03:41 AM -0500
 
 import pydim
 
 from sty import fg, ef, rs
 
 from .common import GBT_PREF, GBT_SERV, SCA_OP_MODE
-from .common import fill, hex_to_bytes
+from .common import hex_to_bytes
 from .common import errs_factory, dim_cmd_err, dim_dic_err
 from .common import default_dim_regulator as ddr
 
@@ -49,7 +49,6 @@ def gpio_op(mode, gbt, sca, addr,
             gbt_serv=GBT_SERV):
     cmd = ','.join(map(str,
                        (mode, gbt, sca, addr)))
-    cmd = fill(cmd)
 
     if not data:
         data = '0'
