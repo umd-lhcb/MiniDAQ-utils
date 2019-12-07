@@ -24,7 +24,6 @@ permission is needed.
 
 * `-g` or `--gbt`: GBT index, default to `0`.
 * `-s` or `--slaves`: Slaves to be programmed, default to `1 2 3 4 5 6`.
-* `--host`: Hostname of the machine (not needed if you are at UMD).
 
 When in doubt, use `-h` of each sub-command for help.
 
@@ -74,7 +73,6 @@ When in doubt, use `-h` of each sub-command for help.
 
 * `-g` or `--gbt`: GBT index, default to `0`.
 * `-a` or `--asics`: ASICs to be programmed, default to `0 1 2 3` (**WEST**).
-* `--host`: Hostname of the machine (not needed if you are at UMD).
 
 ## To program a single hybrid on I2C 5
 ```

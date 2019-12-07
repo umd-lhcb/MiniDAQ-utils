@@ -2,7 +2,7 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Fri Dec 06, 2019 at 03:47 AM -0500
+# Last Change: Sat Dec 07, 2019 at 03:29 AM -0500
 
 from collections import defaultdict
 from argparse import Action
@@ -47,20 +47,12 @@ def dict_factory(known, default):
 
 def add_default_subparser(subparsers, name, description):
     cmd = subparsers.add_parser(name, description=description)
-
     cmd.add_argument('-g', '--gbt',
                      nargs='?',
                      type=int,
                      default=0,
                      help='''
 specify GBT index.
-''')
-
-    cmd.add_argument('--host',
-                     nargs='?',
-                     default='UMDlab',
-                     help='''
-specify GBT server hostname.
 ''')
 
     return cmd
