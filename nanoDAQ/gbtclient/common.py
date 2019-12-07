@@ -2,7 +2,9 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Fri Dec 06, 2019 at 12:51 AM -0500
+# Last Change: Sat Dec 07, 2019 at 03:25 AM -0500
+
+from platform import node
 
 from ..utils import hex_rep, dict_factory
 from ..exceptions import DIMError, GBTError
@@ -13,7 +15,7 @@ from ..exceptions import DIMError, GBTError
 #############
 
 GBT_PREF = 'Gbt'
-GBT_SERV = 'UMDlab'
+GBT_SERV = node()  # Canonical hostname
 TELL40   = 'TELL40_Dev1_0'
 
 SCA_OP_MODE = {
