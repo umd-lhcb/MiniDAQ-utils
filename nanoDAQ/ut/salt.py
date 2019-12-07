@@ -2,7 +2,7 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Sat Dec 07, 2019 at 04:00 AM -0500
+# Last Change: Sat Dec 07, 2019 at 04:05 AM -0500
 
 from tabulate import tabulate
 
@@ -14,7 +14,7 @@ from ..gbtclient.gpio import GPIO_LEVEL_INVERSE
 from ..gbtclient.gpio import gpio_activate_ch, gpio_setdir, gpio_setline, \
     gpio_getline
 
-from ..utils import num_of_byte, pad
+from ..utils import num_of_byte
 from ..exceptions import SALTError
 
 SALT_SER_SRC_MODE = {
@@ -63,7 +63,8 @@ class SALT(object):
                 if verify:
                     i2c_write_verify(self.gbt, self.sca, self.bus,
                                      addr, subaddr, 1,
-                                     self.i2c_type, self.i2c_freq, data=val)
+                                     self.i2c_type, self.i2c_freq,
+                                     data=val, error=SALTError)
                 else:
                     i2c_write(self.gbt, self.sca, self.bus, addr, subaddr, 1,
                               self.i2c_type, self.i2c_freq, data=val)
@@ -77,7 +78,8 @@ class SALT(object):
                                  self.addr_shift(addr, s),
                                  subaddr,
                                  num_of_byte(data),
-                                 self.i2c_type, self.i2c_freq, data=data)
+                                 self.i2c_type, self.i2c_freq,
+                                 data=data, error=SALTError)
             else:
                 i2c_write(self.gbt, self.sca, self.bus,
                           self.addr_shift(addr, s),
