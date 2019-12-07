@@ -2,7 +2,7 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Sat Dec 07, 2019 at 01:51 AM -0500
+# Last Change: Sat Dec 07, 2019 at 01:59 AM -0500
 
 import os.path as op
 
@@ -68,7 +68,7 @@ class DCB(object):
         for s in self.dyn_slaves(slaves):
             value = i2c_read(self.gbt, self.sca, self.bus, s, subaddr, size,
                              self.i2c_type, self.i2c_freq)
-            table.append([str(s), value])
+            table.append([s, value])
 
         if output:
             print(tabulate(table, headers=['slave', 'value']))
@@ -85,18 +85,19 @@ class DCB(object):
 
     def slave_status(self, slaves=None, output=True):
         self.activate_i2c()
+        table_raw = []
         table = []
 
         for s in self.dyn_slaves(slaves):
             status = i2c_read(self.gbt, self.sca, self.bus, s, 0x1af, 1,
                               self.i2c_type, self.i2c_freq)
-            status = GBTX_STATUS[status]
-            table.append([str(s), status])
+            table_raw.append([s, status])
+            table.append([s, GBTX_STATUS[status]])
 
         if output:
             print(tabulate(table, headers=['slave', 'value']))
         else:
-            return table
+            return table_raw
 
     def gpio_status(self, output=True):
         self.activate_gpio()
@@ -108,8 +109,7 @@ class DCB(object):
             line = gpio_getline(self.gbt, self.sca, g)
 
             table_raw.append([g, dir, line])
-            table.append([str(g), GPIO_DIR_LOOKUP[dir],
-                          GPIO_LEVEL_LOOKUP[line]])
+            table.append([g, GPIO_DIR_LOOKUP[dir], GPIO_LEVEL_LOOKUP[line]])
 
         if output:
             print(tabulate(table, headers=['GPIO', 'direction', 'status'],
