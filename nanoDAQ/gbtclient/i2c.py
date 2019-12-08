@@ -2,7 +2,7 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Sat Dec 07, 2019 at 07:51 PM -0500
+# Last Change: Sat Dec 07, 2019 at 07:57 PM -0500
 
 import pydim
 
@@ -78,6 +78,15 @@ def i2c_read(*args, regulator=ddr, **kwargs):
     return dim_dic_err(regulator(ret), I2C_ERR_CODE)
 
 
+def i2c_writeread(*args, regulator=ddr, **kwargs):
+    i2c_op(SCA_OP_MODE['writeread'], *args, **kwargs)
+    ret = pydim.dic_sync_info_service(
+        '{}/{}/SrvcI2CRead'.format(GBT_PREF, GBT_SERV),
+        'I:1;C'
+    )
+    return dim_dic_err(regulator(ret), I2C_ERR_CODE)
+
+
 def i2c_activate_ch(gbt, sca, bus, **kwargs):
     i2c_op(SCA_OP_MODE['activate_ch'], gbt, sca, bus, 0, 0, 0, 0, 0, **kwargs)
 
@@ -91,8 +100,7 @@ def i2c_write_verify(*args, filepath=None, max_retry=5, error=GBTError,
     trial = 0
     data = kwargs['data']
     while trial < max_retry:
-        i2c_write(*args, **kwargs)
-        reg_val = i2c_read(*args, **kwargs)
+        reg_val = i2c_writeread(*args, **kwargs)
 
         if reg_val == data:
             break
