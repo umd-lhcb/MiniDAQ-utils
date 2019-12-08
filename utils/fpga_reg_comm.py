@@ -2,7 +2,7 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Sun Dec 08, 2019 at 02:37 AM -0500
+# Last Change: Sun Dec 08, 2019 at 02:38 AM -0500
 
 import pydim
 
@@ -23,4 +23,4 @@ def decode(ret):
     if isinstance(bytes, ret[1]):
         return [hex(i) for i in ret[1]]
     elif isinstance(str, ret[1]):
-        return [ord(i) for i in ret[1]]
+        return [hex(ord(i)) for i in ret[1]]
