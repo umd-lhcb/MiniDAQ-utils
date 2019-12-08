@@ -2,7 +2,7 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Sun Dec 08, 2019 at 02:30 AM -0500
+# Last Change: Sun Dec 08, 2019 at 02:34 AM -0500
 
 import pydim
 
@@ -17,3 +17,7 @@ def cmnd(name, cmd, dev='TELL40_Dev1_0.top_tell40'):
 
 def srvc(name, srvc='SrvcReadings/', dev='TELL40_Dev1_0.top_tell40'):
     return pydim.dic_sync_info_service(PREFIX+srvc+dev+'.'+name)
+
+
+def decode(ret):
+    return [hex(i) for i in ret[1]]
