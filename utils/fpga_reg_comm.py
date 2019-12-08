@@ -2,7 +2,7 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Sun Dec 08, 2019 at 02:38 AM -0500
+# Last Change: Sun Dec 08, 2019 at 02:39 AM -0500
 
 import pydim
 
@@ -20,7 +20,7 @@ def srvc(name, srvc='SrvcReadings/', dev='TELL40_Dev1_0.top_tell40'):
 
 
 def decode(ret):
-    if isinstance(bytes, ret[1]):
+    if isinstance(ret[1], bytes):
         return [hex(i) for i in ret[1]]
-    elif isinstance(str, ret[1]):
+    elif isinstance(ret[1], str):
         return [hex(ord(i)) for i in ret[1]]
