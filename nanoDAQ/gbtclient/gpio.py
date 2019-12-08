@@ -2,7 +2,7 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Sat Dec 07, 2019 at 03:41 AM -0500
+# Last Change: Sat Dec 07, 2019 at 07:53 PM -0500
 
 import pydim
 
@@ -44,9 +44,7 @@ GPIO_LEVEL_LOOKUP = {
 # GPIO Operations #
 ###################
 
-def gpio_op(mode, gbt, sca, addr,
-            data=None,
-            gbt_serv=GBT_SERV):
+def gpio_op(mode, gbt, sca, addr, data=None):
     cmd = ','.join(map(str,
                        (mode, gbt, sca, addr)))
 
@@ -56,25 +54,24 @@ def gpio_op(mode, gbt, sca, addr,
 
     args = (cmd, data)
     ret_code = pydim.dic_sync_cmnd_service(
-        '{}/{}/CmndGPIOOperation'.format(GBT_PREF, gbt_serv),
+        '{}/{}/CmndGPIOOperation'.format(GBT_PREF, GBT_SERV),
         args, 'C:128;C')
     dim_cmd_err(ret_code)
 
 
-def gpio_write(*args, gbt_serv=GBT_SERV, regulator=ddr, **kwargs):
-    gpio_op(SCA_OP_MODE['write'], *args, gbt_serv=gbt_serv, **kwargs)
+def gpio_write(*args, regulator=ddr, **kwargs):
+    gpio_op(SCA_OP_MODE['write'], *args, **kwargs)
     ret = pydim.dic_sync_info_service(
-        '{}/{}/SrvcGPIOWrite'.format(GBT_PREF, gbt_serv),
+        '{}/{}/SrvcGPIOWrite'.format(GBT_PREF, GBT_SERV),
         'I:1'
     )
     return dim_dic_err(regulator(ret), GPIO_ERR_CODE)
 
 
-def gpio_read(*args, gbt_serv=GBT_SERV, regulator=ddr,
-              **kwargs):
-    gpio_op(SCA_OP_MODE['read'], *args, gbt_serv=gbt_serv, **kwargs)
+def gpio_read(*args, regulator=ddr, **kwargs):
+    gpio_op(SCA_OP_MODE['read'], *args, **kwargs)
     ret = pydim.dic_sync_info_service(
-        '{}/{}/SrvcGPIORead'.format(GBT_PREF, gbt_serv),
+        '{}/{}/SrvcGPIORead'.format(GBT_PREF, GBT_SERV),
         'I:1;C'
     )
     return dim_dic_err(regulator(ret), GPIO_ERR_CODE)
@@ -98,19 +95,19 @@ def gpio_setline(*args, level='high', **kwargs):
             data=GPIO_LEVEL[level], **kwargs)
 
 
-def gpio_getdir(*args, gbt_serv=GBT_SERV, regulator=ddr, **kwargs):
+def gpio_getdir(*args, regulator=ddr, **kwargs):
     gpio_op(SCA_OP_MODE['gpio_getdir'], *args, **kwargs)
     ret = pydim.dic_sync_info_service(
-        '{}/{}/SrvcGPIORead'.format(GBT_PREF, gbt_serv),
+        '{}/{}/SrvcGPIORead'.format(GBT_PREF, GBT_SERV),
         'I:1;C'
     )
     return int(dim_dic_err(regulator(ret), GPIO_ERR_CODE), base=16)
 
 
-def gpio_getline(*args, gbt_serv=GBT_SERV, regulator=ddr, **kwargs):
+def gpio_getline(*args, regulator=ddr, **kwargs):
     gpio_op(SCA_OP_MODE['gpio_getline'], *args, **kwargs)
     ret = pydim.dic_sync_info_service(
-        '{}/{}/SrvcGPIORead'.format(GBT_PREF, gbt_serv),
+        '{}/{}/SrvcGPIORead'.format(GBT_PREF, GBT_SERV),
         'I:1;C'
     )
     return int(dim_dic_err(regulator(ret), GPIO_ERR_CODE), base=16)

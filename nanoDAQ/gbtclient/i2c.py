@@ -2,7 +2,7 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Sat Dec 07, 2019 at 04:07 AM -0500
+# Last Change: Sat Dec 07, 2019 at 07:51 PM -0500
 
 import pydim
 
@@ -42,8 +42,7 @@ I2C_ERR_CODE = errs_factory({
 ##################
 
 def i2c_op(mode, gbt, sca, bus, addr, sub_addr, size, i2c_type, i2c_freq,
-           scl=0, filepath=None, data=None,
-           gbt_serv=GBT_SERV):
+           scl=0, filepath=None, data=None):
     cmd = ','.join(map(str,
                        (mode, gbt, sca, bus, addr, sub_addr, size,
                         i2c_type, i2c_freq, scl)))
@@ -56,24 +55,24 @@ def i2c_op(mode, gbt, sca, bus, addr, sub_addr, size, i2c_type, i2c_freq,
 
     args = (cmd, data)
     ret_code = pydim.dic_sync_cmnd_service(
-        '{}/{}/CmndI2COperation'.format(GBT_PREF, gbt_serv),
+        '{}/{}/CmndI2COperation'.format(GBT_PREF, GBT_SERV),
         args, 'C:128;C')
     dim_cmd_err(ret_code)
 
 
-def i2c_write(*args, gbt_serv=GBT_SERV, regulator=ddr, **kwargs):
-    i2c_op(SCA_OP_MODE['write'], *args, gbt_serv=gbt_serv, **kwargs)
+def i2c_write(*args, regulator=ddr, **kwargs):
+    i2c_op(SCA_OP_MODE['write'], *args, **kwargs)
     ret = pydim.dic_sync_info_service(
-        '{}/{}/SrvcI2CWrite'.format(GBT_PREF, gbt_serv),
+        '{}/{}/SrvcI2CWrite'.format(GBT_PREF, GBT_SERV),
         'I:1'
     )
     return dim_dic_err(regulator(ret), I2C_ERR_CODE)
 
 
-def i2c_read(*args, gbt_serv=GBT_SERV, regulator=ddr, **kwargs):
-    i2c_op(SCA_OP_MODE['read'], *args, gbt_serv=gbt_serv, **kwargs)
+def i2c_read(*args, regulator=ddr, **kwargs):
+    i2c_op(SCA_OP_MODE['read'], *args, **kwargs)
     ret = pydim.dic_sync_info_service(
-        '{}/{}/SrvcI2CRead'.format(GBT_PREF, gbt_serv),
+        '{}/{}/SrvcI2CRead'.format(GBT_PREF, GBT_SERV),
         'I:1;C'
     )
     return dim_dic_err(regulator(ret), I2C_ERR_CODE)
