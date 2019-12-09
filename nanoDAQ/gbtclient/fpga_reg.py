@@ -2,7 +2,7 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Mon Dec 09, 2019 at 01:59 AM -0500
+# Last Change: Mon Dec 09, 2019 at 02:02 AM -0500
 
 import pydim
 
@@ -65,7 +65,7 @@ def mem_mon_fiber_write(fiber, tell40=TELL40):
     dim_cmd_err(ret)
 
 
-def mem_mon_fiber_read(fiber, tell40=TELL40, regulator=ddr):
+def mem_mon_fiber_read(tell40=TELL40, regulator=ddr):
     ret = pydim.dic_sync_info_service(
         '{}/{}/SrvcReadings/{}.top_tell40.monitoring_fiber'.format(
             GBT_PREF, GBT_SERV, tell40), 'C:1;C')
@@ -80,7 +80,7 @@ def mem_mon_options_write(opts, tell40=TELL40):
     dim_cmd_err(ret)
 
 
-def mem_mon_options_read(fiber, tell40=TELL40, regulator=ddr):
+def mem_mon_options_read(tell40=TELL40, regulator=ddr):
     ret = pydim.dic_sync_info_service(
         '{}/{}/SrvcReadings/{}.top_tell40.monitoring_options'.format(
             GBT_PREF, GBT_SERV, tell40), 'C:1;C')
