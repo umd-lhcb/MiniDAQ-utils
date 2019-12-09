@@ -2,7 +2,7 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Sat Dec 07, 2019 at 07:53 PM -0500
+# Last Change: Sun Dec 08, 2019 at 08:46 PM -0500
 
 import pydim
 
@@ -53,10 +53,10 @@ def gpio_op(mode, gbt, sca, addr, data=None):
     data = hex_to_bytes(data)
 
     args = (cmd, data)
-    ret_code = pydim.dic_sync_cmnd_service(
+    ret = pydim.dic_sync_cmnd_service(
         '{}/{}/CmndGPIOOperation'.format(GBT_PREF, GBT_SERV),
         args, 'C:128;C')
-    dim_cmd_err(ret_code)
+    dim_cmd_err(ret)
 
 
 def gpio_write(*args, regulator=ddr, **kwargs):
