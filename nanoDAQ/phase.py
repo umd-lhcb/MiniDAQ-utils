@@ -2,7 +2,7 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Mon Dec 09, 2019 at 12:05 AM -0500
+# Last Change: Mon Dec 09, 2019 at 12:42 AM -0500
 
 from collections import namedtuple
 from sty import fg, bg
@@ -21,9 +21,14 @@ def elink_parser(df):
     assert(len(df) == 16)
 
     # NOTE: the rightmost 2-Bytes are header
-    header = ''.join(df[-2:])
+    header = ''.join(df[-4:-2])
+    elk_13_12 = df[-2:]
 
-    return ElinkDataFrame(header, *df[:-2])  # Leftmost byte is elink 0
+    elk_11_8 = df[-8:-4]
+    elk_7_4 = df[-12:-8]
+    elk_3_0 = df[-16:-12]
+
+    return ElinkDataFrame(header, *elk_13_12, *elk_11_8, *elk_7_4, *elk_3_0)
 
 
 def alternating_color(s):
