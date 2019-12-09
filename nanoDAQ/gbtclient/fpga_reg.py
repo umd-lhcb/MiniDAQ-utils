@@ -52,6 +52,6 @@ def mem_mon_read(tell40=TELL40, regulator=mem_mon_regulator):
 
     ret = pydim.dic_sync_info_service(
         '{}/{}/SrvcReadings/{}.top_tell40_monitoring.memory'.format(
-            GBT_PREF, GBT_SERV), 'I:1;C'
+            GBT_PREF, GBT_SERV, tell40), 'I:1;C'
     )
     return dim_dic_err(regulator(ret), FPGA_REG_ERR_CODE)
