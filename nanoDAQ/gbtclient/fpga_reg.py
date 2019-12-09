@@ -2,7 +2,7 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Mon Dec 09, 2019 at 12:01 AM -0500
+# Last Change: Mon Dec 09, 2019 at 12:52 AM -0500
 
 import pydim
 
@@ -54,3 +54,11 @@ def mem_mon_read(tell40=TELL40, regulator=mem_mon_regulator):
         '{}/{}/SrvcReadings/{}.top_tell40_monitoring.memory'.format(
             GBT_PREF, GBT_SERV, tell40), 'I:1;C')
     return dim_dic_err(regulator(ret), FPGA_REG_ERR_CODE)
+
+
+def mem_mon_fiber(fiber, tell40=TELL40):
+    ret = pydim.dic_sync_cmnd_service(
+        '{}/{}/CmndOperation/{}.top_tell40.monitoring_fiber'.format(
+            GBT_PREF, GBT_SERV, tell40),
+        (FPGA_REG_OP_MODE['write'], str(fiber)), 'C:1;C')
+    dim_cmd_err(ret)
