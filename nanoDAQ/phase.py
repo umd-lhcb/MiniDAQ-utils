@@ -2,7 +2,7 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Mon Dec 09, 2019 at 12:00 AM -0500
+# Last Change: Mon Dec 09, 2019 at 12:05 AM -0500
 
 from collections import namedtuple
 from sty import fg, bg
@@ -57,4 +57,5 @@ def print_elink_table(elk_df_lst, highlight=list(), style=lambda x: x):
 
         result.append(df)
 
-    print(tabulate(result, headers=['header', '13-12', '11-8', '7-4', '3-0']))
+    print(tabulate(result, headers=['header', '13-12', '11-8', '7-4', '3-0'],
+                   colalign=['right']*5))
