@@ -2,7 +2,7 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Sat Dec 07, 2019 at 03:29 AM -0500
+# Last Change: Sun Dec 08, 2019 at 08:11 PM -0500
 
 from collections import defaultdict
 from argparse import Action
@@ -39,6 +39,10 @@ def dict_factory(known, default):
     d = defaultdict(lambda: default)
     d.update(known)
     return d
+
+
+def chunks(lst, size=16):
+    return [lst[i:i+size] for i in range(0, len(lst), size)]
 
 
 #######################
