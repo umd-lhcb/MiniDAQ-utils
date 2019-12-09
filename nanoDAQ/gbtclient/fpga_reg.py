@@ -2,7 +2,7 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Sun Dec 08, 2019 at 09:27 PM -0500
+# Last Change: Sun Dec 08, 2019 at 09:33 PM -0500
 
 import pydim
 
@@ -52,6 +52,5 @@ def mem_mon_read(tell40=TELL40, regulator=mem_mon_regulator):
 
     ret = pydim.dic_sync_info_service(
         '{}/{}/SrvcReadings/{}.top_tell40_monitoring.memory'.format(
-            GBT_PREF, GBT_SERV, tell40), 'I:1;C'
-    )
+            GBT_PREF, GBT_SERV, tell40), 'I:1;C')
     return dim_dic_err(regulator(ret), FPGA_REG_ERR_CODE)
