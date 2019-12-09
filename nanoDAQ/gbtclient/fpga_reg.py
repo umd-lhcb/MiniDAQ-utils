@@ -2,7 +2,7 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Sun Dec 08, 2019 at 09:33 PM -0500
+# Last Change: Mon Dec 09, 2019 at 12:01 AM -0500
 
 import pydim
 
@@ -39,8 +39,8 @@ def mem_mon_decode(mem):
 
 def mem_mon_regulator(tp):
     mem = mem_mon_decode(tp[1])
-    elink_df_lst = list(map(elink_parser, chunks(mem)))
-    return (tp[0], elink_df_lst)
+    elk_df_lst = list(map(elink_parser, chunks(mem)))
+    return (tp[0], elk_df_lst)
 
 
 def mem_mon_read(tell40=TELL40, regulator=mem_mon_regulator):

@@ -2,7 +2,7 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Sun Dec 08, 2019 at 09:24 PM -0500
+# Last Change: Mon Dec 09, 2019 at 12:03 AM -0500
 
 import sys
 import pydim
@@ -12,9 +12,11 @@ from platform import node
 sys.path.insert(0, '..')
 
 from nanoDAQ.gbtclient.fpga_reg import mem_mon_read
+from nanoDAQ.phase import print_elink_table, alternating_color
 
 
 read = mem_mon_read
+tab = lambda x: print_elink_table(x, style=alternating_color)
 
 
 PREFIX = 'Gbt/{}/'.format(node())
