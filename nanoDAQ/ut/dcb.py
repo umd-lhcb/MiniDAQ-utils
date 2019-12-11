@@ -2,7 +2,7 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Wed Dec 11, 2019 at 05:55 PM -0500
+# Last Change: Wed Dec 11, 2019 at 06:16 PM -0500
 
 import os.path as op
 
@@ -17,7 +17,7 @@ from ..gbtclient.gpio import GPIO_DIR_LOOKUP, GPIO_LEVEL_LOOKUP
 from ..gbtclient.gpio import gpio_activate_ch, gpio_setdir, gpio_setline, \
     gpio_getdir, gpio_getline
 
-from ..utils import dict_factory, num_of_byte
+from ..utils import dict_factory, num_of_byte, hex_pad
 
 
 GBTX_STATUS = dict_factory({
@@ -140,17 +140,40 @@ class DCB(object):
         for s in self.dyn_slaves(slaves):
             i2c_write(self.gbt, self.sca, self.bus, s, 0x185, 1,
                       self.i2c_type, self.i2c_freq, data='c4')
-            sleep(0.1)
+            sleep(0.08)  # FIXME: Needed for unknown reason
             reg = i2c_read(self.gbt, self.sca, self.bus, s, 0x17f, 1,
                            self.i2c_type, self.i2c_freq)
             cur = self.gbld_reg_to_cur(reg)
             table_raw.append([s, cur])
-            table.append([s, cur])
+
+            if cur <= 8.5:
+                cur_fmt = fg.green+ef.bold+cur+rs.bold_dim+fg.rs
+            else:
+                cur_fmt = fg.yellow+ef.bold+cur+rs.bold_dim+fg.rs,
+            table.append([s, cur_fmt])
 
         if output:
             print(tabulate(table, headers=['slave', 'current [mA]']))
         else:
             return table_raw
+
+    def bias_cur_set(self, cur, slaves=None):
+        self.activate_i2c()
+        reg = self.gbld_cur_to_reg(cur)
+        gbld_conf = '8799{}88ffff04'.format(reg)
+
+        for s in self.dyn_slaves(slaves):
+            i2c_write(self.gbt, self.sca, self.bus, s, 0x37, 7,
+                      self.i2c_type, self.i2c_freq, data=gbld_conf)
+
+        sleep(0.1)
+        self.gbld_addr(slaves)
+        sleep(0.1)  # FIXME: Needed for unknown reason
+
+        for s in self.dyn_slaves(slaves):
+            i2c_write(self.gbt, self.sca, self.bus, s, 0x184, 1,
+                      self.i2c_type, self.i2c_freq, data='c4')
+            sleep(0.05)
 
     def gbld_addr(self, slaves=None):
         for s in self.dyn_slaves(slaves):
@@ -172,4 +195,12 @@ class DCB(object):
 
     @staticmethod
     def gbld_reg_to_cur(reg):
-        return 2*0.16*int(reg, base=16)
+        return 2 + 0.16*int(reg, base=16)
+
+    @classmethod
+    def gbld_cur_to_reg(cls, cur):
+        for reg in range(256):
+            if cls.gbld_reg_to_cur(reg) < cur:
+                pass
+            else:
+                return hex_pad(reg)
