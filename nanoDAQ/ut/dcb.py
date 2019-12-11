@@ -2,7 +2,7 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Wed Dec 11, 2019 at 06:36 PM -0500
+# Last Change: Wed Dec 11, 2019 at 06:38 PM -0500
 
 import os.path as op
 
@@ -131,7 +131,7 @@ class DCB(object):
                       self.i2c_type, self.i2c_freq, data=val)
 
     def reset(self, final_state='high'):
-        self.gpio_reset(chs=[6])
+        self.gpio_reset(chs=[6], final_state=final_state)
 
     def bias_cur_status(self, slaves=None, output=True):
         self.activate_i2c()
