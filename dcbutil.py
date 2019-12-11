@@ -2,7 +2,7 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Wed Dec 11, 2019 at 06:18 PM -0500
+# Last Change: Wed Dec 11, 2019 at 06:22 PM -0500
 
 import sys
 
@@ -113,7 +113,7 @@ specify the final state after pulling GPIO to low.''')
     bias_cur_cmd = add_dcb_default_subparser(cmd, 'bias_cur', description='''
 Read and configure bias current of VTXx modules.
 ''')
-    bias_cur_cmd.add_argument('--cur',
+    bias_cur_cmd.add_argument('cur',
                               nargs='?',
                               type=int,
                               default=None,
