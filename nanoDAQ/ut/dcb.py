@@ -2,10 +2,11 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Wed Dec 11, 2019 at 05:37 PM -0500
+# Last Change: Wed Dec 11, 2019 at 05:55 PM -0500
 
 import os.path as op
 
+from time import sleep
 from sty import fg, ef, rs
 from tabulate import tabulate
 
@@ -139,6 +140,7 @@ class DCB(object):
         for s in self.dyn_slaves(slaves):
             i2c_write(self.gbt, self.sca, self.bus, s, 0x185, 1,
                       self.i2c_type, self.i2c_freq, data='c4')
+            sleep(0.1)
             reg = i2c_read(self.gbt, self.sca, self.bus, s, 0x17f, 1,
                            self.i2c_type, self.i2c_freq)
             cur = self.gbld_reg_to_cur(reg)
