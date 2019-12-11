@@ -2,7 +2,7 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Wed Dec 11, 2019 at 06:19 PM -0500
+# Last Change: Wed Dec 11, 2019 at 06:20 PM -0500
 
 import os.path as op
 
@@ -146,7 +146,7 @@ class DCB(object):
             cur = self.gbld_reg_to_cur(reg)
             table_raw.append([s, cur])
 
-            if cur <= 8.5:
+            if cur <= 6.1:
                 cur_fmt = fg.green+ef.bold+str(cur)+rs.bold_dim+fg.rs
             else:
                 cur_fmt = fg.yellow+ef.bold+str(cur)+rs.bold_dim+fg.rs
