@@ -2,7 +2,7 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Wed Dec 11, 2019 at 06:24 PM -0500
+# Last Change: Wed Dec 11, 2019 at 06:36 PM -0500
 
 import os.path as op
 
@@ -115,7 +115,9 @@ class DCB(object):
 
         for c in chs:
             gpio_setdir(self.gbt, self.sca, c)
+            sleep(0.05)
             gpio_setline(self.gbt, self.sca, c, level='low')
+            sleep(0.1)
             gpio_setline(self.gbt, self.sca, c, level=final_state)
 
     def prbs(self, mode, slaves=None):
