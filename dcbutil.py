@@ -2,7 +2,7 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Wed Dec 11, 2019 at 06:17 PM -0500
+# Last Change: Wed Dec 11, 2019 at 06:18 PM -0500
 
 import sys
 
@@ -159,7 +159,7 @@ if __name__ == '__main__':
         dcb.reset(args.final_state)
 
     elif args.cmd == 'bias_cur':
-        if args.set is not None:
+        if args.cur is not None:
             dcb.bias_cur_set(args.cur, args.slaves)
         else:
             dcb.bias_cur_status(args.slaves)
