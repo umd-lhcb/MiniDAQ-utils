@@ -2,7 +2,7 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Fri Dec 06, 2019 at 05:24 AM -0500
+# Last Change: Wed Dec 11, 2019 at 02:49 AM -0500
 
 import sys
 
@@ -52,6 +52,11 @@ GPIO status and reset.
                           help='''
 specify GPIO lines to reset. default to print out current value of GPIO 0-6.
     ''')
+    gpio_cmd.add_argument('--final_state',
+                          choices=['high', 'low'],
+                          default='high',
+                          help='''
+specify the final state after pulling GPIO to low.''')
 
     prbs_cmd = add_dcb_default_subparser(cmd, 'prbs', description='''
 control PRBS register.
@@ -121,7 +126,7 @@ if __name__ == '__main__':
 
     elif args.cmd == 'gpio':
         if args.reset is not None:
-            dcb.gpio_reset(args.reset)
+            dcb.gpio_reset(args.reset, args.final_state)
         else:
             dcb.gpio_status()
 

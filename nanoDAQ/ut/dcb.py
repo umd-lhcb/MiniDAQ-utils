@@ -2,7 +2,7 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Sat Dec 07, 2019 at 01:59 AM -0500
+# Last Change: Wed Dec 11, 2019 at 02:49 AM -0500
 
 import os.path as op
 
@@ -75,13 +75,13 @@ class DCB(object):
         else:
             return table
 
-    def gpio_reset(self, chs):
+    def gpio_reset(self, chs, final_state='high'):
         self.activate_gpio()
 
         for c in chs:
             gpio_setdir(self.gbt, self.sca, c)
             gpio_setline(self.gbt, self.sca, c, level='low')
-            gpio_setline(self.gbt, self.sca, c, level='high')
+            gpio_setline(self.gbt, self.sca, c, level=final_state)
 
     def slave_status(self, slaves=None, output=True):
         self.activate_i2c()
@@ -128,10 +128,7 @@ class DCB(object):
                       self.i2c_type, self.i2c_freq, data=val)
 
     def reset(self, final_state='high'):
-        self.activate_gpio()
-        gpio_setdir(self.gbt, self.sca, 6)
-        gpio_setline(self.gbt, self.sca, 6, level='low')
-        gpio_setline(self.gbt, self.sca, 6, level=final_state)
+        self.gpio_reset(slaves=[6])
 
     def activate_i2c(self):
         if not self.i2c_activated:
