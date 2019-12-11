@@ -2,7 +2,7 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Wed Dec 11, 2019 at 06:18 PM -0500
+# Last Change: Wed Dec 11, 2019 at 06:19 PM -0500
 
 import os.path as op
 
@@ -147,9 +147,9 @@ class DCB(object):
             table_raw.append([s, cur])
 
             if cur <= 8.5:
-                cur_fmt = fg.green+ef.bold+cur+rs.bold_dim+fg.rs
+                cur_fmt = fg.green+ef.bold+str(cur)+rs.bold_dim+fg.rs
             else:
-                cur_fmt = fg.yellow+ef.bold+cur+rs.bold_dim+fg.rs
+                cur_fmt = fg.yellow+ef.bold+str(cur)+rs.bold_dim+fg.rs
             table.append([s, cur_fmt])
 
         if output:
