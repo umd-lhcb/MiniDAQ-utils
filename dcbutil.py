@@ -2,7 +2,7 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Wed Dec 11, 2019 at 02:52 AM -0500
+# Last Change: Wed Dec 11, 2019 at 05:34 PM -0500
 
 import sys
 
@@ -110,6 +110,17 @@ reset slave GBTxs.
                            help='''
 specify the final state after pulling GPIO to low.''')
 
+    bias_cur_cmd = add_dcb_default_subparser(cmd, 'bias_cur', description='''
+Read and configure bias current of VTXx modules.
+''')
+    bias_cur_cmd.add_argument('--set',
+                              nargs='?',
+                              type=int,
+                              default=None,
+                              help='''
+specify bias current, in mA.
+    ''')
+
     return parser
 
 
@@ -146,3 +157,9 @@ if __name__ == '__main__':
 
     elif args.cmd == 'reset':
         dcb.reset(args.final_state)
+
+    elif args.cmd == 'bias_cur':
+        if args.set is not None:
+            pass
+        else:
+            dcb.bias_cur_status()
