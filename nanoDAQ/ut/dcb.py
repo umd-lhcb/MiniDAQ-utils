@@ -2,7 +2,7 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Wed Dec 11, 2019 at 06:20 PM -0500
+# Last Change: Wed Dec 11, 2019 at 06:24 PM -0500
 
 import os.path as op
 
@@ -200,7 +200,8 @@ class DCB(object):
     @classmethod
     def gbld_cur_to_reg(cls, cur):
         for reg in range(256):
+            reg = hex_pad(reg)
             if cls.gbld_reg_to_cur(reg) < cur:
                 pass
             else:
-                return hex_pad(reg)
+                return reg
