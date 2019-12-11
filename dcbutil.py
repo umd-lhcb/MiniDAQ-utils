@@ -2,7 +2,7 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Wed Dec 11, 2019 at 02:49 AM -0500
+# Last Change: Wed Dec 11, 2019 at 02:52 AM -0500
 
 import sys
 
@@ -53,6 +53,8 @@ GPIO status and reset.
 specify GPIO lines to reset. default to print out current value of GPIO 0-6.
     ''')
     gpio_cmd.add_argument('--final_state',
+                          nargs='?',
+                          const='high',
                           choices=['high', 'low'],
                           default='high',
                           help='''
