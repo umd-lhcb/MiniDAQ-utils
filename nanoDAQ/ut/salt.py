@@ -2,9 +2,10 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Sat Dec 07, 2019 at 04:22 AM -0500
+# Last Change: Wed Dec 11, 2019 at 07:21 PM -0500
 
 from tabulate import tabulate
+from time import sleep
 
 from ..gbtclient.i2c import I2C_TYPE, I2C_FREQ
 from ..gbtclient.i2c import i2c_activate_ch, i2c_read, i2c_write
@@ -91,6 +92,7 @@ class SALT(object):
         self.activate_gpio()
         gpio_setdir(self.gbt, self.sca, self.bus)
         gpio_setline(self.gbt, self.sca, self.bus, level='low')
+        sleep(0.1)
         gpio_setline(self.gbt, self.sca, self.bus, level=final_state)
 
         line_state = GPIO_LEVEL_INVERSE[gpio_getline(

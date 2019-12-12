@@ -2,7 +2,7 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Wed Dec 11, 2019 at 06:38 PM -0500
+# Last Change: Wed Dec 11, 2019 at 07:22 PM -0500
 
 import os.path as op
 
@@ -115,7 +115,6 @@ class DCB(object):
 
         for c in chs:
             gpio_setdir(self.gbt, self.sca, c)
-            sleep(0.05)
             gpio_setline(self.gbt, self.sca, c, level='low')
             sleep(0.1)
             gpio_setline(self.gbt, self.sca, c, level=final_state)
@@ -142,7 +141,7 @@ class DCB(object):
         for s in self.dyn_slaves(slaves):
             i2c_write(self.gbt, self.sca, self.bus, s, 0x185, 1,
                       self.i2c_type, self.i2c_freq, data='c4')
-            sleep(0.08)  # FIXME: Needed for unknown reason
+            sleep(0.08)  # Give GBTx/GBLD some time to respond
             reg = i2c_read(self.gbt, self.sca, self.bus, s, 0x17f, 1,
                            self.i2c_type, self.i2c_freq)
             cur = self.gbld_reg_to_cur(reg)
@@ -168,14 +167,12 @@ class DCB(object):
             i2c_write(self.gbt, self.sca, self.bus, s, 0x37, 7,
                       self.i2c_type, self.i2c_freq, data=gbld_conf)
 
-        sleep(0.1)
         self.gbld_addr(slaves)
-        sleep(0.1)  # FIXME: Needed for unknown reason
 
         for s in self.dyn_slaves(slaves):
             i2c_write(self.gbt, self.sca, self.bus, s, 0x184, 1,
                       self.i2c_type, self.i2c_freq, data='c4')
-            sleep(0.05)
+            sleep(0.08)
 
     def gbld_addr(self, slaves=None):
         for s in self.dyn_slaves(slaves):
