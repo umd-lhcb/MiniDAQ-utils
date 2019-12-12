@@ -72,7 +72,7 @@ When in doubt, use `-h` of each sub-command for help.
 ./dcbutil.py bias_cur
 ```
 
-### To set GBLD bias current to 7 mA of GBLD on GBTx 1
+### To set GBLD bias current to 7 mA on GBTx 1
 ```
 ./dcbutil.py bias_cur 7 -s 1
 ```
