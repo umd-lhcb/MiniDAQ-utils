@@ -2,7 +2,7 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Wed Dec 11, 2019 at 06:22 PM -0500
+# Last Change: Thu Dec 12, 2019 at 03:16 AM -0500
 
 import sys
 
@@ -115,7 +115,7 @@ Read and configure bias current of VTXx modules.
 ''')
     bias_cur_cmd.add_argument('cur',
                               nargs='?',
-                              type=int,
+                              type=float,
                               default=None,
                               help='''
 specify bias current, in mA.
