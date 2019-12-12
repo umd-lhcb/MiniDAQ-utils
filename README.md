@@ -67,6 +67,16 @@ When in doubt, use `-h` of each sub-command for help.
 ./dcbutil.py gpio --reset 3 4
 ```
 
+### To check GBLD bias current
+```
+./dcbutil.py bias_cur
+```
+
+### To set GBLD bias current of GBLD on GBTx 1
+```
+./dcbutil.py bias_cur 7 -s 1
+```
+
 
 ## `saltutil.py`
 **Note**: The following flags are available in most sub-commands:
