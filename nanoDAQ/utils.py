@@ -2,10 +2,13 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Sun Dec 08, 2019 at 08:11 PM -0500
+# Last Change: Mon Dec 16, 2019 at 02:51 AM -0500
 
 from collections import defaultdict
 from argparse import Action
+from multiprocessing import Pool
+
+from .exceptions import ExecError
 
 
 ###########
@@ -65,3 +68,29 @@ specify GBT index.
 class HexToIntAction(Action):
     def __call__(self, parser, namespace, value, option_string=None):
         setattr(namespace, self.dest, int(value, base=16))
+
+
+####################
+# Segfault handler #
+####################
+
+def run_in_proc(f, *args, **kwargs):
+    def wrap():
+        try:
+            return (True, f(*args, **kwargs))
+        except Exception:
+            return (False, None)
+
+    process_pool = Pool(1)
+    result = process_pool.apply_async(wrap).get()
+
+    return result[0]
+
+
+def exec_guard(f, *args, max_retry=3, **kwargs):
+    trial = 0
+    while trial < max_retry:
+        status, ret = run_in_proc(f, *args, **kwargs)
+        if status:
+            return ret
+    raise ExecError('Cannot execute {}!'.format(f.__name__))
