@@ -2,7 +2,7 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Mon Dec 16, 2019 at 02:51 AM -0500
+# Last Change: Mon Dec 16, 2019 at 12:01 PM -0500
 
 from collections import defaultdict
 from argparse import Action
@@ -74,16 +74,16 @@ class HexToIntAction(Action):
 # Segfault handler #
 ####################
 
+def wrap_func(f, *args, **kwargs):
+    try:
+        return (True, f(*args, **kwargs))
+    except Exception:
+        return (False, None)
+
+
 def run_in_proc(f, *args, **kwargs):
-    def wrap():
-        try:
-            return (True, f(*args, **kwargs))
-        except Exception:
-            return (False, None)
-
     process_pool = Pool(1)
-    result = process_pool.apply_async(wrap).get()
-
+    result = process_pool.apply_async(wrap_func, args, kwargs).get()
     return result[0]
 
 
