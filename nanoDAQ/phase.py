@@ -2,7 +2,7 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Tue Dec 17, 2019 at 02:51 AM -0500
+# Last Change: Tue Dec 17, 2019 at 03:10 AM -0500
 
 from collections import namedtuple
 from sty import fg, bg
@@ -16,7 +16,7 @@ from .utils import hex_pad
 ###################
 
 ElinkDataFrame = namedtuple('ElinkDataFrame', ['tx_datavalid', 'header'] +
-                            ['elk'+str(i) for i in range(14)])
+                            ['elk'+str(i) for i in range(13, -1, -1)])
 
 
 def elink_parser(df):
@@ -52,21 +52,23 @@ def print_elink_table(elk_df_lst, highlight=list(), style=lambda x: x):
     result = []
 
     for elk_df in elk_df_lst:
+        elk_df = ElinkDataFrame(*map(hex_pad, elk_df))
         df =  [style(elk_df.tx_datavalid), style(elk_df.header),
-               style(''.join(elk_df[1:3]))]
+               style(''.join([elk_df.elk13, elk_df.elk12]))]
 
-        for i in range(3, len(elk_df), 4):
+        for i in range(11, -1, -1):
             grp = ''
-            for j in range(i, i+4):
-                elk_ch = 14 - j
-                if elk_ch in highlight:
-                    grp += fg.red + hex_pad(elk_df[j]) + fg.rs
+            for ch in range(i, i-4):
+                ch_data = getattr(elk_df, 'elk'+str(ch))
+                if ch in highlight:
+                    grp += fg.red + ch_data + fg.rs
                 else:
-                    grp += elk_df[j]
+                    grp += ch_data
             df.append(style(grp))
 
         result.append(df)
 
-    print(tabulate(result, headers=['tx_datavalid', 'header', '13-12', '11-8',
-                                    '7-4', '3-0'],
-                   colalign=['right']*5))
+    print(tabulate(result,
+                   headers=['tx_datavalid', 'header', '13-12', '11-8',
+                            '7-4', '3-0'],
+                   colalign=['right']*6))
