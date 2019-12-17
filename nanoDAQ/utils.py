@@ -2,7 +2,7 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Tue Dec 17, 2019 at 03:26 AM -0500
+# Last Change: Tue Dec 17, 2019 at 03:36 AM -0500
 
 from collections import defaultdict
 from argparse import Action
@@ -74,7 +74,7 @@ class HexToIntAction(Action):
 # Segfault handler #
 ####################
 
-def wrap_func(f, *args, **kwargs):
+def maybe(f, *args, **kwargs):
     try:
         return (True, f(*args, **kwargs))
     except Exception:
@@ -83,7 +83,7 @@ def wrap_func(f, *args, **kwargs):
 
 def run_in_proc(f, *args, **kwargs):
     process_pool = Pool(1)
-    ret = process_pool.apply_async(wrap_func, (f,)+args, kwargs).get()
+    ret = process_pool.apply_async(maybe, (f,)+args, kwargs).get()
     process_pool.join()
     return ret
 
@@ -97,7 +97,8 @@ def exec_guard(f, *args, max_retry=3, **kwargs):
     raise ExecError('Cannot execute {}!'.format(f.__name__))
 
 
-def exec_guard_deco(f):
-    def inner(*args, **kwargs):
-        return exec_guard(f, *args, **kwargs)
-    return inner
+def wrap_in_exec_guard(funcs, suffix='_safe'):
+    for f in funcs:
+        def wrapper(f, *args, **kwargs):
+            return exec_guard(f, *args, **kwargs)
+        locals()[f.__name__+suffix] = wrapper
