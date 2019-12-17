@@ -2,7 +2,7 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Tue Dec 17, 2019 at 04:34 AM -0500
+# Last Change: Tue Dec 17, 2019 at 05:54 AM -0500
 
 from collections import defaultdict
 from argparse import Action
@@ -97,7 +97,7 @@ def exec_guard(f, *args, max_retry=3, **kwargs):
             return ret
         else:
             trial += 1
-         
+
     pool.close()
     pool.join()
     raise ExecError('Cannot execute {}! The raw exception is {}: {}'.format(
