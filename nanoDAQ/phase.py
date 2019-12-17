@@ -2,7 +2,7 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Tue Dec 17, 2019 at 03:10 AM -0500
+# Last Change: Tue Dec 17, 2019 at 03:14 AM -0500
 
 from collections import namedtuple
 from sty import fg, bg
@@ -56,9 +56,9 @@ def print_elink_table(elk_df_lst, highlight=list(), style=lambda x: x):
         df =  [style(elk_df.tx_datavalid), style(elk_df.header),
                style(''.join([elk_df.elk13, elk_df.elk12]))]
 
-        for i in range(11, -1, -1):
+        for leading_ch in range(11, -4, -1):
             grp = ''
-            for ch in range(i, i-4):
+            for ch in range(leading_ch, leading_ch-4, -1):
                 ch_data = getattr(elk_df, 'elk'+str(ch))
                 if ch in highlight:
                     grp += fg.red + ch_data + fg.rs
