@@ -2,7 +2,7 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Tue Dec 17, 2019 at 12:16 AM -0500
+# Last Change: Tue Dec 17, 2019 at 02:51 AM -0500
 
 from collections import namedtuple
 from sty import fg, bg
@@ -15,7 +15,7 @@ from .utils import hex_pad
 # Elink utilities #
 ###################
 
-ElinkDataFrame = namedtuple('ElinkDataFrame', ['header'] +
+ElinkDataFrame = namedtuple('ElinkDataFrame', ['tx_datavalid', 'header'] +
                             ['elk'+str(i) for i in range(14)])
 
 
@@ -23,14 +23,16 @@ def elink_parser(df):
     assert(len(df) == 16)
 
     # NOTE: the rightmost 2-Bytes are header
-    header = ''.join(df[-4:-2])
+    tx_datavalid = df[-4]
+    header = df[-3]
     elk_13_12 = df[-2:]
 
     elk_11_8 = df[-8:-4]
     elk_7_4 = df[-12:-8]
     elk_3_0 = df[-16:-12]
 
-    return ElinkDataFrame(header, *elk_13_12, *elk_11_8, *elk_7_4, *elk_3_0)
+    return ElinkDataFrame(tx_datavalid, header, *elk_13_12, *elk_11_8, *elk_7_4,
+                          *elk_3_0)
 
 
 def alternating_color(s):
@@ -50,7 +52,8 @@ def print_elink_table(elk_df_lst, highlight=list(), style=lambda x: x):
     result = []
 
     for elk_df in elk_df_lst:
-        df =  [style(elk_df.header), style(''.join(elk_df[1:3]))]
+        df =  [style(elk_df.tx_datavalid), style(elk_df.header),
+               style(''.join(elk_df[1:3]))]
 
         for i in range(3, len(elk_df), 4):
             grp = ''
@@ -64,5 +67,6 @@ def print_elink_table(elk_df_lst, highlight=list(), style=lambda x: x):
 
         result.append(df)
 
-    print(tabulate(result, headers=['header', '13-12', '11-8', '7-4', '3-0'],
+    print(tabulate(result, headers=['tx_datavalid', 'header', '13-12', '11-8',
+                                    '7-4', '3-0'],
                    colalign=['right']*5))
