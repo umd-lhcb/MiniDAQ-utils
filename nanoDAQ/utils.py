@@ -77,21 +77,28 @@ class HexToIntAction(Action):
 def maybe(f, *args, **kwargs):
     try:
         return (True, f(*args, **kwargs))
-    except Exception:
-        return (False, None)
+    except Exception as e:
+        return (False, e)
 
 
-def run_in_proc(f, *args, **kwargs):
-    process_pool = Pool(1)
-    ret = process_pool.apply_async(maybe, (f,)+args, kwargs).get()
-    process_pool.join()
-    return ret
+def run_in_proc(f, pool, *args, **kwargs):
+    return pool.apply_async(maybe, (f,)+args, kwargs).get()
 
 
 def exec_guard(f, *args, max_retry=3, **kwargs):
     trial = 0
+    pool = Pool(1)
+
     while trial < max_retry:
-        status, ret = run_in_proc(f, *args, **kwargs)
+        status, ret = run_in_proc(f, pool, *args, **kwargs)
         if status:
+            pool.close()
+            pool.join()
             return ret
-    raise ExecError('Cannot execute {}!'.format(f.__name__))
+        else:
+            trial += 1
+         
+    pool.close()
+    pool.join()
+    raise ExecError('Cannot execute {}! The raw exception is {}: {}'.format(
+        f.__name__, ret.__class__.__name__, str(ret)))
