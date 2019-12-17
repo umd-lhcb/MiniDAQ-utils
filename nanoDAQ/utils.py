@@ -2,7 +2,7 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Tue Dec 17, 2019 at 03:21 AM -0500
+# Last Change: Tue Dec 17, 2019 at 03:26 AM -0500
 
 from collections import defaultdict
 from argparse import Action
@@ -83,7 +83,9 @@ def wrap_func(f, *args, **kwargs):
 
 def run_in_proc(f, *args, **kwargs):
     process_pool = Pool(1)
-    return process_pool.apply_async(wrap_func, (f,)+args, kwargs).get()
+    ret = process_pool.apply_async(wrap_func, (f,)+args, kwargs).get()
+    process_pool.join()
+    return ret
 
 
 def exec_guard(f, *args, max_retry=3, **kwargs):
