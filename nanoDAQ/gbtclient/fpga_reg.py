@@ -2,7 +2,7 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Tue Dec 17, 2019 at 03:37 AM -0500
+# Last Change: Tue Dec 17, 2019 at 04:36 AM -0500
 
 import pydim
 
@@ -10,7 +10,7 @@ from .common import GBT_PREF, GBT_SERV, TELL40
 from .common import errs_factory, dim_cmd_err, dim_dic_err
 from .common import default_dim_regulator as ddr
 
-from ..utils import chunks, wrap_in_exec_guard
+from ..utils import chunks, exec_guard
 from ..phase import elink_parser
 
 
@@ -107,6 +107,13 @@ def mem_mon_options_read(tell40=TELL40, regulator=ddr):
 
 
 # Wrap FPGA operations so that they run in separate processes.
-wrap_in_exec_guard([mem_mon_read,
-                    mem_mon_fiber_write, mem_mon_fiber_read,
-                    mem_mon_options_write, mem_mon_options_read])
+mem_mon_read_safe = lambda *args, **kwargs: \
+    exec_guard(mem_mon_read, args, kwargs)
+mem_mon_fiber_write_safe = lambda *args, **kwargs: \
+    exec_guard(mem_mon_fiber_write, *args, **kwargs)
+mem_mon_fiber_read_safe = lambda *args, **kwargs: \
+    exec_guard(mem_mon_fiber_read, *args, **kwargs)
+mem_mon_options_write_safe = lambda *args, **kwargs: \
+    exec_guard(mem_mon_options_write, *args, **kwargs)
+mem_mon_options_read_safe = lambda *args, **kwargs: \
+    exec_guard(mem_mon_options_read, *args, **kwargs)

@@ -2,7 +2,7 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Tue Dec 17, 2019 at 03:36 AM -0500
+# Last Change: Tue Dec 17, 2019 at 04:34 AM -0500
 
 from collections import defaultdict
 from argparse import Action
@@ -95,10 +95,3 @@ def exec_guard(f, *args, max_retry=3, **kwargs):
         if status:
             return ret
     raise ExecError('Cannot execute {}!'.format(f.__name__))
-
-
-def wrap_in_exec_guard(funcs, suffix='_safe'):
-    for f in funcs:
-        def wrapper(f, *args, **kwargs):
-            return exec_guard(f, *args, **kwargs)
-        locals()[f.__name__+suffix] = wrapper
