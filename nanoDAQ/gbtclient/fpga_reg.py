@@ -2,7 +2,7 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Mon Dec 09, 2019 at 04:07 AM -0500
+# Last Change: Tue Dec 17, 2019 at 12:01 AM -0500
 
 import pydim
 
@@ -33,9 +33,9 @@ FPGA_REG_OP_MODE = {
 
 def mem_mon_decode(mem):
     if isinstance(mem, bytes):
-        return [hex_pad(m) for m in mem]
+        return [int(m) for m in mem]
     elif isinstance(mem, str):
-        return [hex_pad(ord(m)) for m in mem]
+        return [ord(m) for m in mem]
 
 
 def mem_mon_regulator(tp):

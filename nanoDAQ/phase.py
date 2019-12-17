@@ -2,11 +2,13 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Mon Dec 09, 2019 at 12:42 AM -0500
+# Last Change: Tue Dec 17, 2019 at 12:16 AM -0500
 
 from collections import namedtuple
 from sty import fg, bg
 from tabulate import tabulate
+
+from .utils import hex_pad
 
 
 ###################
@@ -55,7 +57,7 @@ def print_elink_table(elk_df_lst, highlight=list(), style=lambda x: x):
             for j in range(i, i+4):
                 elk_ch = 14 - j
                 if elk_ch in highlight:
-                    grp += fg.red + elk_df[j] + fg.rs
+                    grp += fg.red + hex_pad(elk_df[j]) + fg.rs
                 else:
                     grp += elk_df[j]
             df.append(style(grp))
