@@ -2,7 +2,7 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Tue Dec 17, 2019 at 04:36 AM -0500
+# Last Change: Tue Dec 17, 2019 at 04:47 AM -0500
 
 import pydim
 
@@ -108,7 +108,7 @@ def mem_mon_options_read(tell40=TELL40, regulator=ddr):
 
 # Wrap FPGA operations so that they run in separate processes.
 mem_mon_read_safe = lambda *args, **kwargs: \
-    exec_guard(mem_mon_read, args, kwargs)
+    exec_guard(mem_mon_read, *args, **kwargs)
 mem_mon_fiber_write_safe = lambda *args, **kwargs: \
     exec_guard(mem_mon_fiber_write, *args, **kwargs)
 mem_mon_fiber_read_safe = lambda *args, **kwargs: \
