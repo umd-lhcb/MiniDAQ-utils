@@ -2,7 +2,7 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Tue Dec 17, 2019 at 12:01 AM -0500
+# Last Change: Tue Dec 17, 2019 at 03:24 AM -0500
 
 import pydim
 
@@ -10,7 +10,7 @@ from .common import GBT_PREF, GBT_SERV, TELL40
 from .common import errs_factory, dim_cmd_err, dim_dic_err
 from .common import default_dim_regulator as ddr
 
-from ..utils import hex_pad, chunks
+from ..utils import chunks, exec_guard_deco
 from ..phase import elink_parser
 
 
@@ -50,6 +50,7 @@ def fiber_channel(n):
     return bytes.fromhex(ch_padded)
 
 
+@exec_guard_deco
 def mem_mon_read(tell40=TELL40, regulator=mem_mon_regulator):
     ret = pydim.dic_sync_cmnd_service(
         '{}/{}/CmndOperation/{}.top_tell40_monitoring.memory'.format(
@@ -63,6 +64,7 @@ def mem_mon_read(tell40=TELL40, regulator=mem_mon_regulator):
     return dim_dic_err(regulator(ret), FPGA_REG_ERR_CODE)
 
 
+@exec_guard_deco
 def mem_mon_fiber_write(fiber, tell40=TELL40):
     fiber = fiber_channel(fiber)
     ret = pydim.dic_sync_cmnd_service(
@@ -72,6 +74,7 @@ def mem_mon_fiber_write(fiber, tell40=TELL40):
     dim_cmd_err(ret)
 
 
+@exec_guard_deco
 def mem_mon_fiber_read(tell40=TELL40, regulator=ddr):
     ret = pydim.dic_sync_cmnd_service(
         '{}/{}/CmndOperation/{}.top_tell40.monitoring_fiber'.format(
@@ -85,6 +88,7 @@ def mem_mon_fiber_read(tell40=TELL40, regulator=ddr):
     return dim_dic_err(regulator(ret), FPGA_REG_ERR_CODE)
 
 
+@exec_guard_deco
 def mem_mon_options_write(opts=b'\x00\x00\x00\x1c', tell40=TELL40):
     ret = pydim.dic_sync_cmnd_service(
         '{}/{}/CmndOperation/{}.top_tell40.monitoring_options'.format(
@@ -93,6 +97,7 @@ def mem_mon_options_write(opts=b'\x00\x00\x00\x1c', tell40=TELL40):
     dim_cmd_err(ret)
 
 
+@exec_guard_deco
 def mem_mon_options_read(tell40=TELL40, regulator=ddr):
     ret = pydim.dic_sync_cmnd_service(
         '{}/{}/CmndOperation/{}.top_tell40.monitoring_options'.format(

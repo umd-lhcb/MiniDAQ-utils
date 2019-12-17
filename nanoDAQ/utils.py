@@ -2,7 +2,7 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Mon Dec 16, 2019 at 12:11 PM -0500
+# Last Change: Tue Dec 17, 2019 at 03:21 AM -0500
 
 from collections import defaultdict
 from argparse import Action
@@ -93,3 +93,9 @@ def exec_guard(f, *args, max_retry=3, **kwargs):
         if status:
             return ret
     raise ExecError('Cannot execute {}!'.format(f.__name__))
+
+
+def exec_guard_deco(f):
+    def inner(*args, **kwargs):
+        return exec_guard(f, *args, **kwargs)
+    return inner
