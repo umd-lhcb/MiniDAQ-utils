@@ -2,9 +2,9 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Wed Dec 18, 2019 at 12:24 AM -0500
+# Last Change: Wed Dec 18, 2019 at 01:58 AM -0500
 
-from collections import defaultdict
+from collections import defaultdict, Counter
 from argparse import Action
 from multiprocessing import Pool
 
@@ -53,6 +53,11 @@ def chunks(lst, size=16):
 def bit_shift(n, shift, size=8):
     s = bin_pad(n, size=size)
     return int(''.join([s[shift:size], s[0:shift]]), base=2)
+
+
+def most_common(lst):
+    data = Counter(lst)
+    return max(lst, key=data.get)
 
 
 #######################

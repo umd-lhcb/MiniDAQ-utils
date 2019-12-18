@@ -2,7 +2,7 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Wed Dec 18, 2019 at 12:26 AM -0500
+# Last Change: Wed Dec 18, 2019 at 01:59 AM -0500
 
 from collections import namedtuple
 from sty import fg, bg
@@ -92,3 +92,22 @@ def check_bit_shift(data, expected=0xc4):
             return shift
 
     return -1
+
+
+#########################
+# Elink data operations #
+#########################
+
+def elink_extract(elk_df_lst, names):
+    result = {k: [] for k in names}
+
+    for elk_df in elk_df_lst:
+        for n in names:
+            result[n].append(getattr(elk_df, n))
+
+    return result
+
+
+def elink_extract_chs(elk_df_lst, chs):
+    names = ['elk'+str(ch) for ch in chs]
+    return elink_extract(elk_df_lst, names)
