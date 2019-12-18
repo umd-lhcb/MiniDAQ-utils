@@ -2,12 +2,12 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Wed Dec 18, 2019 at 01:36 PM -0500
+# Last Change: Wed Dec 18, 2019 at 01:38 PM -0500
 
 from sty import fg
 
 from nanoDAQ.elink import elink_extract_chs, check_bit_shift
-from nanoDAQ.utils import most_common, exec_guard
+from nanoDAQ.utils import most_common, exec_guard, hex_pad
 from nanoDAQ.ut.dcb import ELK_VALID_PHASE
 from nanoDAQ.gbtclient.fpga_reg import mem_mon_read_safe as mem_r
 
@@ -37,12 +37,13 @@ def check_phase_scan(scan):
         for ch, data in chs_data.items():
             num_of_frame = len(data)
             mode, freq = most_common(data)
+            mode_display = hex_pad(mode)
             shift = check_bit_shift(mode)
 
             if freq == num_of_frame and shift >= 0:
-                printout[idx].append(mode)
+                printout[idx].append(mode_display)
             elif shift >= 0:
-                printout[idx].append(fg.li_yellow+mode+fg.rs)
+                printout[idx].append(fg.li_yellow+mode_display+fg.rs)
             else:
                 printout[idx].append(fg.li_red+'X'+fg.rs)
 
