@@ -2,7 +2,7 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Wed Dec 18, 2019 at 01:59 AM -0500
+# Last Change: Wed Dec 18, 2019 at 02:43 AM -0500
 
 from collections import namedtuple
 from sty import fg, bg
@@ -111,3 +111,8 @@ def elink_extract(elk_df_lst, names):
 def elink_extract_chs(elk_df_lst, chs):
     names = ['elk'+str(ch) for ch in chs]
     return elink_extract(elk_df_lst, names)
+
+
+##############################
+# Phase alignment operations #
+##############################
