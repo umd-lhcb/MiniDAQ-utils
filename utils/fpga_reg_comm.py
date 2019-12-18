@@ -2,7 +2,7 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Tue Dec 17, 2019 at 03:38 AM -0500
+# Last Change: Wed Dec 18, 2019 at 05:50 AM -0500
 
 import sys
 
@@ -13,7 +13,7 @@ from nanoDAQ.gbtclient.fpga_reg import mem_mon_fiber_read_safe, \
     mem_mon_fiber_write_safe
 from nanoDAQ.gbtclient.fpga_reg import mem_mon_options_read_safe, \
     mem_mon_options_write_safe
-from nanoDAQ.phase import print_elink_table, alternating_color
+from nanoDAQ.elink import print_elink_table, alternating_color
 
 
 read    = mem_mon_read_safe
