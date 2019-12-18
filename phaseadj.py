@@ -2,17 +2,19 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Wed Dec 18, 2019 at 05:19 AM -0500
+# Last Change: Wed Dec 18, 2019 at 05:46 AM -0500
 
 from argparse import ArgumentParser
 from tabulate import tabulate
 
 from nanoDAQ.ut.dcb import DCB
 from nanoDAQ.ut.salt import SALT
+
 from nanoDAQ.gbtclient.fpga_reg import mem_mon_read_safe as mem_r
 from nanoDAQ.gbtclient.fpga_reg import mem_mon_fiber_write_safe as fiber_w
 from nanoDAQ.gbtclient.fpga_reg import mem_mon_options_write_safe as opts_w
-from nanoDAQ.phase import print_elink_table, alternating_color
+
+from nanoDAQ.elink import print_elink_table, alternating_color
 from nanoDAQ.phase import loop_through_elink_phase, check_phase_scan
 
 
@@ -83,6 +85,6 @@ if __name__ == '__main__':
             ','.join(daq_chs)))
 
     print('Generating phase-scanning table...')
-    phase_scan_raw = loop_through_elink_phase(dcb, args.slave, daq_chs, mem_r)
+    phase_scan_raw = loop_through_elink_phase(dcb, args.slave, daq_chs)
     phase_scan_tab = check_phase_scan(phase_scan_raw)
     print(tabulate(phase_scan_tab, headers=['phase']+daq_chs))
