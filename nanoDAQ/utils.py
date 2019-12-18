@@ -2,7 +2,7 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Wed Dec 18, 2019 at 01:58 AM -0500
+# Last Change: Wed Dec 18, 2019 at 02:18 AM -0500
 
 from collections import defaultdict, Counter
 from argparse import Action
@@ -57,7 +57,8 @@ def bit_shift(n, shift, size=8):
 
 def most_common(lst):
     data = Counter(lst)
-    return max(lst, key=data.get)
+    mc = max(lst, key=data.get)
+    return (mc, data[mc])
 
 
 #######################
