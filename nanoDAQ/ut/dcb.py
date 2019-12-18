@@ -2,7 +2,7 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Wed Dec 18, 2019 at 04:19 AM -0500
+# Last Change: Wed Dec 18, 2019 at 04:37 AM -0500
 
 import os.path as op
 
@@ -30,12 +30,14 @@ PRBS_MODE = {
     'off': '00',
 }
 
-ELK_PHASE = {}
+ELK_PHASE_REG = {}
 for ch in range(0, 14, 2):
-    reg_a = 69 + 12*ch
+    reg_a = 69 + 12*ch  # Magic numbers: 69 and 12. See GBTX manual.
     reg_tri = [reg_a+i for i in [0, 4, 8]]
-    ELK_PHASE[ch] = reg_tri
-    ELK_PHASE[ch+1] = list(map(lambda x: x-2, reg_tri))
+    ELK_PHASE_REG[ch] = reg_tri
+    ELK_PHASE_REG[ch+1] = list(map(lambda x: x-2, reg_tri))
+
+ELK_VALID_PHASE = list(map(lambda x: hex(x)[2:], range(15)))
 
 
 class DCB(object):
@@ -185,6 +187,12 @@ class DCB(object):
         for s in self.dyn_slaves(slaves):
             i2c_write(self.gbt, self.sca, self.bus, s, 0xfd, 1,
                       self.i2c_type, self.i2c_freq, data='7e')
+
+    def elk_phase(self, elk_ch, phase, slaves=None):
+        for s in self.dyn_slaves(slaves):
+            for reg in ELK_PHASE_REG[elk_ch]:
+                i2c_write(self.gbt, self.sca, self.bus, s, reg, 1,
+                          self.i2c_type, self.i2c_freq, data=phase*2)
 
     def activate_i2c(self):
         if not self.i2c_activated:
