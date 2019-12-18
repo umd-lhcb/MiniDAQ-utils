@@ -2,7 +2,7 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Wed Dec 18, 2019 at 04:37 AM -0500
+# Last Change: Wed Dec 18, 2019 at 05:43 AM -0500
 
 import os.path as op
 
@@ -10,14 +10,14 @@ from time import sleep
 from sty import fg, ef, rs
 from tabulate import tabulate
 
-from ..gbtclient.i2c import I2C_TYPE, I2C_FREQ
-from ..gbtclient.i2c import i2c_activate_ch, i2c_read, i2c_write
+from nanoDAQ.gbtclient.i2c import I2C_TYPE, I2C_FREQ
+from nanoDAQ.gbtclient.i2c import i2c_activate_ch, i2c_read, i2c_write
 
-from ..gbtclient.gpio import GPIO_DIR_LOOKUP, GPIO_LEVEL_LOOKUP
-from ..gbtclient.gpio import gpio_activate_ch, gpio_setdir, gpio_setline, \
-    gpio_getdir, gpio_getline
+from nanoDAQ.gbtclient.gpio import GPIO_DIR_LOOKUP, GPIO_LEVEL_LOOKUP
+from nanoDAQ.gbtclient.gpio import gpio_activate_ch, gpio_setdir, \
+    gpio_setline, gpio_getdir, gpio_getline
 
-from ..utils import dict_factory, num_of_byte, hex_pad
+from nanoDAQ.utils import dict_factory, num_of_byte, hex_pad
 
 
 GBTX_STATUS = dict_factory({

@@ -2,12 +2,12 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Sat Dec 07, 2019 at 03:25 AM -0500
+# Last Change: Wed Dec 18, 2019 at 05:41 AM -0500
 
 from platform import node
 
-from ..utils import hex_rep, dict_factory
-from ..exceptions import DIMError, GBTError
+from nanoDAQ.utils import hex_rep, dict_factory
+from nanoDAQ.exceptions import DIMError, GBTError
 
 
 #############

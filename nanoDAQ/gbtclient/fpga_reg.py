@@ -2,16 +2,16 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Tue Dec 17, 2019 at 04:47 AM -0500
+# Last Change: Wed Dec 18, 2019 at 05:42 AM -0500
 
 import pydim
 
-from .common import GBT_PREF, GBT_SERV, TELL40
-from .common import errs_factory, dim_cmd_err, dim_dic_err
-from .common import default_dim_regulator as ddr
+from nanoDAQ.gbtclient.common import GBT_PREF, GBT_SERV, TELL40
+from nanoDAQ.gbtclient.common import errs_factory, dim_cmd_err, dim_dic_err
+from nanoDAQ.gbtclient.common import default_dim_regulator as ddr
 
-from ..utils import chunks, exec_guard
-from ..phase import elink_parser
+from nanoDAQ.utils import chunks, exec_guard
+from nanoDAQ.elink import elink_parser
 
 
 #############

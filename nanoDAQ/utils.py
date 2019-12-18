@@ -2,13 +2,13 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Wed Dec 18, 2019 at 02:18 AM -0500
+# Last Change: Wed Dec 18, 2019 at 05:39 AM -0500
 
 from collections import defaultdict, Counter
 from argparse import Action
 from multiprocessing import Pool
 
-from .exceptions import ExecError
+from nanoDAQ.exceptions import ExecError
 
 
 ###########

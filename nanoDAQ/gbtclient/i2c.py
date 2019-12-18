@@ -2,16 +2,16 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Sun Dec 08, 2019 at 08:31 PM -0500
+# Last Change: Wed Dec 18, 2019 at 05:43 AM -0500
 
 import pydim
 
-from .common import GBT_PREF, GBT_SERV, SCA_OP_MODE
-from .common import hex_to_bytes
-from .common import errs_factory, dim_cmd_err, dim_dic_err
-from .common import default_dim_regulator as ddr
+from nanoDAQ.gbtclient.common import GBT_PREF, GBT_SERV, SCA_OP_MODE
+from nanoDAQ.gbtclient.common import hex_to_bytes
+from nanoDAQ.gbtclient.common import errs_factory, dim_cmd_err, dim_dic_err
+from nanoDAQ.gbtclient.common import default_dim_regulator as ddr
 
-from ..exceptions import GBTError
+from nanoDAQ.exceptions import GBTError
 
 
 #############
