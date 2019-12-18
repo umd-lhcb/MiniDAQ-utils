@@ -2,7 +2,7 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Wed Dec 18, 2019 at 05:18 AM -0500
+# Last Change: Wed Dec 18, 2019 at 05:19 AM -0500
 
 from argparse import ArgumentParser
 from tabulate import tabulate
@@ -73,10 +73,10 @@ if __name__ == '__main__':
     fiber_w(args.channel)  # Select specified MiniDAQ channel.
 
     print('Current readings of MiniDAQ channel {}:'.format(args.channel))
-    print_elink_table(mem_r(), style=alternating_color)
+    print_elink_table(mem_r()[-10:], style=alternating_color)
 
     daq_chs = input('Input elinks to be aligned, separated by space: ')
-    daq_chs = map(int, daq_chs.split())
+    daq_chs = list(map(int, daq_chs.split()))
 
     if len(daq_chs) > 5:
         raise ValueError("Too many elink channels! {} can't be coming from the same SALT!".format(
