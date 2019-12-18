@@ -2,7 +2,7 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Wed Dec 11, 2019 at 07:22 PM -0500
+# Last Change: Wed Dec 18, 2019 at 04:19 AM -0500
 
 import os.path as op
 
@@ -29,6 +29,13 @@ PRBS_MODE = {
     'on':  '03',
     'off': '00',
 }
+
+ELK_PHASE = {}
+for ch in range(0, 14, 2):
+    reg_a = 69 + 12*ch
+    reg_tri = [reg_a+i for i in [0, 4, 8]]
+    ELK_PHASE[ch] = reg_tri
+    ELK_PHASE[ch+1] = list(map(lambda x: x-2, reg_tri))
 
 
 class DCB(object):
