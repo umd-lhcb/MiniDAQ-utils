@@ -2,7 +2,7 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Tue Dec 17, 2019 at 05:54 AM -0500
+# Last Change: Tue Dec 17, 2019 at 11:58 PM -0500
 
 from collections import defaultdict
 from argparse import Action
@@ -15,27 +15,25 @@ from .exceptions import ExecError
 # Helpers #
 ###########
 
+def pad(s, fmt=lambda x: x):
+    s = fmt(s)
+    return '0'+s if len(s) % 2 == 1 else s
+
+
 def hex_pad(n):
-    s = hex(n)[2:]
-    if len(s) % 2 == 1:
-        return '0'+s
-    else:
-        return s
+    return pad(n, fmt=lambda x: hex(x)[2:])
 
 
 def hex_rep(lst_of_num):
     return ''.join(map(hex_pad, lst_of_num))
 
 
-def pad(s):
-    if len(s) % 2 == 1:
-        return '0'+s
-    else:
-        return s
-
-
 def num_of_byte(hex_str):
-    return len(pad(hex_str)) / 2
+    return int(len(pad(hex_str)) / 2)
+
+
+def num_of_bit(hex_str):
+    return num_of_byte(hex_str) * 8
 
 
 def dict_factory(known, default):
@@ -70,9 +68,9 @@ class HexToIntAction(Action):
         setattr(namespace, self.dest, int(value, base=16))
 
 
-####################
-# Segfault handler #
-####################
+#####################
+# Run in subprocess #
+#####################
 
 def maybe(f, *args, **kwargs):
     try:
