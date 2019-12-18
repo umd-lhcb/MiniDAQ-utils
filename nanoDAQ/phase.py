@@ -2,7 +2,7 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Wed Dec 18, 2019 at 05:12 AM -0500
+# Last Change: Wed Dec 18, 2019 at 05:17 AM -0500
 
 from collections import namedtuple
 from sty import fg, bg
@@ -10,7 +10,6 @@ from tabulate import tabulate
 
 from .utils import hex_pad, num_of_bit, bit_shift, most_common
 from .ut.dcb import ELK_VALID_PHASE
-from .gbtclient.fpga_reg import mem_mon_read_safe as mem_r
 
 
 ###################
@@ -119,14 +118,14 @@ def elink_extract_chs(elk_df_lst, chs):
 # Phase alignment operations #
 ##############################
 
-def loop_through_elink_phase(dcb, slave, daq_chs):
+def loop_through_elink_phase(dcb, slave, daq_chs, mem_reader):
     result = dict()
 
     for ph in ELK_VALID_PHASE:
         for ch in daq_chs:
             dcb.elk_phase(ch, ph, slaves=[slave])
 
-        result[ph] = elink_extract_chs(mem_r(), daq_chs)
+        result[ph] = elink_extract_chs(mem_reader(), daq_chs)
 
     return result
 

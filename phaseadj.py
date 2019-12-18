@@ -2,7 +2,7 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Wed Dec 18, 2019 at 05:14 AM -0500
+# Last Change: Wed Dec 18, 2019 at 05:18 AM -0500
 
 from argparse import ArgumentParser
 from tabulate import tabulate
@@ -83,6 +83,6 @@ if __name__ == '__main__':
             ','.join(daq_chs)))
 
     print('Generating phase-scanning table...')
-    phase_scan_raw = loop_through_elink_phase(dcb, args.slave, daq_chs)
+    phase_scan_raw = loop_through_elink_phase(dcb, args.slave, daq_chs, mem_r)
     phase_scan_tab = check_phase_scan(phase_scan_raw)
     print(tabulate(phase_scan_tab, headers=['phase']+daq_chs))
