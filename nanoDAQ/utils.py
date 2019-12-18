@@ -2,7 +2,7 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Tue Dec 17, 2019 at 11:58 PM -0500
+# Last Change: Wed Dec 18, 2019 at 12:24 AM -0500
 
 from collections import defaultdict
 from argparse import Action
@@ -22,6 +22,10 @@ def pad(s, fmt=lambda x: x):
 
 def hex_pad(n):
     return pad(n, fmt=lambda x: hex(x)[2:])
+
+
+def bin_pad(n, size=8):
+    return bin(n)[2:].rjust(size, '0')
 
 
 def hex_rep(lst_of_num):
@@ -44,6 +48,11 @@ def dict_factory(known, default):
 
 def chunks(lst, size=16):
     return [lst[i:i+size] for i in range(0, len(lst), size)]
+
+
+def bit_shift(n, shift, size=8):
+    s = bin_pad(n, size=size)
+    return int(''.join([s[shift:size], s[0:shift]]), base=2)
 
 
 #######################

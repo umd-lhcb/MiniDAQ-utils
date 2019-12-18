@@ -2,13 +2,13 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Tue Dec 17, 2019 at 03:16 AM -0500
+# Last Change: Wed Dec 18, 2019 at 12:26 AM -0500
 
 from collections import namedtuple
 from sty import fg, bg
 from tabulate import tabulate
 
-from .utils import hex_pad
+from .utils import hex_pad, num_of_bit, bit_shift
 
 
 ###################
@@ -72,3 +72,23 @@ def print_elink_table(elk_df_lst, highlight=list(), style=lambda x: x):
                    headers=['tx_datavalid', 'header', '13-12', '11-8',
                             '7-4', '3-0'],
                    colalign=['right']*6))
+
+
+#######################
+# Elink data checkers #
+#######################
+
+def check_tx_datavalid(data):
+    return 1 if 0x80 == data else 0
+
+
+def check_bit_shift(data, expected=0xc4):
+    size = num_of_bit(hex_pad(expected))
+
+    for shift in range(size):
+        # We choose to shift DATA (This is chosen to make manipulating OUR
+        # hardware more easily).
+        if bit_shift(data, shift, size) == expected:
+            return shift
+
+    return -1
