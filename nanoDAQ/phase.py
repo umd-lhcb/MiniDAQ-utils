@@ -2,7 +2,7 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Wed Dec 18, 2019 at 01:38 PM -0500
+# Last Change: Wed Dec 18, 2019 at 02:03 PM -0500
 
 from sty import fg
 
@@ -21,7 +21,7 @@ def loop_through_elink_phase(dcb, slave, daq_chs):
 
     for ph in ELK_VALID_PHASE:
         for ch in daq_chs:
-            exec_guard(dcb.elk_phase(ch, ph, slaves=[slave]))
+            exec_guard(dcb.elk_phase, ch, ph, slaves=[slave])
 
         result[ph] = elink_extract_chs(mem_r(), daq_chs)
 
