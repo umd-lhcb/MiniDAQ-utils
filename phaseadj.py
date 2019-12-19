@@ -2,7 +2,7 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Thu Dec 19, 2019 at 07:08 AM -0500
+# Last Change: Thu Dec 19, 2019 at 07:11 AM -0500
 
 from argparse import ArgumentParser
 from tabulate import tabulate
@@ -79,7 +79,7 @@ if __name__ == '__main__':
     daq_chs = input('Input elinks to be aligned, separated by space: ')
     daq_chs = list(map(int, daq_chs.split()))
 
-    print('Generating phase-scanning table, this make take awhile...')
+    print('Generating phase-scanning table, this may take awhile...')
     phase_scan_raw = loop_through_elink_phase(args.gbt, args.slave, daq_chs)
     phase_scan_tab, phase_adj, pattern = check_phase_scan(phase_scan_raw)
     print(tabulate(phase_scan_tab, headers=['phase']+daq_chs,
