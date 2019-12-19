@@ -2,7 +2,7 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Thu Dec 19, 2019 at 06:20 AM -0500
+# Last Change: Thu Dec 19, 2019 at 06:26 AM -0500
 
 from collections import defaultdict
 from sty import fg
@@ -102,9 +102,9 @@ def check_phase_scan(scan):
     common_patterns = intersect_good_pattern(good_patterns_chs)
     phase_per_ch = dict()
 
-    for ch, p in good_patterns_chs.items():
+    for cp in common_patterns:
         phase_per_ch = dict()
-        for cp in common_patterns:
+        for ch, p in good_patterns_chs.items():
             if len(p[cp]) >= 3:
                 phase_per_ch[ch] = mid_elem(p[cp])
         good_phase_printout = list(phase_per_ch.values())
@@ -114,6 +114,6 @@ def check_phase_scan(scan):
     # Update printout table
     for idx, ph in enumerate(good_phase_printout):
         ph = int(ph, base=16)
-        printout[ph][idx] = fg.li_green + printout[ph][idx] + fg.rs
+        printout[ph][idx+1] = fg.li_green + printout[ph][idx] + fg.rs
 
     return printout, phase_per_ch
