@@ -2,7 +2,7 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Thu Dec 19, 2019 at 08:43 AM -0500
+# Last Change: Thu Dec 19, 2019 at 08:46 AM -0500
 
 from argparse import ArgumentParser
 from tabulate import tabulate
@@ -98,7 +98,7 @@ if __name__ == '__main__':
 
     tfc_adj = input('Continue to TFC phase adjustment (y/n)? ')
     if tfc_adj == 'y':
-        salt_tfc_mode(args.gbc, args.bus, args.asic)
+        salt_tfc_mode(args.gbt, args.bus, args.asic)
         tfc_scan_raw = loop_through_tfc_phase(args.gbt, args.bus, args.asic,
                                               daq_chs)
         tfc_phase_adj(tfc_scan_raw, args.gbt, args.bus, args.asic)
