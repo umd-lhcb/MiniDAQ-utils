@@ -2,7 +2,7 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Thu Dec 19, 2019 at 07:19 AM -0500
+# Last Change: Thu Dec 19, 2019 at 07:31 AM -0500
 
 from collections import defaultdict
 from sty import fg
@@ -62,8 +62,9 @@ def salt_elk_phase(gbt, bus, asic, phase):
 
 
 def adj_salt_elink_phase(pattern, gbt, bus, asic):
-    phase = str(check_bit_shift(pattern))
-    exec_guard(salt_elk_phase, gbt, bus, asic, phase)
+    phase = check_bit_shift(pattern)
+    if phase:
+        exec_guard(salt_elk_phase, gbt, bus, asic, str(phase))
 
 
 ##############################
