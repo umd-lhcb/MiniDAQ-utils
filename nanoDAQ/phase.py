@@ -2,7 +2,7 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Thu Dec 19, 2019 at 07:05 AM -0500
+# Last Change: Thu Dec 19, 2019 at 07:07 AM -0500
 
 from collections import defaultdict
 from sty import fg
@@ -47,6 +47,11 @@ def dcb_elk_phase(gbt, slave, ch, phase):
                   data=phase*2)
 
 
+def adj_dcb_elink_phase(adjustment, gbt, slave):
+    for ch, ph in adjustment.items():
+        exec_guard(dcb_elk_phase, gbt, slave, ch, ph)
+
+
 #########################
 # SALT phase adjustment #
 #########################
@@ -54,6 +59,11 @@ def dcb_elk_phase(gbt, slave, ch, phase):
 def salt_elk_phase(gbt, bus, asic, phase):
     i2c_write(gbt, 0, bus, SALT.addr_shift(0, asic), 8, 1,
               I2C_TYPE['salt'], I2C_FREQ['100KHz'], data=pad(phase))
+
+
+def adj_salt_elink_phase(pattern, gbt, bus, asic):
+    phase = check_bit_shift(pattern)
+    exec_guard(salt_elk_phase, gbt, bus, asic, phase)
 
 
 ##############################
@@ -143,8 +153,3 @@ def check_phase_scan(scan):
         printout[ph][idx+1] = fg.li_green + printout[ph][idx+1] + fg.rs
 
     return printout, phase_per_ch, cp  # 'cp' is the fixed pattern at good phase
-
-
-def adj_salt_elink_phase(pattern, gbt, bus, asic):
-    phase = check_bit_shift(pattern)
-    exec_guard(salt_elk_phase, gbt, bus, asic, phase)

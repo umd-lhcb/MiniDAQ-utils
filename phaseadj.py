@@ -2,7 +2,7 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Thu Dec 19, 2019 at 07:05 AM -0500
+# Last Change: Thu Dec 19, 2019 at 07:08 AM -0500
 
 from argparse import ArgumentParser
 from tabulate import tabulate
@@ -13,7 +13,7 @@ from nanoDAQ.gbtclient.fpga_reg import mem_mon_options_write_safe as opts_w
 
 from nanoDAQ.elink import print_elink_table, alternating_color
 from nanoDAQ.phase import loop_through_elink_phase, check_phase_scan
-from nanoDAQ.phase import adj_salt_elink_phase
+from nanoDAQ.phase import adj_dcb_elink_phase, adj_salt_elink_phase
 
 
 ################################
@@ -86,7 +86,7 @@ if __name__ == '__main__':
           colalign=['left']+['right']*len(daq_chs)))
 
     if len(phase_adj) == len(daq_chs):
-        print('Current fixed pattern is {}, adjusting SALT phase...'.format(
-            pattern))
+        print('Current fixed pattern is {}, adjusting DCB and SALT phase...'.format(pattern))
+        adj_dcb_elink_phase(phase_adj, args.gbt, args.slave)
         adj_salt_elink_phase(args.gbt, args.bus, args.asic, pattern)
         print_elink_table(mem_r()[-10:], highlight=daq_chs)
