@@ -2,7 +2,7 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Thu Dec 19, 2019 at 05:17 AM -0500
+# Last Change: Thu Dec 19, 2019 at 08:23 AM -0500
 
 from collections import namedtuple
 from tabulate import tabulate
@@ -114,4 +114,5 @@ def elink_extract(elk_df_lst, names):
 
 def elink_extract_chs(elk_df_lst, chs):
     names = ['elk'+str(ch) for ch in chs]
-    return elink_extract(elk_df_lst, names)
+    return {int(k.replace('elk', '')): v
+            for k, v in elink_extract(elk_df_lst, names).items()}
