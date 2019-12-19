@@ -2,7 +2,7 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Thu Dec 19, 2019 at 06:20 AM -0500
+# Last Change: Thu Dec 19, 2019 at 06:22 AM -0500
 
 from argparse import ArgumentParser
 from tabulate import tabulate
@@ -85,5 +85,5 @@ if __name__ == '__main__':
     print('Generating phase-scanning table...')
     phase_scan_raw = loop_through_elink_phase(args.gbt, args.slave, daq_chs)
     phase_scan_tab, phase_adj = check_phase_scan(phase_scan_raw)
-    print(tabulate(phase_scan_tab, headers=['phase']+daq_chs),
-          colalign=['left', 'right', 'right', 'right'])
+    print(tabulate(phase_scan_tab, headers=['phase']+daq_chs,
+          colalign=['left']+['right']*len(daq_chs)))
