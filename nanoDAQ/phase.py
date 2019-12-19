@@ -2,7 +2,7 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Thu Dec 19, 2019 at 07:31 AM -0500
+# Last Change: Thu Dec 19, 2019 at 08:39 AM -0500
 
 from collections import defaultdict
 from sty import fg
@@ -14,7 +14,7 @@ from nanoDAQ.gbtclient.fpga_reg import mem_mon_read_safe as mem_r
 from nanoDAQ.gbtclient.i2c import i2c_write
 from nanoDAQ.gbtclient.i2c import I2C_TYPE, I2C_FREQ
 
-from nanoDAQ.ut.salt import SALT
+from nanoDAQ.ut.salt import SALT, SALT_SER_SRC_MODE
 
 
 ##############################
@@ -52,9 +52,9 @@ def adj_dcb_elink_phase(adjustment, gbt, slave):
         exec_guard(dcb_elk_phase, gbt, slave, ch, ph)
 
 
-#########################
-# SALT phase adjustment #
-#########################
+###############################
+# SALT elink phase adjustment #
+###############################
 
 def salt_elk_phase(gbt, bus, asic, phase):
     i2c_write(gbt, 0, bus, SALT.addr_shift(0, asic), 8, 1,
@@ -67,9 +67,31 @@ def adj_salt_elink_phase(pattern, gbt, bus, asic):
         exec_guard(salt_elk_phase, gbt, bus, asic, str(phase))
 
 
-##############################
-# Phase alignment operations #
-##############################
+#############################
+# SALT TFC phase adjustment #
+#############################
+
+SALT_TFC_VALID_PHASE = ['03', '07', '0b', '0f', '13', '17', '1b', '1f']
+
+
+def salt_ser_src(gbt, bus, asic, mode='tfc'):
+    i2c_write(gbt, 0, bus, SALT.addr_shift(0, asic), 0, 1,
+              I2C_TYPE['salt'], I2C_FREQ['100KHz'],
+              data=SALT_SER_SRC_MODE[mode])
+
+
+def salt_tfc_mode(gbt, bus, asic):
+    exec_guard(salt_ser_src, gbt, bus, asic)
+
+
+def salt_tfc_phase(gbt, bus, asic, phase):
+    i2c_write(gbt, 0, bus, SALT.addr_shift(0, asic), 2, 1,
+              I2C_TYPE['salt'], I2C_FREQ['100KHz'], data=pad(phase))
+
+
+####################################
+# Elink phase alignment operations #
+####################################
 
 def loop_through_elink_phase(gbt, slave, daq_chs):
     result = dict()
@@ -108,7 +130,7 @@ def check_elem_continuous(elem, lst):
         return False
 
 
-def check_phase_scan(scan):
+def elink_phase_scan(scan):
     printout = [list() for i in range(15)]
     num_of_chs = len(list(scan.values()))
     good_patterns_chs = defaultdict(lambda: defaultdict(list))
@@ -141,7 +163,6 @@ def check_phase_scan(scan):
         pattern = int(cp, base=16)
         for ch, p in good_patterns_chs.items():
             if len(p[cp]) >= 3:
-                ch = int(ch.replace('elk', ''))
                 phase_per_ch[ch] = mid_elem(p[cp])
 
         good_phase_printout = [phase_per_ch[i]
@@ -155,3 +176,27 @@ def check_phase_scan(scan):
         printout[ph][idx+1] = fg.li_green + printout[ph][idx+1] + fg.rs
 
     return printout, phase_per_ch, pattern
+
+
+##################################
+# TFC phase alignment operations #
+##################################
+
+def loop_through_tfc_phase(gbt, bus, asic, daq_chs):
+    result = dict()
+
+    for ph in SALT_TFC_VALID_PHASE:
+        exec_guard(salt_tfc_phase, gbt, bus, asic, ph)
+        result[ph] = elink_extract_chs(mem_r(), daq_chs)
+
+    return result
+
+
+def tfc_phase_adj(scan, gbt, bus, asic):
+    for ph, chs_data in scan.items():
+        for _, data in chs_data.items():
+            mode, _ = most_common(data)
+            if check_bit_shift(mode, 0x04):
+                break
+
+    exec_guard(salt_tfc_phase, gbt, bus, asic, ph)

@@ -2,7 +2,7 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Thu Dec 19, 2019 at 07:29 AM -0500
+# Last Change: Thu Dec 19, 2019 at 08:43 AM -0500
 
 from argparse import ArgumentParser
 from tabulate import tabulate
@@ -13,8 +13,11 @@ from nanoDAQ.gbtclient.fpga_reg import mem_mon_options_write_safe as opts_w
 
 from nanoDAQ.utils import hex_pad
 from nanoDAQ.elink import print_elink_table, alternating_color
-from nanoDAQ.phase import loop_through_elink_phase, check_phase_scan
+
+from nanoDAQ.phase import loop_through_elink_phase, elink_phase_scan
 from nanoDAQ.phase import adj_dcb_elink_phase, adj_salt_elink_phase
+
+from nanoDAQ.phase import salt_tfc_mode, loop_through_tfc_phase, tfc_phase_adj
 
 
 ################################
@@ -81,14 +84,22 @@ if __name__ == '__main__':
     daq_chs = list(map(int, daq_chs.split()))
 
     print('Generating phase-scanning table, this may take awhile...')
-    phase_scan_raw = loop_through_elink_phase(args.gbt, args.slave, daq_chs)
-    phase_scan_tab, phase_adj, pattern = check_phase_scan(phase_scan_raw)
-    print(tabulate(phase_scan_tab, headers=['phase']+daq_chs,
+    elk_scan_raw = loop_through_elink_phase(args.gbt, args.slave, daq_chs)
+    elk_scan_tab, elk_adj, elk_pattern = elink_phase_scan(elk_scan_raw)
+    print(tabulate(elk_scan_tab, headers=['phase']+daq_chs,
           colalign=['left']+['right']*len(daq_chs)))
 
-    if len(phase_adj) == len(daq_chs):
+    if len(elk_adj) == len(daq_chs):
         print('Current fixed pattern is {}, adjusting DCB and SALT phase...'.format(
-            hex_pad(pattern)))
-        adj_dcb_elink_phase(phase_adj, args.gbt, args.slave)
-        adj_salt_elink_phase(pattern, args.gbt, args.bus, args.asic)
+            hex_pad(elk_pattern)))
+        adj_dcb_elink_phase(elk_adj, args.gbt, args.slave)
+        adj_salt_elink_phase(elk_pattern, args.gbt, args.bus, args.asic)
+        print_elink_table(mem_r()[-10:], highlight=daq_chs)
+
+    tfc_adj = input('Continue to TFC phase adjustment (y/n)? ')
+    if tfc_adj == 'y':
+        salt_tfc_mode(args.gbc, args.bus, args.asic)
+        tfc_scan_raw = loop_through_tfc_phase(args.gbt, args.bus, args.asic,
+                                              daq_chs)
+        tfc_phase_adj(tfc_scan_raw, args.gbt, args.bus, args.asic)
         print_elink_table(mem_r()[-10:], highlight=daq_chs)
