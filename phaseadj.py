@@ -2,13 +2,10 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Wed Dec 18, 2019 at 05:46 AM -0500
+# Last Change: Thu Dec 19, 2019 at 02:48 AM -0500
 
 from argparse import ArgumentParser
 from tabulate import tabulate
-
-from nanoDAQ.ut.dcb import DCB
-from nanoDAQ.ut.salt import SALT
 
 from nanoDAQ.gbtclient.fpga_reg import mem_mon_read_safe as mem_r
 from nanoDAQ.gbtclient.fpga_reg import mem_mon_fiber_write_safe as fiber_w
@@ -67,10 +64,6 @@ if __name__ == '__main__':
     parser = parse_input()
     args = parser.parse_args()
 
-    # Initialize devices
-    dcb = DCB(args.gbt)
-    salt = SALT(args.gbt, args.bus)
-
     opts_w()  # Enable memory monitoring options. (looping, etc.)
     fiber_w(args.channel)  # Select specified MiniDAQ channel.
 
@@ -85,6 +78,6 @@ if __name__ == '__main__':
             ','.join(daq_chs)))
 
     print('Generating phase-scanning table...')
-    phase_scan_raw = loop_through_elink_phase(dcb, args.slave, daq_chs)
+    phase_scan_raw = loop_through_elink_phase(args.gbt, args.slave, daq_chs)
     phase_scan_tab = check_phase_scan(phase_scan_raw)
     print(tabulate(phase_scan_tab, headers=['phase']+daq_chs))

@@ -2,26 +2,47 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Wed Dec 18, 2019 at 02:03 PM -0500
+# Last Change: Thu Dec 19, 2019 at 02:46 AM -0500
 
 from sty import fg
 
 from nanoDAQ.elink import elink_extract_chs, check_bit_shift
 from nanoDAQ.utils import most_common, exec_guard, hex_pad
-from nanoDAQ.ut.dcb import ELK_VALID_PHASE
 from nanoDAQ.gbtclient.fpga_reg import mem_mon_read_safe as mem_r
+from nanoDAQ.gbtclient.i2c import i2c_write
+from nanoDAQ.gbtclient.i2c import I2C_TYPE, I2C_FREQ
+
+
+##############################
+# DCB elink phase adjustment #
+##############################
+
+DCB_ELK_PHASE_REG = {}
+for ch in range(0, 14, 2):
+    reg_a = 69 + 12*ch  # Magic numbers: 69 and 12. See GBTX manual.
+    reg_tri = [reg_a+i for i in [0, 4, 8]]
+    DCB_ELK_PHASE_REG[ch] = reg_tri
+    DCB_ELK_PHASE_REG[ch+1] = list(map(lambda x: x-2, reg_tri))
+
+DCB_ELK_VALID_PHASE = list(map(lambda x: hex(x)[2:], range(15)))
+
+
+def dcb_elk_phase(gbt, slave, ch, phase):
+    for reg in DCB_ELK_PHASE_REG[ch]:
+        i2c_write(gbt, 0, 6, slave, reg, 1, I2C_TYPE['gbtx'], I2C_FREQ['1MHz'],
+                  data=phase*2)
 
 
 ##############################
 # Phase alignment operations #
 ##############################
 
-def loop_through_elink_phase(dcb, slave, daq_chs):
+def loop_through_elink_phase(gbt, slave, daq_chs):
     result = dict()
 
-    for ph in ELK_VALID_PHASE:
+    for ph in DCB_ELK_VALID_PHASE:
         for ch in daq_chs:
-            exec_guard(dcb.elk_phase, ch, ph, slaves=[slave])
+            exec_guard(dcb_elk_phase, gbt, slave, ch, ph)
 
         result[ph] = elink_extract_chs(mem_r(), daq_chs)
 
