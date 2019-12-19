@@ -2,16 +2,19 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Thu Dec 19, 2019 at 06:45 AM -0500
+# Last Change: Thu Dec 19, 2019 at 07:05 AM -0500
 
 from collections import defaultdict
 from sty import fg
 
 from nanoDAQ.elink import elink_extract_chs, check_bit_shift
-from nanoDAQ.utils import most_common, exec_guard, hex_pad
+from nanoDAQ.utils import most_common, exec_guard, hex_pad, pad
+
 from nanoDAQ.gbtclient.fpga_reg import mem_mon_read_safe as mem_r
 from nanoDAQ.gbtclient.i2c import i2c_write
 from nanoDAQ.gbtclient.i2c import I2C_TYPE, I2C_FREQ
+
+from nanoDAQ.ut.salt import SALT
 
 
 ##############################
@@ -42,6 +45,15 @@ def dcb_elk_phase(gbt, slave, ch, phase):
     for reg in DCB_ELK_PHASE_REG[ch]:
         i2c_write(gbt, 0, 6, slave, reg, 1, I2C_TYPE['gbtx'], I2C_FREQ['1MHz'],
                   data=phase*2)
+
+
+#########################
+# SALT phase adjustment #
+#########################
+
+def salt_elk_phase(gbt, bus, asic, phase):
+    i2c_write(gbt, 0, bus, SALT.addr_shift(0, asic), 8, 1,
+              I2C_TYPE['salt'], I2C_FREQ['100KHz'], data=pad(phase))
 
 
 ##############################
@@ -130,4 +142,9 @@ def check_phase_scan(scan):
         ph = int(ph, base=16)
         printout[ph][idx+1] = fg.li_green + printout[ph][idx+1] + fg.rs
 
-    return printout, phase_per_ch
+    return printout, phase_per_ch, cp  # 'cp' is the fixed pattern at good phase
+
+
+def adj_salt_elink_phase(pattern, gbt, bus, asic):
+    phase = check_bit_shift(pattern)
+    exec_guard(salt_elk_phase, gbt, bus, asic, phase)
