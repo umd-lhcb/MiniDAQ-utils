@@ -2,7 +2,7 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Thu Dec 19, 2019 at 07:20 AM -0500
+# Last Change: Thu Dec 19, 2019 at 07:29 AM -0500
 
 from argparse import ArgumentParser
 from tabulate import tabulate
@@ -90,5 +90,5 @@ if __name__ == '__main__':
         print('Current fixed pattern is {}, adjusting DCB and SALT phase...'.format(
             hex_pad(pattern)))
         adj_dcb_elink_phase(phase_adj, args.gbt, args.slave)
-        adj_salt_elink_phase(args.gbt, args.bus, args.asic, pattern)
+        adj_salt_elink_phase(pattern, args.gbt, args.bus, args.asic)
         print_elink_table(mem_r()[-10:], highlight=daq_chs)
