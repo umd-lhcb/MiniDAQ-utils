@@ -2,7 +2,7 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Thu Dec 19, 2019 at 04:58 AM -0500
+# Last Change: Thu Dec 19, 2019 at 05:17 AM -0500
 
 from collections import namedtuple
 from tabulate import tabulate
@@ -30,6 +30,10 @@ def elink_parser(df):
     elk_11_8 = df[-16:-12]
     elk_7_4 = df[-8:-4]
     elk_3_0 = df[-12:-8]
+
+    elk_11_8 = df[-8:-4]
+    elk_7_4 = df[-12:-8]
+    elk_3_0 = df[-16:-12]
 
     return ElinkDataFrame(tx_datavalid, header, *elk_13_12,
                           *elk_11_8, *elk_7_4, *elk_3_0)
