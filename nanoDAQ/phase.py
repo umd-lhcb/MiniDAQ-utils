@@ -2,7 +2,7 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Thu Dec 19, 2019 at 02:46 AM -0500
+# Last Change: Thu Dec 19, 2019 at 04:47 AM -0500
 
 from sty import fg
 
@@ -17,12 +17,21 @@ from nanoDAQ.gbtclient.i2c import I2C_TYPE, I2C_FREQ
 # DCB elink phase adjustment #
 ##############################
 
-DCB_ELK_PHASE_REG = {}
-for ch in range(0, 14, 2):
-    reg_a = 69 + 12*ch  # Magic numbers: 69 and 12. See GBTX manual.
-    reg_tri = [reg_a+i for i in [0, 4, 8]]
-    DCB_ELK_PHASE_REG[ch] = reg_tri
-    DCB_ELK_PHASE_REG[ch+1] = list(map(lambda x: x-2, reg_tri))
+DCB_ELK_PHASE_REG = {
+    0: [69, 73, 77],
+    1: [67, 71, 75],
+    2: [93, 97, 101],
+    3: [91, 95, 99],
+    4: [117, 121, 125],
+    5: [115, 119, 123],
+    6: [141, 145, 149],
+    7: [139, 143, 147],
+    12: [165, 169, 173],  # NOTE: the ordering!
+    13: [163, 167, 171],
+    8: [189, 193, 197],
+    9: [187, 191, 195],
+    10: [213, 217, 221],
+    11: [211, 215, 219]}
 
 DCB_ELK_VALID_PHASE = list(map(lambda x: hex(x)[2:], range(15)))
 

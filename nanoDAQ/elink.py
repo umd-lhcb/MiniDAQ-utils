@@ -2,7 +2,7 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Wed Dec 18, 2019 at 05:36 AM -0500
+# Last Change: Thu Dec 19, 2019 at 04:52 AM -0500
 
 from collections import namedtuple
 from tabulate import tabulate
@@ -27,12 +27,17 @@ def elink_parser(df):
     header = df[-3]
     elk_13_12 = df[-2:]
 
-    elk_11_8 = df[-8:-4]
-    elk_7_4 = df[-12:-8]
-    elk_3_0 = df[-16:-12]
+    elk_11 = df[-15]
+    elk_10 = df[-16]
+    elk_9 = df[-14]
+    elk_8 = df[-13]
 
-    return ElinkDataFrame(tx_datavalid, header, *elk_13_12, *elk_11_8, *elk_7_4,
-                          *elk_3_0)
+    elk_7_4 = df[-8:-4]
+    elk_3_0 = df[-12:-8]
+
+    return ElinkDataFrame(tx_datavalid, header, *elk_13_12,
+                          elk_11, elk_10, elk_9, elk_8,
+                          *elk_7_4, *elk_3_0)
 
 
 def alternating_color(s):
