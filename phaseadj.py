@@ -2,7 +2,7 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Thu Dec 19, 2019 at 02:48 AM -0500
+# Last Change: Thu Dec 19, 2019 at 02:51 AM -0500
 
 from argparse import ArgumentParser
 from tabulate import tabulate
@@ -25,6 +25,7 @@ def parse_input(descr='Phase alignment helper for DCB+SALT.'):
     parser.add_argument('-g', '--gbt',
                         nargs='?',
                         type=int,
+                        required=True,
                         help='''
 specify GBT index.
                         ''')
@@ -32,6 +33,7 @@ specify GBT index.
     parser.add_argument('-s', '--slave',
                         nargs='?',
                         type=int,
+                        required=True,
                         help='''
 specify slave GBTx.
                         ''')
@@ -39,6 +41,7 @@ specify slave GBTx.
     parser.add_argument('-b', '--bus',
                         nargs='?',
                         type=int,
+                        required=True,
                         help='''
 specify I2C bus on slave GBTx that the ASIC is connected.
                         ''')
@@ -46,6 +49,7 @@ specify I2C bus on slave GBTx that the ASIC is connected.
     parser.add_argument('-a', '--asic',
                         nargs='?',
                         type=int,
+                        required=True,
                         help='''
 specify ASIC.
                         ''')
@@ -53,6 +57,7 @@ specify ASIC.
     parser.add_argument('-c', '--channel',
                         nargs='?',
                         type=int,
+                        required=True,
                         help='''
 specify MiniDAQ channel.
                         ''')
