@@ -2,7 +2,7 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Thu Dec 19, 2019 at 09:18 AM -0500
+# Last Change: Thu Dec 19, 2019 at 02:50 PM -0500
 
 from argparse import ArgumentParser
 from tabulate import tabulate
@@ -17,7 +17,8 @@ from nanoDAQ.elink import print_elink_table, alternating_color
 from nanoDAQ.phase import loop_through_elink_phase, elink_phase_scan
 from nanoDAQ.phase import adj_dcb_elink_phase, adj_salt_elink_phase
 
-from nanoDAQ.phase import salt_tfc_mode, loop_through_tfc_phase, tfc_phase_adj
+from nanoDAQ.phase import salt_tfc_mode, adj_salt_tfc_phase
+from nanoDAQ.phase import loop_phase_tfc, scan_phase_tfc
 
 
 ################################
@@ -103,7 +104,18 @@ if __name__ == '__main__':
     tfc_op = input('Continue to TFC phase adjustment (y/n)? ')
     if tfc_op == 'y':
         salt_tfc_mode(args.gbt, args.bus, args.asic)
-        tfc_scan_raw = loop_through_tfc_phase(args.gbt, args.bus, args.asic,
-                                              daq_chs)
-        tfc_phase_adj(tfc_scan_raw, args.gbt, args.bus, args.asic)
-        print_elink_table(mem_r()[-10:], highlight=daq_chs)
+
+        print('Generating phase-scanning table, this may take awhile...')
+        tfc_scan = loop_phase_tfc(daq_chs, args.gbt, args.slave)
+        tfc_tab, tfc_adj, tfc_pattern = scan_phase_tfc(tfc_scan)
+        print(tabulate(tfc_tab, headers=['phase']+daq_chs,
+              colalign=['left']+['right']*len(daq_chs)))
+
+        if len(tfc_adj) == len(daq_chs):
+            print('Current fixed pattern is {}, adjusting DCB and SALT phase...'.format(
+                hex_pad(tfc_pattern)))
+            adj_dcb_elink_phase(tfc_adj, args.gbt, args.slave)
+            tfc_status = adj_salt_tfc_phase(
+                daq_chs, args.gbt, args.bus, args.asic)
+            print('TFC phase adjustment: {}'.format(tfc_status))
+            print_elink_table(mem_r()[-10:], highlight=daq_chs)
