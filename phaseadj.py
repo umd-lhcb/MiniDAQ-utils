@@ -2,7 +2,7 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Thu Dec 19, 2019 at 09:03 AM -0500
+# Last Change: Thu Dec 19, 2019 at 09:17 AM -0500
 
 from argparse import ArgumentParser
 from tabulate import tabulate
@@ -78,17 +78,19 @@ if __name__ == '__main__':
     fiber_w(args.channel)  # Select specified MiniDAQ channel.
     salt_tfc_mode(args.gbt, args.bus, args.asic, mode='fixed')
 
-    print('Current readings of MiniDAQ channel {}:'.format(args.channel))
-    print_elink_table(mem_r()[-10:], style=alternating_color)
+    elk_op = input('Continue to Elink phase adjustment (y/n)? ')
+    if elk_op == 'y':
+        print('Current readings of MiniDAQ channel {}:'.format(args.channel))
+        print_elink_table(mem_r()[-10:], style=alternating_color)
 
-    daq_chs = input('Input elinks to be aligned, separated by space: ')
-    daq_chs = list(map(int, daq_chs.split()))
+        daq_chs = input('Input elinks to be aligned, separated by space: ')
+        daq_chs = list(map(int, daq_chs.split()))
 
-    print('Generating phase-scanning table, this may take awhile...')
-    elk_scan_raw = loop_through_elink_phase(args.gbt, args.slave, daq_chs)
-    elk_scan_tab, elk_adj, elk_pattern = elink_phase_scan(elk_scan_raw)
-    print(tabulate(elk_scan_tab, headers=['phase']+daq_chs,
-          colalign=['left']+['right']*len(daq_chs)))
+        print('Generating phase-scanning table, this may take awhile...')
+        elk_scan_raw = loop_through_elink_phase(args.gbt, args.slave, daq_chs)
+        elk_scan_tab, elk_adj, elk_pattern = elink_phase_scan(elk_scan_raw)
+        print(tabulate(elk_scan_tab, headers=['phase']+daq_chs,
+              colalign=['left']+['right']*len(daq_chs)))
 
     if len(elk_adj) == len(daq_chs):
         print('Current fixed pattern is {}, adjusting DCB and SALT phase...'.format(
@@ -97,8 +99,8 @@ if __name__ == '__main__':
         adj_salt_elink_phase(elk_pattern, args.gbt, args.bus, args.asic)
         print_elink_table(mem_r()[-10:], highlight=daq_chs)
 
-    tfc_adj = input('Continue to TFC phase adjustment (y/n)? ')
-    if tfc_adj == 'y':
+    tfc_op = input('Continue to TFC phase adjustment (y/n)? ')
+    if tfc_op == 'y':
         salt_tfc_mode(args.gbt, args.bus, args.asic)
         tfc_scan_raw = loop_through_tfc_phase(args.gbt, args.bus, args.asic,
                                               daq_chs)
