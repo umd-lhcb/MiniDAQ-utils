@@ -78,13 +78,14 @@ if __name__ == '__main__':
     fiber_w(args.channel)  # Select specified MiniDAQ channel.
     salt_tfc_mode(args.gbt, args.bus, args.asic, mode='fixed')
 
+    print('Current readings of MiniDAQ channel {}:'.format(args.channel))
+    print_elink_table(mem_r()[-10:], style=alternating_color)
+
+    daq_chs = input('Input elinks to be aligned, separated by space: ')
+    daq_chs = list(map(int, daq_chs.split()))
+
     elk_op = input('Continue to Elink phase adjustment (y/n)? ')
     if elk_op == 'y':
-        print('Current readings of MiniDAQ channel {}:'.format(args.channel))
-        print_elink_table(mem_r()[-10:], style=alternating_color)
-
-        daq_chs = input('Input elinks to be aligned, separated by space: ')
-        daq_chs = list(map(int, daq_chs.split()))
 
         print('Generating phase-scanning table, this may take awhile...')
         elk_scan_raw = loop_through_elink_phase(args.gbt, args.slave, daq_chs)
