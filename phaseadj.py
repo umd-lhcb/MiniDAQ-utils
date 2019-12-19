@@ -2,7 +2,7 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Thu Dec 19, 2019 at 08:46 AM -0500
+# Last Change: Thu Dec 19, 2019 at 09:03 AM -0500
 
 from argparse import ArgumentParser
 from tabulate import tabulate
@@ -76,6 +76,7 @@ if __name__ == '__main__':
 
     opts_w()  # Enable memory monitoring options. (looping, etc.)
     fiber_w(args.channel)  # Select specified MiniDAQ channel.
+    salt_tfc_mode(args.gbt, args.bus, args.asic, mode='fixed')
 
     print('Current readings of MiniDAQ channel {}:'.format(args.channel))
     print_elink_table(mem_r()[-10:], style=alternating_color)

@@ -2,7 +2,7 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Thu Dec 19, 2019 at 08:50 AM -0500
+# Last Change: Thu Dec 19, 2019 at 09:03 AM -0500
 
 from collections import defaultdict
 from sty import fg
@@ -75,14 +75,14 @@ def adj_salt_elink_phase(pattern, gbt, bus, asic):
 SALT_TFC_VALID_PHASE = ['03', '07', '0b', '0f', '13', '17', '1b', '1f']
 
 
-def salt_ser_src(gbt, bus, asic, mode='tfc'):
+def salt_ser_src(gbt, bus, asic, mode):
     i2c_write(gbt, 0, bus, SALT.addr_shift(0, asic), 0, 1,
               I2C_TYPE['salt'], I2C_FREQ['100KHz'],
               data=SALT_SER_SRC_MODE[mode])
 
 
-def salt_tfc_mode(gbt, bus, asic):
-    exec_guard(salt_ser_src, gbt, bus, asic)
+def salt_tfc_mode(gbt, bus, asic, mode='tfc'):
+    exec_guard(salt_ser_src, gbt, bus, asic, mode)
 
 
 def salt_tfc_phase(gbt, bus, asic, phase):
