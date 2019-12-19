@@ -2,7 +2,7 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Thu Dec 19, 2019 at 09:03 AM -0500
+# Last Change: Thu Dec 19, 2019 at 09:21 AM -0500
 
 from collections import defaultdict
 from sty import fg
@@ -194,10 +194,14 @@ def loop_through_tfc_phase(gbt, bus, asic, daq_chs):
 
 
 def tfc_phase_adj(scan, gbt, bus, asic):
+    sucess = False
+
     for ph, chs_data in scan.items():
         for _, data in chs_data.items():
             mode, _ = most_common(data)
             if check_bit_shift(mode, 0x04):
+                sucess = True
                 break
 
+    print('TFC phase adjustment: {}'.format(sucess))
     exec_guard(salt_tfc_phase, gbt, bus, asic, ph)
