@@ -2,8 +2,9 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Thu Dec 19, 2019 at 05:26 AM -0500
+# Last Change: Thu Dec 19, 2019 at 06:20 AM -0500
 
+from collections import defaultdict
 from sty import fg
 
 from nanoDAQ.elink import elink_extract_chs, check_bit_shift
@@ -59,8 +60,26 @@ def loop_through_elink_phase(gbt, slave, daq_chs):
     return result
 
 
+def intersect_good_pattern(ptns):
+    good_patterns = []
+    for _, p in ptns.items():
+        good_patterns.append(list(p))
+
+    result = set(good_patterns[0])
+    for s in good_patterns[1:]:
+        result.intersection_update(s)
+
+    return result
+
+
+def mid_elem(lst):
+    return lst[int(len(lst)/2)]
+
+
 def check_phase_scan(scan):
     printout = [list() for i in range(15)]
+    num_of_chs = len(list(scan.values()))
+    good_patterns_chs = defaultdict(lambda: defaultdict(list))
 
     for ph, chs_data in scan.items():
         idx = int(ph, base=16)
@@ -73,9 +92,28 @@ def check_phase_scan(scan):
 
             if freq == num_of_frame and shift >= 0:
                 printout[idx].append(mode_display)
+                good_patterns_chs[ch][mode_display].append(ph)
             elif shift >= 0:
                 printout[idx].append(fg.li_yellow+mode_display+fg.rs)
             else:
                 printout[idx].append(fg.li_red+'X'+fg.rs)
 
-    return printout
+    # Now try to find optimum phases
+    common_patterns = intersect_good_pattern(good_patterns_chs)
+    phase_per_ch = dict()
+
+    for ch, p in good_patterns_chs.items():
+        phase_per_ch = dict()
+        for cp in common_patterns:
+            if len(p[cp]) >= 3:
+                phase_per_ch[ch] = mid_elem(p[cp])
+        good_phase_printout = list(phase_per_ch.values())
+        if len(good_phase_printout) == num_of_chs:
+            break
+
+    # Update printout table
+    for idx, ph in enumerate(good_phase_printout):
+        ph = int(ph, base=16)
+        printout[ph][idx] = fg.li_green + printout[ph][idx] + fg.rs
+
+    return printout, phase_per_ch
