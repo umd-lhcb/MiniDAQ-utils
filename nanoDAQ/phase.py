@@ -2,7 +2,7 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Thu Dec 19, 2019 at 06:27 AM -0500
+# Last Change: Thu Dec 19, 2019 at 06:43 AM -0500
 
 from collections import defaultdict
 from sty import fg
@@ -76,6 +76,15 @@ def mid_elem(lst):
     return lst[int(len(lst)/2)]
 
 
+def check_elem_continuous(elem, lst):
+    if not lst:
+        return True
+    elif 1 == abs(int(elem) - int(lst[-1])):
+        return True
+    else:
+        return False
+
+
 def check_phase_scan(scan):
     printout = [list() for i in range(15)]
     num_of_chs = len(list(scan.values()))
@@ -92,7 +101,9 @@ def check_phase_scan(scan):
 
             if freq == num_of_frame and shift >= 0:
                 printout[idx].append(mode_display)
-                good_patterns_chs[ch][mode_display].append(ph)
+                if check_elem_continuous(
+                        ph, good_patterns_chs[ch][mode_display]):
+                    good_patterns_chs[ch][mode_display].append(ph)
             elif shift >= 0:
                 printout[idx].append(fg.li_yellow+mode_display+fg.rs)
             else:
@@ -106,8 +117,11 @@ def check_phase_scan(scan):
         phase_per_ch = dict()
         for ch, p in good_patterns_chs.items():
             if len(p[cp]) >= 3:
+                ch = int(ch.replace('elk', ''))
                 phase_per_ch[ch] = mid_elem(p[cp])
-        good_phase_printout = list(phase_per_ch.values())
+
+        good_phase_printout = [phase_per_ch[i]
+                               for i in sorted(phase_per_ch, reverse=True)]
         if len(good_phase_printout) == num_of_chs:
             break
 
