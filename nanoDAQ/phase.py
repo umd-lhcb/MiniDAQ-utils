@@ -2,7 +2,7 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Thu Dec 19, 2019 at 06:43 AM -0500
+# Last Change: Thu Dec 19, 2019 at 06:45 AM -0500
 
 from collections import defaultdict
 from sty import fg
@@ -79,7 +79,7 @@ def mid_elem(lst):
 def check_elem_continuous(elem, lst):
     if not lst:
         return True
-    elif 1 == abs(int(elem) - int(lst[-1])):
+    elif 1 == abs(int(elem, base=16) - int(lst[-1], base=16)):
         return True
     else:
         return False
