@@ -2,7 +2,7 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Thu Dec 19, 2019 at 06:26 AM -0500
+# Last Change: Thu Dec 19, 2019 at 06:27 AM -0500
 
 from collections import defaultdict
 from sty import fg
@@ -114,6 +114,6 @@ def check_phase_scan(scan):
     # Update printout table
     for idx, ph in enumerate(good_phase_printout):
         ph = int(ph, base=16)
-        printout[ph][idx+1] = fg.li_green + printout[ph][idx] + fg.rs
+        printout[ph][idx+1] = fg.li_green + printout[ph][idx+1] + fg.rs
 
     return printout, phase_per_ch
