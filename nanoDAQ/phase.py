@@ -2,7 +2,7 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Thu Dec 19, 2019 at 07:10 AM -0500
+# Last Change: Thu Dec 19, 2019 at 07:19 AM -0500
 
 from collections import defaultdict
 from sty import fg
@@ -137,6 +137,7 @@ def check_phase_scan(scan):
 
     for cp in common_patterns:
         phase_per_ch = dict()
+        pattern = int(cp, base=16)
         for ch, p in good_patterns_chs.items():
             if len(p[cp]) >= 3:
                 ch = int(ch.replace('elk', ''))
@@ -152,4 +153,4 @@ def check_phase_scan(scan):
         ph = int(ph, base=16)
         printout[ph][idx+1] = fg.li_green + printout[ph][idx+1] + fg.rs
 
-    return printout, phase_per_ch, cp  # 'cp' is the fixed pattern at good phase
+    return printout, phase_per_ch, pattern
