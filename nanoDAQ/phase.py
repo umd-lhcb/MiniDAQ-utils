@@ -2,7 +2,7 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Thu Dec 19, 2019 at 04:47 AM -0500
+# Last Change: Thu Dec 19, 2019 at 05:00 AM -0500
 
 from sty import fg
 
@@ -26,12 +26,13 @@ DCB_ELK_PHASE_REG = {
     5: [115, 119, 123],
     6: [141, 145, 149],
     7: [139, 143, 147],
-    12: [165, 169, 173],  # NOTE: the ordering!
+    12: [165, 169, 173],  # NOTE: Ordering!!!
     13: [163, 167, 171],
-    8: [189, 193, 197],
-    9: [187, 191, 195],
-    10: [213, 217, 221],
-    11: [211, 215, 219]}
+    9: [189, 193, 197],
+    8: [187, 191, 195],
+    11: [213, 217, 221],
+    10: [211, 215, 219],
+}
 
 DCB_ELK_VALID_PHASE = list(map(lambda x: hex(x)[2:], range(15)))
 
