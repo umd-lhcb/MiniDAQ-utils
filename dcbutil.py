@@ -2,7 +2,7 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Thu Dec 12, 2019 at 03:16 AM -0500
+# Last Change: Thu Dec 19, 2019 at 07:27 PM -0500
 
 import sys
 
@@ -10,6 +10,7 @@ from argparse import ArgumentParser
 
 from nanoDAQ.ut.dcb import DCB
 from nanoDAQ.utils import add_default_subparser, HexToIntAction
+from nanoDAQ.phase import dcb_elk_phase
 
 
 #################################
@@ -22,9 +23,9 @@ def add_dcb_default_subparser(*args, add_slave=True, **kwargs):
         cmd.add_argument('-s', '--slaves',
                          nargs='+',
                          type=int,
-                         default=None,
+                         default=list(range(1, 7)),
                          help='''
-    specify slave GBTxs to be programed.
+    specify slave GBTxs to be programmed.
     ''')
 
     return cmd
@@ -111,7 +112,7 @@ reset slave GBTxs.
 specify the final state after pulling GPIO to low.''')
 
     bias_cur_cmd = add_dcb_default_subparser(cmd, 'bias_cur', description='''
-Read and configure bias current of VTXx modules.
+read and configure bias current of VTXx modules.
 ''')
     bias_cur_cmd.add_argument('cur',
                               nargs='?',
@@ -119,6 +120,22 @@ Read and configure bias current of VTXx modules.
                               default=None,
                               help='''
 specify bias current, in mA.
+    ''')
+
+    elk_phase_cmd = add_dcb_default_subparser(cmd, 'elk_phase', description='''
+specify a phase of a particular elink.
+''')
+    elk_phase_cmd.add_argument('channel',
+                               nargs='?',
+                               type=int,
+                               help='''
+specify elink channel.
+    ''')
+
+    elk_phase_cmd.add_argument('phase',
+                               nargs='?',
+                               help='''
+specify elink phase.
     ''')
 
     return parser
@@ -163,3 +180,7 @@ if __name__ == '__main__':
             dcb.bias_cur_set(args.cur, args.slaves)
         else:
             dcb.bias_cur_status(args.slaves)
+
+    elif args.cmd == 'elk_phase':
+        for s in args.slaves:
+            dcb_elk_phase(args.gbt, s, args.channel, args.phase)
