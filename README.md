@@ -72,9 +72,14 @@ When in doubt, use `-h` of each sub-command for help.
 ./dcbutil.py bias_cur
 ```
 
-### To set GBLD bias current to 7 mA on GBTx 1
+### To set GBLD bias current to 7 mA on GBT 1
 ```
 ./dcbutil.py bias_cur 7 -s 1
+```
+
+### To set phase of elink 11 to `0x77` on GBT 3, data GBTx 5
+```
+./dcbutil.py elk_phase 11 77 -s 5 -g 3
 ```
 
 
