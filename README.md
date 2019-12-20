@@ -94,7 +94,7 @@ the I2C bus. This argument is **mandatory**.
 
 ## To program SALT `0x0` `0x8` with value `0x1122` on SALTs 1 and 3, I2C 5
 ```
-./saltutil.py 5 write 0 8 1122 -s 1 3
+./saltutil.py 5 write 0 8 1122 -a 1 3
 ```
 
 ## To read 2 SALT registers starting from `0x0` `0x8` on all SALTs, I2C 5
