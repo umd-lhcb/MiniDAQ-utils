@@ -26,19 +26,19 @@ from nanoDAQ.ut.salt import SALT, SALT_SER_SRC_MODE
 DCB_ELK_PHASE_REG = {
     0: [189, 193, 197],  # Group 5 channel 4/5 ABC
     1: [187, 191, 195],  # Group 5 channel 0/1 ABC
-    2: [213, 217, 221],  # Group 6 channel 0/1 ABC
-    3: [211, 215, 219],  # Group 6 channel 4/5 ABC
-    4: [69, 73, 77],     # Group 0 channel 0/1 ABC
-    5: [67, 71, 75],     # Group 0 channel 4/5 ABC
-    6: [93, 97, 101],    # Group 1 channel 0/1 ABC
-    7: [91, 95, 99],     # Group 1 channel 4/5 ABC
-    8: [117, 121, 125],  # Group 2 channel 0/1 ABC
-    9: [115, 119, 123],  # Group 2 channel 4/5 ABC
-    10: [141, 145, 149], # Group 3 channel 0/1 ABC
-    11: [139, 143, 147], # Group 3 channel 4/5 ABC
-    12: [165, 169, 173], # Group 4 channel 0/1 ABC
-    13: [163, 167, 171], # Group 4 channel 4/5 ABC
-}
+    2: [213, 217, 221],  # Group 6 channel 4/5  ABC
+    3: [211, 215, 219],  # Group 6 channel 0/1 ABC
+    4: [69, 73, 77],     # Group 0 channel 4/5 ABC
+    5: [67, 71, 75],     # Group 0 channel 0/1 ABC
+    6: [93, 97, 101],    # Group 1 channel 4/5 ABC
+    7: [91, 95, 99],     # Group 1 channel 0/1 ABC
+    8: [117, 121, 125],  # Group 2 channel 4/5 ABC
+    9: [115, 119, 123],  # Group 2 channel 0/1 ABC
+    10: [141, 145, 149], # Group 3 channel 4/5 ABC
+    11: [139, 143, 147], # Group 3 channel 0/1 ABC
+    12: [165, 169, 173], # Group 4 channel 4/5 ABC
+    13: [163, 167, 171], # Group 4 channel 0/1 ABC
+} 
 
 DCB_ELK_VALID_PHASE = list(map(lambda x: hex(x)[2:], range(15)))
 
