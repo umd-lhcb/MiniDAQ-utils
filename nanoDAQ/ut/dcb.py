@@ -2,7 +2,7 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Thu Dec 19, 2019 at 03:55 AM -0500
+# Last Change: Fri Dec 20, 2019 at 07:21 PM -0500
 
 import os.path as op
 
@@ -20,6 +20,10 @@ from nanoDAQ.gbtclient.gpio import gpio_activate_ch, gpio_setdir, \
 from nanoDAQ.utils import dict_factory, num_of_byte, hex_pad
 
 
+#############
+# Constants #
+#############
+
 GBTX_STATUS = dict_factory({
     '61': fg.green+ef.bold+'Idle'+rs.bold_dim+fg.rs,
     '15': fg.yellow+ef.bold+'Pause for config'+rs.bold_dim+fg.rs,
@@ -30,6 +34,42 @@ PRBS_MODE = {
     'off': '00',
 }
 
+
+###############
+# Elink phase #
+###############
+
+# From Tables 36-42 in the GBTx manual 0.15.
+# Registers are triple voted, so all three need to be changed
+DCB_ELK_PHASE_REG = {
+    0:  [189, 193, 197],  # Group 5 channel 4/5 ABC
+    1:  [187, 191, 195],  # Group 5 channel 0/1 ABC
+    2:  [213, 217, 221],  # Group 6 channel 4/5  ABC
+    3:  [211, 215, 219],  # Group 6 channel 0/1 ABC
+    4:  [69, 73, 77],     # Group 0 channel 4/5 ABC
+    5:  [67, 71, 75],     # Group 0 channel 0/1 ABC
+    6:  [93, 97, 101],    # Group 1 channel 4/5 ABC
+    7:  [91, 95, 99],     # Group 1 channel 0/1 ABC
+    8:  [117, 121, 125],  # Group 2 channel 4/5 ABC
+    9:  [115, 119, 123],  # Group 2 channel 0/1 ABC
+    10: [141, 145, 149],  # Group 3 channel 4/5 ABC
+    11: [139, 143, 147],  # Group 3 channel 0/1 ABC
+    12: [165, 169, 173],  # Group 4 channel 4/5 ABC
+    13: [163, 167, 171],  # Group 4 channel 0/1 ABC
+}
+
+DCB_ELK_VALID_PHASE = list(map(lambda x: hex(x)[2:], range(15)))
+
+
+def dcb_elk_phase(gbt, slave, ch, phase):
+    for reg in DCB_ELK_PHASE_REG[ch]:
+        i2c_write(gbt, 0, 6, slave, reg, 1, I2C_TYPE['gbtx'], I2C_FREQ['1MHz'],
+                  data=phase*2)
+
+
+##################
+# DCB all-in-one #
+##################
 
 class DCB(object):
     def __init__(self, gbt, sca=0, bus=6, slaves=list(range(1, 7)),
