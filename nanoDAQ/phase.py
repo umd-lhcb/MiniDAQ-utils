@@ -2,7 +2,7 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Fri Dec 20, 2019 at 07:21 PM -0500
+# Last Change: Sat Dec 28, 2019 at 03:43 AM -0500
 
 from collections import defaultdict
 from sty import fg
@@ -15,7 +15,7 @@ from nanoDAQ.gbtclient.i2c import i2c_write
 from nanoDAQ.gbtclient.i2c import I2C_TYPE, I2C_FREQ
 
 from nanoDAQ.ut.salt import SALT, SALT_SER_SRC_MODE
-from nanoDAQ.ut.dcb import dcb_elk_phase
+from nanoDAQ.ut.dcb import dcb_elk_phase, DCB_ELK_VALID_PHASE
 
 
 ##############################

@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 #
-# Author: Yipeng Sun
+# Author: Yipeng Sun, Manuel Franco Sevilla
 # License: BSD 2-clause
-# Last Change: Fri Dec 20, 2019 at 07:21 PM -0500
+# Last Change: Sat Dec 28, 2019 at 03:44 AM -0500
 
 import os.path as op
 
