@@ -2,7 +2,7 @@
 #
 # Author: Yipeng Sun, Manuel Franco Sevilla
 # License: BSD 2-clause
-# Last Change: Sun Dec 29, 2019 at 10:28 PM -0500
+# Last Change: Sun Dec 29, 2019 at 10:32 PM -0500
 
 import os.path as op
 
@@ -47,7 +47,7 @@ DCB_SLAVE_I2C_BUS = 6
 DCB_ELK_PHASE_REG = {
     0:  [189, 193, 197],  # Group 5 channel 4/5 ABC
     1:  [187, 191, 195],  # Group 5 channel 0/1 ABC
-    2:  [213, 217, 221],  # Group 6 channel 4/5  ABC
+    2:  [213, 217, 221],  # Group 6 channel 4/5 ABC
     3:  [211, 215, 219],  # Group 6 channel 0/1 ABC
     4:  [69, 73, 77],     # Group 0 channel 4/5 ABC
     5:  [67, 71, 75],     # Group 0 channel 0/1 ABC

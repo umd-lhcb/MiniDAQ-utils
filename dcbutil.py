@@ -2,7 +2,7 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Thu Dec 19, 2019 at 07:27 PM -0500
+# Last Change: Sun Dec 29, 2019 at 10:32 PM -0500
 
 import sys
 
@@ -10,7 +10,6 @@ from argparse import ArgumentParser
 
 from nanoDAQ.ut.dcb import DCB
 from nanoDAQ.utils import add_default_subparser, HexToIntAction
-from nanoDAQ.phase import dcb_elk_phase
 
 
 #################################
@@ -129,7 +128,7 @@ specify a phase of a particular elink.
                                nargs='?',
                                type=int,
                                help='''
-specify elink channel.
+specify elink channel (0-13).
     ''')
 
     elk_phase_cmd.add_argument('phase',
@@ -182,5 +181,4 @@ if __name__ == '__main__':
             dcb.bias_cur_status(args.slaves)
 
     elif args.cmd == 'elk_phase':
-        for s in args.slaves:
-            dcb_elk_phase(args.gbt, s, args.channel, args.phase)
+        dcb.elink_phase(args.channel, args.phase, args.slaves)
