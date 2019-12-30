@@ -2,7 +2,7 @@
 #
 # Author: Yipeng Sun, Manuel Franco Sevilla
 # License: BSD 2-clause
-# Last Change: Sun Dec 29, 2019 at 10:32 PM -0500
+# Last Change: Sun Dec 29, 2019 at 10:44 PM -0500
 
 import os.path as op
 
@@ -97,14 +97,6 @@ class DCB(object):
     # Basic operations #
     ####################
 
-    def init(self, filepath, slaves=None):
-        self.activate_i2c()
-        filepath = op.abspath(op.expanduser(filepath))
-
-        for s in self.dyn_slaves(slaves):
-            i2c_write(self.gbt, self.sca, self.bus, s, 0, 366,
-                      self.i2c_type, self.i2c_freq, filepath=filepath)
-
     def activate_i2c(self):
         if not self.i2c_activated:
             i2c_activate_ch(self.gbt, self.sca, self.bus)
@@ -117,6 +109,18 @@ class DCB(object):
 
     def dyn_slaves(self, slaves):
         return self.slaves if slaves is None else slaves
+
+    ##############
+    # Initialize #
+    ##############
+
+    def init(self, filepath, slaves=None):
+        self.activate_i2c()
+        filepath = op.abspath(op.expanduser(filepath))
+
+        for s in self.dyn_slaves(slaves):
+            i2c_write(self.gbt, self.sca, self.bus, s, 0, 366,
+                      self.i2c_type, self.i2c_freq, filepath=filepath)
 
     ##################
     # I2C write/read #

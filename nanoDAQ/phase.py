@@ -2,38 +2,28 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Sat Dec 28, 2019 at 03:43 AM -0500
+# Last Change: Sun Dec 29, 2019 at 11:03 PM -0500
 
 from collections import defaultdict
 from sty import fg
 
 from nanoDAQ.elink import elink_extract_chs, check_bit_shift
-from nanoDAQ.utils import most_common, exec_guard, hex_pad, pad
+from nanoDAQ.utils import most_common, exec_guard, hex_pad
 
 from nanoDAQ.gbtclient.fpga_reg import mem_mon_read_safe as mem_r
-from nanoDAQ.gbtclient.i2c import i2c_write
-from nanoDAQ.gbtclient.i2c import I2C_TYPE, I2C_FREQ
 
-from nanoDAQ.ut.salt import SALT, SALT_SER_SRC_MODE
+from nanoDAQ.ut.salt import salt_elk_phase, salt_ser_src, salt_tfc_phase, \
+    SALT_TFC_VALID_PHASE
 from nanoDAQ.ut.dcb import dcb_elk_phase, DCB_ELK_VALID_PHASE
 
 
-##############################
-# DCB elink phase adjustment #
-##############################
+###################################
+# DCB/SALT I2C operation wrappers #
+###################################
 
 def adj_dcb_elink_phase(adjustment, gbt, slave):
     for ch, ph in adjustment.items():
         exec_guard(dcb_elk_phase, gbt, slave, ch, ph)
-
-
-###############################
-# SALT elink phase adjustment #
-###############################
-
-def salt_elk_phase(gbt, bus, asic, phase):
-    i2c_write(gbt, 0, bus, SALT.addr_shift(0, asic), 8, 1,
-              I2C_TYPE['salt'], I2C_FREQ['100KHz'], data=pad(phase))
 
 
 def adj_salt_elink_phase(pattern, gbt, bus, asic):
@@ -43,26 +33,8 @@ def adj_salt_elink_phase(pattern, gbt, bus, asic):
         exec_guard(salt_elk_phase, gbt, bus, asic, str(phase))
 
 
-#############################
-# SALT TFC phase adjustment #
-#############################
-
-SALT_TFC_VALID_PHASE = ['03', '07', '0b', '0f', '13', '17', '1b', '1f']
-
-
-def salt_ser_src(gbt, bus, asic, mode):
-    i2c_write(gbt, 0, bus, SALT.addr_shift(0, asic), 0, 1,
-              I2C_TYPE['salt'], I2C_FREQ['100KHz'],
-              data=SALT_SER_SRC_MODE[mode])
-
-
 def salt_tfc_mode(gbt, bus, asic, mode='tfc'):
     exec_guard(salt_ser_src, gbt, bus, asic, mode)
-
-
-def salt_tfc_phase(gbt, bus, asic, phase):
-    i2c_write(gbt, 0, bus, SALT.addr_shift(0, asic), 2, 1,
-              I2C_TYPE['salt'], I2C_FREQ['100KHz'], data=pad(phase))
 
 
 def adj_salt_tfc_phase(daq_chs, gbt, bus, asic):

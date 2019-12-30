@@ -2,7 +2,7 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Wed Dec 18, 2019 at 05:44 AM -0500
+# Last Change: Sun Dec 29, 2019 at 11:06 PM -0500
 
 from tabulate import tabulate
 from time import sleep
@@ -14,7 +14,12 @@ from nanoDAQ.gbtclient.gpio import GPIO_LEVEL_INVERSE
 from nanoDAQ.gbtclient.gpio import gpio_activate_ch, gpio_setdir, \
     gpio_setline, gpio_getline
 
-from nanoDAQ.utils import num_of_byte
+from nanoDAQ.utils import num_of_byte, pad
+
+
+#############
+# Constants #
+#############
 
 SALT_SER_SRC_MODE = {
     'fixed': '22',
@@ -39,6 +44,49 @@ SALT_INIT_SEQ = [
 ]
 
 
+###############
+# Elink phase #
+###############
+
+def addr_shift(addr, shift, base=16):
+    return addr + shift*base
+
+
+def salt_elk_phase(gbt, bus, asic, phase):
+    i2c_write(gbt, 0, bus, addr_shift(0, asic), 0x08, 1,
+              I2C_TYPE['salt'], I2C_FREQ['100KHz'], data=pad(phase))
+
+
+###############################
+# Serializer source selection #
+###############################
+
+def salt_ser_src(gbt, bus, asic, src):
+    try:
+        val = SALT_SER_SRC_MODE[src]
+    except KeyError:
+        val = src
+
+    i2c_write(gbt, 0, bus, addr_shift(0, asic), 0, 1,
+              I2C_TYPE['salt'], I2C_FREQ['100KHz'], data=val)
+
+
+#############
+# TFC phase #
+#############
+
+SALT_TFC_VALID_PHASE = ['03', '07', '0b', '0f', '13', '17', '1b', '1f']
+
+
+def salt_tfc_phase(gbt, bus, asic, phase):
+    i2c_write(gbt, 0, bus, addr_shift(0, asic), 2, 1,
+              I2C_TYPE['salt'], I2C_FREQ['100KHz'], data=pad(phase))
+
+
+###################
+# SALT all-in-one #
+###################
+
 class SALT(object):
     def __init__(self, gbt, bus, sca=0, asics=list(range(4)),
                  i2c_type=I2C_TYPE['salt'], i2c_freq=I2C_FREQ['100KHz']):
@@ -52,22 +100,47 @@ class SALT(object):
         self.gpio_activated = False
         self.i2c_activated = False
 
+    ####################
+    # Basic operations #
+    ####################
+
+    def activate_i2c(self):
+        if not self.i2c_activated:
+            i2c_activate_ch(self.gbt, self.sca, self.bus)
+            self.i2c_activated = True
+
+    def activate_gpio(self):
+        if not self.gpio_activated:
+            gpio_activate_ch(self.gbt, self.sca)
+            self.gpio_activated = True
+
+    def dyn_asics(self, asics):
+        return self.asics if asics is None else asics
+
+    ##############
+    # Initialize #
+    ##############
+
     def init(self, asics=None):
         self.reset()
         self.activate_i2c()
 
         for s in self.dyn_asics(asics):
             for addr, subaddr, val in SALT_INIT_SEQ:
-                addr = self.addr_shift(addr, s)
+                addr = addr_shift(addr, s)
                 i2c_write(self.gbt, self.sca, self.bus, addr, subaddr, 1,
                           self.i2c_type, self.i2c_freq, data=val)
+
+    ##################
+    # I2C write/read #
+    ##################
 
     def write(self, addr, subaddr, data, asics=None):
         self.activate_i2c()
 
         for s in self.dyn_asics(asics):
             i2c_write(self.gbt, self.sca, self.bus,
-                      self.addr_shift(addr, s),
+                      addr_shift(addr, s),
                       subaddr,
                       num_of_byte(data),
                       self.i2c_type, self.i2c_freq, data=data)
@@ -78,7 +151,7 @@ class SALT(object):
 
         for s in self.dyn_asics(asics):
             value = i2c_read(self.gbt, self.sca, self.bus,
-                             self.addr_shift(addr, s),
+                             addr_shift(addr, s),
                              subaddr,
                              size, self.i2c_type, self.i2c_freq)
             table.append([str(s), value])
@@ -87,6 +160,10 @@ class SALT(object):
             print(tabulate(table, headers=['SALT', 'value']))
         else:
             return table
+
+    ##############
+    # GPIO reset #
+    ##############
 
     def reset(self, final_state='high'):
         self.activate_gpio()
@@ -104,38 +181,29 @@ class SALT(object):
 
         return line_state
 
-    def phase(self, ph, asics=None):
+    #######################
+    # Elink channel phase #
+    #######################
+
+    def phase(self, phase, asics=None):
+        self.activate_i2c()
         for s in self.dyn_asics(asics):
-            i2c_write(self.gbt, self.sca, self.bus,
-                      self.addr_shift(0, s),
-                      0x08, 1,
-                      self.i2c_type, self.i2c_freq, data=ph)
+            salt_elk_phase(self.gbt, self.bus, s, phase)
+
+    ###############################
+    # Serializer source selection #
+    ###############################
 
     def ser_src(self, src, asics=None):
-        try:
-            val = SALT_SER_SRC_MODE[src]
-        except KeyError:
-            val = src
-
+        self.activate_i2c()
         for s in self.dyn_asics(asics):
-            i2c_write(self.gbt, self.sca, self.bus,
-                      self.addr_shift(0, s),
-                      0x00, 1,
-                      self.i2c_type, self.i2c_freq, data=val)
+            salt_ser_src(self.gbt, self.bus, s, src)
 
-    def activate_i2c(self):
-        if not self.i2c_activated:
-            i2c_activate_ch(self.gbt, self.sca, self.bus)
-            self.i2c_activated = True
+    #############
+    # TFC phase #
+    #############
 
-    def activate_gpio(self):
-        if not self.gpio_activated:
-            gpio_activate_ch(self.gbt, self.sca)
-            self.gpio_activated = True
-
-    def dyn_asics(self, asics):
-        return self.asics if asics is None else asics
-
-    @staticmethod
-    def addr_shift(addr, shift, base=16):
-        return addr + shift*base
+    def tfc_phase(self, phase, asics=None):
+        self.activate_i2c()
+        for s in self.dyn_asics(asics):
+            salt_tfc_phase(self.gbt, self.bus, s, phase)
