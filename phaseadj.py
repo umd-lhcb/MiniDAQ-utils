@@ -2,7 +2,7 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Thu Dec 19, 2019 at 02:50 PM -0500
+# Last Change: Mon Dec 30, 2019 at 01:49 AM -0500
 
 from argparse import ArgumentParser
 from tabulate import tabulate
@@ -14,11 +14,9 @@ from nanoDAQ.gbtclient.fpga_reg import mem_mon_options_write_safe as opts_w
 from nanoDAQ.utils import hex_pad
 from nanoDAQ.elink import print_elink_table, alternating_color
 
-from nanoDAQ.phase import loop_through_elink_phase, elink_phase_scan
+from nanoDAQ.phase import loop_phase_elk, scan_phase_elink
 from nanoDAQ.phase import adj_dcb_elink_phase, adj_salt_elink_phase
-
 from nanoDAQ.phase import salt_tfc_mode, adj_salt_tfc_phase
-from nanoDAQ.phase import loop_phase_tfc, scan_phase_tfc
 
 
 ################################
@@ -87,10 +85,9 @@ if __name__ == '__main__':
 
     elk_op = input('Continue to Elink phase adjustment (y/n)? ')
     if elk_op == 'y':
-
         print('Generating phase-scanning table, this may take awhile...')
-        elk_scan_raw = loop_through_elink_phase(args.gbt, args.slave, daq_chs)
-        elk_scan_tab, elk_adj, elk_pattern = elink_phase_scan(elk_scan_raw)
+        elk_scan_raw = loop_phase_elk(daq_chs, args.gbt, args.slave)
+        elk_scan_tab, elk_adj, elk_pattern = scan_phase_elink(elk_scan_raw)
         print(tabulate(elk_scan_tab, headers=['phase']+daq_chs,
               colalign=['left']+['right']*len(daq_chs)))
 
@@ -103,19 +100,8 @@ if __name__ == '__main__':
 
     tfc_op = input('Continue to TFC phase adjustment (y/n)? ')
     if tfc_op == 'y':
-        salt_tfc_mode(args.gbt, args.bus, args.asic)
+        print('Tuning TFC phase, this may take awhile...')
+        success = adj_salt_tfc_phase(daq_chs, args.gbt, args.bus, args.asic)
 
-        print('Generating phase-scanning table, this may take awhile...')
-        tfc_scan = loop_phase_tfc(daq_chs, args.gbt, args.slave)
-        tfc_tab, tfc_adj, tfc_pattern = scan_phase_tfc(tfc_scan)
-        print(tabulate(tfc_tab, headers=['phase']+daq_chs,
-              colalign=['left']+['right']*len(daq_chs)))
-
-        if len(tfc_adj) == len(daq_chs):
-            print('Current fixed pattern is {}, adjusting DCB and SALT phase...'.format(
-                hex_pad(tfc_pattern)))
-            adj_dcb_elink_phase(tfc_adj, args.gbt, args.slave)
-            tfc_status = adj_salt_tfc_phase(
-                daq_chs, args.gbt, args.bus, args.asic)
-            print('TFC phase adjustment: {}'.format(tfc_status))
+        if success:
             print_elink_table(mem_r()[-10:], highlight=daq_chs)
