@@ -2,7 +2,7 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Sun Dec 29, 2019 at 10:32 PM -0500
+# Last Change: Mon Dec 30, 2019 at 12:27 AM -0500
 
 import sys
 
@@ -22,7 +22,7 @@ def add_dcb_default_subparser(*args, add_slave=True, **kwargs):
         cmd.add_argument('-s', '--slaves',
                          nargs='+',
                          type=int,
-                         default=list(range(1, 7)),
+                         default=None,
                          help='''
     specify slave GBTxs to be programmed.
     ''')

@@ -2,13 +2,13 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Fri Dec 06, 2019 at 05:15 AM -0500
+# Last Change: Mon Dec 30, 2019 at 12:27 AM -0500
 
 import sys
 
 from argparse import ArgumentParser
 
-from nanoDAQ.ut.salt import SALT, SALT_SER_SRC_MODE
+from nanoDAQ.ut.salt import SALT, SALT_SER_SRC_MODE, SALT_TFC_VALID_PHASE
 from nanoDAQ.utils import add_default_subparser, HexToIntAction
 
 
@@ -100,11 +100,20 @@ reset SALT.
 specify the final state after pulling GPIO to low.''')
 
     phase_cmd = add_salt_default_subparser(cmd, 'phase', description='''
-reset SALT.
+specify SALT elink phase.
 ''')
-    phase_cmd.add_argument('ph',
+    phase_cmd.add_argument('phase',
                            help='''
-specify the phase of SALT.''')
+specify the elink phase of SALT.''')
+
+    tfc_phase_cmd = add_salt_default_subparser(cmd, 'phase', description='''
+specify SALT TFC phase.
+''')
+    tfc_phase_cmd.add_argument('phase',
+                               nargs='?',
+                               choices=SALT_TFC_VALID_PHASE,
+                               help='''
+specify the TFC phase of SALT.''')
 
     return parser
 
@@ -135,4 +144,7 @@ if __name__ == '__main__':
         salt.reset(args.final_state)
 
     elif args.cmd == 'phase':
-        salt.phase(args.ph, args.asics)
+        salt.phase(args.phase, args.asics)
+
+    elif args.cmd == 'tfc_phase':
+        salt.tfc_phase(args.phase, args.asics)
