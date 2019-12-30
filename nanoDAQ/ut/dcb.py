@@ -2,7 +2,7 @@
 #
 # Author: Yipeng Sun, Manuel Franco Sevilla
 # License: BSD 2-clause
-# Last Change: Sun Dec 29, 2019 at 10:19 PM -0500
+# Last Change: Sun Dec 29, 2019 at 10:28 PM -0500
 
 import os.path as op
 
@@ -33,6 +33,9 @@ PRBS_MODE = {
     'on':  '03',
     'off': '00',
 }
+
+DCB_SCA = 0
+DCB_SLAVE_I2C_BUS = 6
 
 
 ###############
@@ -65,7 +68,8 @@ DCB_ELK_VALID_PHASE = list(map(lambda x: hex(x)[2:], range(15)))
 # wrapped in another process.
 def dcb_elk_phase(gbt, slave, ch, phase):
     for reg in DCB_ELK_PHASE_REG[ch]:
-        i2c_write(gbt, 0, 6, slave, reg, 1, I2C_TYPE['gbtx'], I2C_FREQ['1MHz'],
+        i2c_write(gbt, DCB_SCA, DCB_SLAVE_I2C_BUS,
+                  slave, reg, 1, I2C_TYPE['gbtx'], I2C_FREQ['1MHz'],
                   data=phase*2)
 
 
@@ -74,7 +78,8 @@ def dcb_elk_phase(gbt, slave, ch, phase):
 ##################
 
 class DCB(object):
-    def __init__(self, gbt, sca=0, bus=6, slaves=list(range(1, 7)),
+    def __init__(self, gbt,
+                 sca=DCB_SCA, bus=DCB_SLAVE_I2C_BUS, slaves=list(range(1, 7)),
                  i2c_type=I2C_TYPE['gbtx'], i2c_freq=I2C_FREQ['1MHz']):
         self.gbt = gbt
         self.sca = sca
@@ -270,3 +275,11 @@ class DCB(object):
                 pass
             else:
                 return reg
+
+    #######################
+    # Elink channel phase #
+    #######################
+
+    def elink_phase(self, ch, phase, slaves=None):
+        for s in self.dyn_slaves(slaves):
+            dcb_elk_phase(self.gbt, s, ch, phase)
