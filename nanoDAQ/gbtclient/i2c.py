@@ -2,13 +2,13 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Wed Dec 18, 2019 at 05:43 AM -0500
+# Last Change: Mon Dec 30, 2019 at 12:35 AM -0500
 
 import pydim
 
 from nanoDAQ.gbtclient.common import GBT_PREF, GBT_SERV, SCA_OP_MODE
 from nanoDAQ.gbtclient.common import hex_to_bytes
-from nanoDAQ.gbtclient.common import errs_factory, dim_cmd_err, dim_dic_err
+from nanoDAQ.gbtclient.common import dim_cmd_err, dim_dic_err
 from nanoDAQ.gbtclient.common import default_dim_regulator as ddr
 
 from nanoDAQ.exceptions import GBTError
@@ -30,11 +30,11 @@ I2C_FREQ = {
     '1MHz':   3,
 }
 
-I2C_ERR_CODE = errs_factory({
+I2C_ERR_CODE = {
     0x3:    'Master GBT not locked.',
     0x200:  'I2C channel not activated.',
     0x8000: 'Last operation not acknowledged by the I2C slave.'
-})
+}
 
 
 ##################

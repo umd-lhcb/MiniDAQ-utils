@@ -2,7 +2,7 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Wed Dec 18, 2019 at 05:41 AM -0500
+# Last Change: Mon Dec 30, 2019 at 12:33 AM -0500
 
 from platform import node
 
@@ -69,10 +69,6 @@ def default_dim_regulator(tp):
 # Return value error handling #
 ###############################
 
-def errs_factory(known_errs={}, default='Unknown error.'):
-    return dict_factory(known_errs, default)
-
-
 def dim_cmd_err(ret_code, expected=1):
     if ret_code != expected:
         raise DIMError('The command was not successfully sent.')
@@ -85,6 +81,12 @@ def dim_dic_err(ret, errs, expected=0):
         ret_code = result = ret[0]
 
     if ret_code != expected:
-        raise GBTError(errs[ret_code])
+        try:
+            raise GBTError(errs[ret_code])
+        except KeyError:
+            raise GBTError('Unknown error with error code {} encountered.'.format(
+                hex(ret_code)
+            ))
+
     else:
         return result

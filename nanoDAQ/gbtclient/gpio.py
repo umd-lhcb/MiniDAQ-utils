@@ -2,7 +2,7 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Wed Dec 18, 2019 at 05:42 AM -0500
+# Last Change: Mon Dec 30, 2019 at 12:34 AM -0500
 
 import pydim
 
@@ -10,7 +10,7 @@ from sty import fg, ef, rs
 
 from nanoDAQ.gbtclient.common import GBT_PREF, GBT_SERV, SCA_OP_MODE
 from nanoDAQ.gbtclient.common import hex_to_bytes
-from nanoDAQ.gbtclient.common import errs_factory, dim_cmd_err, dim_dic_err
+from nanoDAQ.gbtclient.common import dim_cmd_err, dim_dic_err
 from nanoDAQ.gbtclient.common import default_dim_regulator as ddr
 
 
@@ -18,7 +18,7 @@ from nanoDAQ.gbtclient.common import default_dim_regulator as ddr
 # Constants #
 #############
 
-GPIO_ERR_CODE = errs_factory()
+GPIO_ERR_CODE = {}
 
 GPIO_DIR = {
     'out': '00000001',
