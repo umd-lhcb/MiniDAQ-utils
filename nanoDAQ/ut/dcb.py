@@ -2,7 +2,7 @@
 #
 # Author: Yipeng Sun, Manuel Franco Sevilla
 # License: BSD 2-clause
-# Last Change: Sat Dec 28, 2019 at 03:44 AM -0500
+# Last Change: Sun Dec 29, 2019 at 10:19 PM -0500
 
 import os.path as op
 
@@ -61,6 +61,8 @@ DCB_ELK_PHASE_REG = {
 DCB_ELK_VALID_PHASE = list(map(lambda x: hex(x)[2:], range(15)))
 
 
+# We separate this I2C operation to a separate function so that it can be easily
+# wrapped in another process.
 def dcb_elk_phase(gbt, slave, ch, phase):
     for reg in DCB_ELK_PHASE_REG[ch]:
         i2c_write(gbt, 0, 6, slave, reg, 1, I2C_TYPE['gbtx'], I2C_FREQ['1MHz'],
@@ -86,6 +88,10 @@ class DCB(object):
 
         self.i2c_activated = False
 
+    ####################
+    # Basic operations #
+    ####################
+
     def init(self, filepath, slaves=None):
         self.activate_i2c()
         filepath = op.abspath(op.expanduser(filepath))
@@ -93,6 +99,23 @@ class DCB(object):
         for s in self.dyn_slaves(slaves):
             i2c_write(self.gbt, self.sca, self.bus, s, 0, 366,
                       self.i2c_type, self.i2c_freq, filepath=filepath)
+
+    def activate_i2c(self):
+        if not self.i2c_activated:
+            i2c_activate_ch(self.gbt, self.sca, self.bus)
+            self.i2c_activated = True
+
+    def activate_gpio(self):
+        if not self.gpio_activated:
+            gpio_activate_ch(self.gbt, self.sca)
+            self.gpio_activated = True
+
+    def dyn_slaves(self, slaves):
+        return self.slaves if slaves is None else slaves
+
+    ##################
+    # I2C write/read #
+    ##################
 
     def write(self, subaddr, data, slaves=None):
         self.activate_i2c()
@@ -116,6 +139,10 @@ class DCB(object):
         else:
             return table
 
+    ###################################
+    # Check the status of slave GBTxs #
+    ###################################
+
     def slave_status(self, slaves=None, output=True):
         self.activate_i2c()
         table_raw = []
@@ -131,6 +158,10 @@ class DCB(object):
             print(tabulate(table, headers=['slave', 'value']))
         else:
             return table_raw
+
+    ###################
+    # GPIO operations #
+    ###################
 
     def gpio_status(self, output=True):
         self.activate_gpio()
@@ -159,6 +190,13 @@ class DCB(object):
             sleep(1)
             gpio_setline(self.gbt, self.sca, c, level=final_state)
 
+    def reset(self, final_state='high'):
+        self.gpio_reset(chs=[6], final_state=final_state)
+
+    ##########################################
+    # PRBS register settings for slave GBTxs #
+    ##########################################
+
     def prbs(self, mode, slaves=None):
         try:
             val = PRBS_MODE[mode]
@@ -169,8 +207,9 @@ class DCB(object):
             i2c_write(self.gbt, self.sca, self.bus, s, 0x1c, 1,
                       self.i2c_type, self.i2c_freq, data=val)
 
-    def reset(self, final_state='high'):
-        self.gpio_reset(chs=[6], final_state=final_state)
+    #########################################
+    # Bias current settings for slave GBTxs #
+    #########################################
 
     def bias_cur_status(self, slaves=None, output=True):
         self.activate_i2c()
@@ -218,19 +257,6 @@ class DCB(object):
         for s in self.dyn_slaves(slaves):
             i2c_write(self.gbt, self.sca, self.bus, s, 0xfd, 1,
                       self.i2c_type, self.i2c_freq, data='7e')
-
-    def activate_i2c(self):
-        if not self.i2c_activated:
-            i2c_activate_ch(self.gbt, self.sca, self.bus)
-            self.i2c_activated = True
-
-    def activate_gpio(self):
-        if not self.gpio_activated:
-            gpio_activate_ch(self.gbt, self.sca)
-            self.gpio_activated = True
-
-    def dyn_slaves(self, slaves):
-        return self.slaves if slaves is None else slaves
 
     @staticmethod
     def gbld_reg_to_cur(reg):
