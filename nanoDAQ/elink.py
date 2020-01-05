@@ -89,7 +89,7 @@ def print_elink_table(elk_df_lst, highlighter=highlight_non_mode,
     elk_df_lst_t_cp = {k: list(map(hex_pad, v)) for k, v in elk_df_lst_t.items()}
 
     # Find the mode for each field
-    modes = {k: most_common(v) for k, v in elk_df_lst_t.items()}
+    modes = {k: most_common(v)[0] for k, v in elk_df_lst_t.items()}
 
     # Apply highlight and matching
     for k, v in elk_df_lst_t.items():
