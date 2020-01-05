@@ -2,7 +2,7 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Sun Jan 05, 2020 at 05:50 AM -0500
+# Last Change: Sun Jan 05, 2020 at 05:51 AM -0500
 
 import sys
 
@@ -151,8 +151,6 @@ def print_elink_table(elk_df_lst, highlighter=highlight_non_mode,
                        colalign=['right']*6))
     except IndexError:
         print('No highlighted row!')
-
-    return output_raw
 
 
 #########################
