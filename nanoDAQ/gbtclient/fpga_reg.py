@@ -2,12 +2,12 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Wed Dec 18, 2019 at 05:42 AM -0500
+# Last Change: Sun Jan 05, 2020 at 03:39 AM -0500
 
 import pydim
 
 from nanoDAQ.gbtclient.common import GBT_PREF, GBT_SERV, TELL40
-from nanoDAQ.gbtclient.common import errs_factory, dim_cmd_err, dim_dic_err
+from nanoDAQ.gbtclient.common import dim_cmd_err, dim_dic_err
 from nanoDAQ.gbtclient.common import default_dim_regulator as ddr
 
 from nanoDAQ.utils import chunks, exec_guard
@@ -18,7 +18,7 @@ from nanoDAQ.elink import elink_parser
 # Constants #
 #############
 
-FPGA_REG_ERR_CODE = errs_factory()
+FPGA_REG_ERR_CODE = {}
 
 FPGA_REG_OP_MODE = {
     'write':     0,
