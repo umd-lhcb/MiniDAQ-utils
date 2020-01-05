@@ -2,7 +2,7 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Thu Dec 19, 2019 at 08:23 AM -0500
+# Last Change: Sat Jan 04, 2020 at 11:46 PM -0500
 
 from collections import namedtuple
 from tabulate import tabulate
@@ -39,21 +39,20 @@ def elink_parser(df):
                           *elk_11_8, *elk_7_4, *elk_3_0)
 
 
-def alternating_color(s):
-    result = ''
-
-    for idx, i in enumerate(range(0, len(s), 2)):
-        byte = s[i:i+2]
-        if idx % 2 == 0:
-            result += fg.li_white + byte + fg.rs
-        else:
-            result += bg.li_white + fg.black + byte + fg.rs + bg.rs
-
-    return result
+def transpose(elk_df_lst):
+    return {k: [getattr(d, k) for d in elk_df_lst]
+            for k in ElinkDataFrame._fields}
 
 
 def print_elink_table(elk_df_lst, highlight=list(), style=lambda x: x):
     result = []
+    matched = []
+
+    # First apply highlight and matching
+    # for elk_df in elk_df_lst:
+        # for ch in range(0, 14):
+            # # Matching pattern first
+            # if
 
     for elk_df in elk_df_lst:
         elk_df = ElinkDataFrame(*map(hex_pad, elk_df))
