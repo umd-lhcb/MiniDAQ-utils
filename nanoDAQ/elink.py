@@ -2,7 +2,7 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Sun Jan 05, 2020 at 04:17 AM -0500
+# Last Change: Sun Jan 05, 2020 at 04:19 AM -0500
 
 from collections import namedtuple
 from copy import deepcopy
@@ -72,6 +72,8 @@ def format_elink_table(elk_df_lst_t, indices):
             elks = [elk_df_lst_t['elk'+str(ch)][i]
                     for ch in range(leading_ch, leading_ch-4, -1)]
             row.append('-'.join(elks))
+
+        result.append(row)
 
     return result
 
