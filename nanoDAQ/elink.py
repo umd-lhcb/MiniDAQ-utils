@@ -2,7 +2,7 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Sun Jan 05, 2020 at 04:27 AM -0500
+# Last Change: Sun Jan 05, 2020 at 04:49 AM -0500
 
 from collections import namedtuple
 from tabulate import tabulate
@@ -39,6 +39,26 @@ def elink_parser(df):
                           *elk_11_8, *elk_7_4, *elk_3_0)
 
 
+#######################
+# Elink data checkers #
+#######################
+
+def check_tx_datavalid(data):
+    return 1 if 0x80 == data else 0
+
+
+def check_bit_shift(data, expected=0xc4):
+    size = num_of_bit(hex_pad(expected))
+
+    for shift in range(size):
+        # We choose to shift DATA (This is chosen to make manipulating OUR
+        # hardware more easily).
+        if bit_shift(data, shift, size) == expected:
+            return shift
+
+    return -1
+
+
 ################
 # Elink output #
 ################
@@ -51,6 +71,17 @@ def transpose(elk_df_lst):
 def highlight_non_mode(data, mode):
     if data != mode:
         return (True, fg.blue + hex_pad(data) + fg.rs)
+    else:
+        return (False, hex_pad(data))
+
+
+def highlight_search_pattern(data, pattern):
+    result = check_bit_shift(data, pattern)
+
+    if result == 0:
+        return (True, fg.green + hex_pad(data) + fg.rs)
+    elif result > 0:
+        return (True, fg.yellow + hex_pad(data) + fg.rs)
     else:
         return (False, hex_pad(data))
 
@@ -115,26 +146,6 @@ def print_elink_table(elk_df_lst, highlighter=highlight_non_mode,
                    colalign=['right']*6))
 
     return output_raw
-
-
-#######################
-# Elink data checkers #
-#######################
-
-def check_tx_datavalid(data):
-    return 1 if 0x80 == data else 0
-
-
-def check_bit_shift(data, expected=0xc4):
-    size = num_of_bit(hex_pad(expected))
-
-    for shift in range(size):
-        # We choose to shift DATA (This is chosen to make manipulating OUR
-        # hardware more easily).
-        if bit_shift(data, shift, size) == expected:
-            return shift
-
-    return -1
 
 
 #########################
