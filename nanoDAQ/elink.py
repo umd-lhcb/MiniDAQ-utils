@@ -2,7 +2,9 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Sun Jan 05, 2020 at 05:00 AM -0500
+# Last Change: Sun Jan 05, 2020 at 05:50 AM -0500
+
+import sys
 
 from collections import namedtuple
 from tabulate import tabulate
@@ -137,8 +139,10 @@ def print_elink_table(elk_df_lst, highlighter=highlight_non_mode,
         indices = list(range(size))
 
     # Generate output
-    output = format_elink_table(elk_df_lst_t, indices)
-    output_raw = format_elink_table(elk_df_lst_t_cp, indices)
+    if sys.stdout.isatty:
+        output = format_elink_table(elk_df_lst_t, indices)
+    else:
+        output = format_elink_table(elk_df_lst_t_cp, indices)
 
     try:
         print(tabulate(output,
