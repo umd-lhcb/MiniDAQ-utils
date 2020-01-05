@@ -2,7 +2,7 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Sun Jan 05, 2020 at 05:51 AM -0500
+# Last Change: Sun Jan 05, 2020 at 05:52 AM -0500
 
 import sys
 
@@ -139,7 +139,7 @@ def print_elink_table(elk_df_lst, highlighter=highlight_non_mode,
         indices = list(range(size))
 
     # Generate output
-    if sys.stdout.isatty:
+    if sys.stdout.isatty():
         output = format_elink_table(elk_df_lst_t, indices)
     else:
         output = format_elink_table(elk_df_lst_t_cp, indices)
