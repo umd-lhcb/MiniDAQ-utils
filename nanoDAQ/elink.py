@@ -2,13 +2,14 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Sat Jan 04, 2020 at 11:46 PM -0500
+# Last Change: Sun Jan 05, 2020 at 03:28 AM -0500
 
 from collections import namedtuple
+from copy import deepcopy
 from tabulate import tabulate
-from sty import fg, bg
+from sty import fg
 
-from nanoDAQ.utils import hex_pad, num_of_bit, bit_shift
+from nanoDAQ.utils import hex_pad, num_of_bit, bit_shift, most_common
 
 
 ################
@@ -39,42 +40,77 @@ def elink_parser(df):
                           *elk_11_8, *elk_7_4, *elk_3_0)
 
 
+################
+# Elink output #
+################
+
 def transpose(elk_df_lst):
     return {k: [getattr(d, k) for d in elk_df_lst]
             for k in ElinkDataFrame._fields}
 
 
-def print_elink_table(elk_df_lst, highlight=list(), style=lambda x: x):
+def highlight_non_mode(data, mode):
+    if data != mode:
+        return (True, fg.blue + hex_pad(data) + fg.rs)
+    else:
+        return (False, hex_pad(data))
+
+
+def format_elink_table(elk_df_lst_t, indices):
     result = []
-    matched = []
 
-    # First apply highlight and matching
-    # for elk_df in elk_df_lst:
-        # for ch in range(0, 14):
-            # # Matching pattern first
-            # if
+    for i in indices:
+        row = []
+        row.append(elk_df_lst_t['tx_datavalid'][i])
+        row.append(elk_df_lst_t['header'][i])
 
-    for elk_df in elk_df_lst:
-        elk_df = ElinkDataFrame(*map(hex_pad, elk_df))
-        df =  [style(elk_df.tx_datavalid), style(elk_df.header),
-               style(''.join([elk_df.elk13, elk_df.elk12]))]
+        elk_13_12 = '-'.join([elk_df_lst_t['elk13'][i],
+                              elk_df_lst_t['elk12'][i]])
+        row.append(elk_13_12)
 
         for leading_ch in range(11, -1, -4):
-            grp = ''
-            for ch in range(leading_ch, leading_ch-4, -1):
-                ch_data = getattr(elk_df, 'elk'+str(ch))
-                if ch in highlight:
-                    grp += fg.red + ch_data + fg.rs
-                else:
-                    grp += ch_data
-            df.append(style(grp))
+            elks = [getattr(elk_df_lst_t, 'elk'+str(ch))[i]
+                    for ch in range(leading_ch, leading_ch-4, -1)]
+            row.append('-'.join(elks))
 
-        result.append(df)
+    return result
 
-    print(tabulate(result,
+
+def print_elink_table(elk_df_lst, highlighter=highlight_non_mode,
+                      highlighted_only=False):
+    indices = []
+    size = len(elk_df_lst)
+    elk_df_lst_t = transpose(elk_df_lst)
+    elk_df_lst_t_cp = deepcopy(elk_df_lst_t)  # For pipe output
+
+    # Find the mode for each field
+    modes = {k: most_common(v) for k, v in elk_df_lst_t.items()}
+
+    # Apply highlight and matching
+    for k, v in elk_df_lst_t.items():
+        for i in range(0, size):
+            is_styled, out = highlighter(v[i], modes[k])
+            v[i] = out
+
+            if highlighted_only and is_styled:
+                indices.append(i)
+
+    # Remove duplicated indices
+    if highlighted_only:
+        indices = sorted(set(indices))
+    else:
+        indices = list(range(size))
+
+    # Generate output
+    output = format_elink_table(elk_df_lst_t, indices)
+    output_raw = format_elink_table(elk_df_lst_t_cp, indices)
+
+    print(tabulate(output,
                    headers=['tx_datavalid', 'header', '13-12', '11-8',
                             '7-4', '3-0'],
                    colalign=['right']*6))
+
+    return output_raw
 
 
 #######################
