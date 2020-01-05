@@ -72,7 +72,7 @@ if __name__ == '__main__':
         fiber_w(args.channel)
 
     readout = []
-    for i in args.num:
+    for i in range(args.num):
         readout += read()
 
     if args.search:
