@@ -2,9 +2,7 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Sun Jan 05, 2020 at 04:13 AM -0500
-
-import sys
+# Last Change: Sun Jan 05, 2020 at 04:14 AM -0500
 
 from argparse import ArgumentParser
 

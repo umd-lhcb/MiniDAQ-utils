@@ -2,7 +2,7 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Sun Jan 05, 2020 at 03:28 AM -0500
+# Last Change: Sun Jan 05, 2020 at 04:14 AM -0500
 
 from collections import namedtuple
 from copy import deepcopy
@@ -69,7 +69,7 @@ def format_elink_table(elk_df_lst_t, indices):
         row.append(elk_13_12)
 
         for leading_ch in range(11, -1, -4):
-            elks = [getattr(elk_df_lst_t, 'elk'+str(ch))[i]
+            elks = [elk_df_lst_t['elk'+str(ch)][i]
                     for ch in range(leading_ch, leading_ch-4, -1)]
             row.append('-'.join(elks))
 
