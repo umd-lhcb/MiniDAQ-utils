@@ -138,3 +138,25 @@ All the following parameters are **mandatory**:
 After providing all parameters, follow the on-screen instruction.
 
 ![`phaseadj.py` sample UI](docs/elk_phase_adj.png)
+
+
+## `memmon.py`
+**Note**: This script is incompatible with MiniDAQ WinCC OA project! Please
+turn it off before running this.
+
+The available flags can be queried with:
+```
+./memmon.py -h
+```
+
+This script automatically detects if the output is a TTY or a pipe. In the
+latter case, all colors are muted.
+
+
+### To read MiniDAQ channel 23, and search for pattern `0xc4`, up to a phase shift
+```
+./memmon.py -c 23 -s c4
+```
+
+Note that patterns that are _exactly_ `0xc4` will be displayed in green; the
+ones with _a phase shift_ will be displayed in yellow.
