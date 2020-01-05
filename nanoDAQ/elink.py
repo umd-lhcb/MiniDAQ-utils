@@ -2,7 +2,7 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Sun Jan 05, 2020 at 04:49 AM -0500
+# Last Change: Sun Jan 05, 2020 at 05:00 AM -0500
 
 from collections import namedtuple
 from tabulate import tabulate
@@ -140,10 +140,13 @@ def print_elink_table(elk_df_lst, highlighter=highlight_non_mode,
     output = format_elink_table(elk_df_lst_t, indices)
     output_raw = format_elink_table(elk_df_lst_t_cp, indices)
 
-    print(tabulate(output,
-                   headers=['tx_datavalid', 'header', '13-12', '11-8',
-                            '7-4', '3-0'],
-                   colalign=['right']*6))
+    try:
+        print(tabulate(output,
+                       headers=['tx_datavalid', 'header', '13-12', '11-8',
+                                '7-4', '3-0'],
+                       colalign=['right']*6))
+    except IndexError:
+        print('No highlighted row!')
 
     return output_raw
 
