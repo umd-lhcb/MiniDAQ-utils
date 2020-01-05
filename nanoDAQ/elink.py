@@ -2,7 +2,7 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Sun Jan 05, 2020 at 04:14 AM -0500
+# Last Change: Sun Jan 05, 2020 at 04:17 AM -0500
 
 from collections import namedtuple
 from copy import deepcopy
@@ -51,9 +51,9 @@ def transpose(elk_df_lst):
 
 def highlight_non_mode(data, mode):
     if data != mode:
-        return (True, fg.blue + hex_pad(data) + fg.rs)
+        return (True, fg.blue + data + fg.rs)
     else:
-        return (False, hex_pad(data))
+        return (False, data)
 
 
 def format_elink_table(elk_df_lst_t, indices):
@@ -80,7 +80,11 @@ def print_elink_table(elk_df_lst, highlighter=highlight_non_mode,
                       highlighted_only=False):
     indices = []
     size = len(elk_df_lst)
+
+    # Transpose elink data frames to each elink channel
     elk_df_lst_t = transpose(elk_df_lst)
+    # Convert int to hex
+    elk_df_lst_t = {k: list(map(hex_pad, v)) for k, v in elk_df_lst_t.items()}
     elk_df_lst_t_cp = deepcopy(elk_df_lst_t)  # For pipe output
 
     # Find the mode for each field
