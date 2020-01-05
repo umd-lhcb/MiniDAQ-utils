@@ -2,10 +2,9 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Sun Jan 05, 2020 at 04:21 AM -0500
+# Last Change: Sun Jan 05, 2020 at 04:27 AM -0500
 
 from collections import namedtuple
-from copy import deepcopy
 from tabulate import tabulate
 from sty import fg
 
