@@ -2,7 +2,7 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Mon Jan 06, 2020 at 01:58 AM -0500
+# Last Change: Mon Jan 06, 2020 at 02:08 AM -0500
 
 import sys
 
@@ -61,14 +61,9 @@ def check_bit_shift(data, expected=0xc4):
     return -1
 
 
-################
-# Elink output #
-################
-
-def transpose(elk_df_lst):
-    return {k: [getattr(d, k) for d in elk_df_lst]
-            for k in ElinkDataFrame._fields}
-
+#############################
+# Elink output highlighters #
+#############################
 
 def highlight_non_mode(data, mode):
     if data != mode:
@@ -93,6 +88,15 @@ def highlight_search_pattern(data, pattern):
         return (True, fg.yellow + hex_pad(data) + fg.rs)
     else:
         return (False, hex_pad(data))
+
+
+################
+# Elink output #
+################
+
+def transpose(elk_df_lst):
+    return {k: [getattr(d, k) for d in elk_df_lst]
+            for k in ElinkDataFrame._fields}
 
 
 def format_elink_table(elk_df_lst_t, indices):
