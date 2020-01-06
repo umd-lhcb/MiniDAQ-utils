@@ -2,7 +2,7 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Sun Jan 05, 2020 at 05:52 AM -0500
+# Last Change: Mon Jan 06, 2020 at 01:58 AM -0500
 
 import sys
 
@@ -77,6 +77,13 @@ def highlight_non_mode(data, mode):
         return (False, hex_pad(data))
 
 
+def highlight_chs(data, ch, chs):
+    if ch in chs:
+        return (True, fg.blue + hex_pad(data) + fg.rs)
+    else:
+        return (False, hex_pad(data))
+
+
 def highlight_search_pattern(data, pattern):
     result = check_bit_shift(data, pattern)
 
@@ -110,7 +117,8 @@ def format_elink_table(elk_df_lst_t, indices):
     return result
 
 
-def print_elink_table(elk_df_lst, highlighter=highlight_non_mode,
+def print_elink_table(elk_df_lst,
+                      highlighter=lambda x, y, z: highlight_non_mode(x, y),
                       highlighted_only=False):
     indices = []
     size = len(elk_df_lst)
@@ -118,7 +126,8 @@ def print_elink_table(elk_df_lst, highlighter=highlight_non_mode,
     # Transpose elink data frames to each elink channel
     elk_df_lst_t = transpose(elk_df_lst)
     # For pipe output
-    elk_df_lst_t_cp = {k: list(map(hex_pad, v)) for k, v in elk_df_lst_t.items()}
+    elk_df_lst_t_cp = {k: list(map(hex_pad, v))
+                       for k, v in elk_df_lst_t.items()}
 
     # Find the mode for each field
     modes = {k: most_common(v)[0] for k, v in elk_df_lst_t.items()}
@@ -126,7 +135,7 @@ def print_elink_table(elk_df_lst, highlighter=highlight_non_mode,
     # Apply highlight and matching
     for k, v in elk_df_lst_t.items():
         for i in range(0, size):
-            is_styled, out = highlighter(v[i], modes[k])
+            is_styled, out = highlighter(v[i], modes[k], k)
             v[i] = out
 
             if highlighted_only and is_styled:

@@ -2,7 +2,7 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Mon Dec 30, 2019 at 01:49 AM -0500
+# Last Change: Mon Jan 06, 2020 at 01:59 AM -0500
 
 from argparse import ArgumentParser
 from tabulate import tabulate
@@ -12,7 +12,7 @@ from nanoDAQ.gbtclient.fpga_reg import mem_mon_fiber_write_safe as fiber_w
 from nanoDAQ.gbtclient.fpga_reg import mem_mon_options_write_safe as opts_w
 
 from nanoDAQ.utils import hex_pad
-from nanoDAQ.elink import print_elink_table, alternating_color
+from nanoDAQ.elink import print_elink_table, highlight_chs
 
 from nanoDAQ.phase import loop_phase_elk, scan_phase_elink
 from nanoDAQ.phase import adj_dcb_elink_phase, adj_salt_elink_phase
@@ -78,7 +78,9 @@ if __name__ == '__main__':
     salt_tfc_mode(args.gbt, args.bus, args.asic, mode='fixed')
 
     print('Current readings of MiniDAQ channel {}:'.format(args.channel))
-    print_elink_table(mem_r()[-10:], style=alternating_color)
+    print_elink_table(mem_r()[-10:])
+    highlighter = lambda x, y, z: highlight_chs(x, z,
+                                                ['elk'+str(n) for n in daq_chs])
 
     daq_chs = input('Input elinks to be aligned, separated by space: ')
     daq_chs = list(map(int, daq_chs.split()))
@@ -96,7 +98,7 @@ if __name__ == '__main__':
                 hex_pad(elk_pattern)))
             adj_dcb_elink_phase(elk_adj, args.gbt, args.slave)
             adj_salt_elink_phase(elk_pattern, args.gbt, args.bus, args.asic)
-            print_elink_table(mem_r()[-10:], highlight=daq_chs)
+            print_elink_table(mem_r()[-10:], highlighter=highlighter)
 
     tfc_op = input('Continue to TFC phase adjustment (y/n)? ')
     if tfc_op == 'y':
@@ -104,4 +106,4 @@ if __name__ == '__main__':
         success = adj_salt_tfc_phase(daq_chs, args.gbt, args.bus, args.asic)
 
         if success:
-            print_elink_table(mem_r()[-10:], highlight=daq_chs)
+            print_elink_table(mem_r()[-10:], highlighter=highlighter)

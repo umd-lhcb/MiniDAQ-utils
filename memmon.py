@@ -2,7 +2,7 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Sun Jan 05, 2020 at 04:54 AM -0500
+# Last Change: Mon Jan 06, 2020 at 01:56 AM -0500
 
 from argparse import ArgumentParser
 
@@ -76,8 +76,8 @@ if __name__ == '__main__':
         readout += read()
 
     if args.search:
-        highlighter = lambda x, y: highlight_search_pattern(x, args.search)
+        highlighter = lambda x, y, z: highlight_search_pattern(x, args.search)
     else:
-        highlighter = lambda x, y: highlight_non_mode(x, y)
+        highlighter = lambda x, y, z: highlight_non_mode(x, y)
 
     print_elink_table(readout, highlighter, args.highlight)
