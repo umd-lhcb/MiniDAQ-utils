@@ -2,9 +2,9 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Mon Dec 30, 2019 at 01:47 AM -0500
+# Last Change: Mon Jan 06, 2020 at 02:53 AM -0500
 
-from collections import defaultdict
+from collections import defaultdict, Counter
 from sty import fg
 
 from nanoDAQ.elink import elink_extract_chs, check_bit_shift
@@ -117,7 +117,6 @@ def scan_phase_elink_selector(mode, freq, num_of_frame, shift, idx, ph, ch,
 def scan_phase_elink(loop_result, phases=DCB_ELK_VALID_PHASE,
                      selector=scan_phase_elink_selector):
     printout = [list() for _ in range(len(phases)+1)]
-    num_of_chs = len(list(loop_result.values()))
     good_patterns_chs = defaultdict(lambda: defaultdict(list))
 
     for ph, chs_data in loop_result.items():
@@ -133,23 +132,21 @@ def scan_phase_elink(loop_result, phases=DCB_ELK_VALID_PHASE,
             selector(mode_display, freq, num_of_frame, shift, idx, ph, ch,
                      printout, good_patterns_chs)
 
-    # Now try to find optimum phases
+    # Now try to find optimum phases.
     common_patterns = intersect_good_pattern(good_patterns_chs)
-    phase_per_ch = dict()
 
-    for cp in common_patterns:
-        phase_per_ch = dict()
-        pattern = int(cp, base=16)
-        for ch, p in good_patterns_chs.items():
-            if len(p[cp]) >= 3:
-                phase_per_ch[ch] = mid_elem(p[cp])
+    # Local optimal: Picking the longest good phase for the first channel.
+    first_ch = next(iter(good_patterns_chs))
+    common_patterns_freq = {k: len(good_patterns_chs[first_ch][k])
+                            for k in common_patterns}
+    pattern = Counter(common_patterns_freq).most_common(1)[0][0]
+    phase_per_ch = {ch: mid_elem(good_patterns_chs[ch][pattern])
+                    for ch in good_patterns_chs.keys()}
 
-        good_phase_printout = [phase_per_ch[i]
-                               for i in sorted(phase_per_ch, reverse=True)]
-        if len(good_phase_printout) == num_of_chs:
-            break
+    good_phase_printout = [phase_per_ch[i]
+                           for i in sorted(phase_per_ch, reverse=True)]
 
-    # Update printout table
+    # Update printout table.
     for idx, ph in enumerate(good_phase_printout):
         ph = int(ph, base=16)
         printout[ph][idx+1] = fg.li_green + printout[ph][idx+1] + fg.rs
