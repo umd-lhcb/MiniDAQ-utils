@@ -2,7 +2,7 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Mon Jan 06, 2020 at 03:05 AM -0500
+# Last Change: Mon Jan 06, 2020 at 03:23 AM -0500
 
 from collections import defaultdict, Counter
 from sty import fg
@@ -43,13 +43,12 @@ def adj_salt_tfc_phase(daq_chs, gbt, bus, asic):
         mem = elink_extract_chs(mem_r(), daq_chs)
 
         good_chs = []
-        for chs_data in mem.values():
-            for data in chs_data.values():
-                mode, _ = most_common(data)
-                if 0x04 == mode:
-                    good_chs.append(True)
+        for ch, data in mem.items():
+            mode, _ = most_common(data)
+            if 0x04 == mode:
+                good_chs.append(ch)
 
-        if len(good_chs) == len(daq_chs):
+        if sorted(good_chs) == sorted(daq_chs):
             return True
 
     return False
