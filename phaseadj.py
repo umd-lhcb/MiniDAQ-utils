@@ -2,7 +2,7 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Mon Jan 06, 2020 at 01:59 AM -0500
+# Last Change: Mon Jan 06, 2020 at 03:09 AM -0500
 
 from argparse import ArgumentParser
 from tabulate import tabulate
@@ -79,14 +79,14 @@ if __name__ == '__main__':
 
     print('Current readings of MiniDAQ channel {}:'.format(args.channel))
     print_elink_table(mem_r()[-10:])
-    highlighter = lambda x, y, z: highlight_chs(x, z,
-                                                ['elk'+str(n) for n in daq_chs])
-
-    daq_chs = input('Input elinks to be aligned, separated by space: ')
-    daq_chs = list(map(int, daq_chs.split()))
 
     elk_op = input('Continue to Elink phase adjustment (y/n)? ')
     if elk_op == 'y':
+        daq_chs = input('Input elinks to be aligned, separated by space: ')
+        daq_chs = list(map(int, daq_chs.split()))
+        highlighter = lambda x, y, z: \
+            highlight_chs(x, z, ['elk'+str(n) for n in daq_chs])
+
         print('Generating phase-scanning table, this may take awhile...')
         elk_scan_raw = loop_phase_elk(daq_chs, args.gbt, args.slave)
         elk_scan_tab, elk_adj, elk_pattern = scan_phase_elink(elk_scan_raw)
@@ -106,4 +106,4 @@ if __name__ == '__main__':
         success = adj_salt_tfc_phase(daq_chs, args.gbt, args.bus, args.asic)
 
         if success:
-            print_elink_table(mem_r()[-10:], highlighter=highlighter)
+            print_elink_table(mem_r()[-10:])
