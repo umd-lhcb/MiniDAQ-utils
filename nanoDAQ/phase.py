@@ -2,7 +2,7 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Mon Jan 06, 2020 at 02:56 AM -0500
+# Last Change: Mon Jan 06, 2020 at 03:05 AM -0500
 
 from collections import defaultdict, Counter
 from sty import fg
@@ -136,6 +136,7 @@ def scan_phase_elink(loop_result, phases=DCB_ELK_VALID_PHASE,
     common_patterns = intersect_good_pattern(good_patterns_chs)
 
     # Local optimal: Picking the longest good phase for the first channel.
+    # NOTE: This algorithm should be stable.
     first_ch = next(iter(good_patterns_chs))
     common_patterns_freq = {k: len(good_patterns_chs[first_ch][k])
                             for k in common_patterns}
