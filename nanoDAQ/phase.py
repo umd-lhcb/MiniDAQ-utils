@@ -2,7 +2,7 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Mon Jan 06, 2020 at 02:53 AM -0500
+# Last Change: Mon Jan 06, 2020 at 02:56 AM -0500
 
 from collections import defaultdict, Counter
 from sty import fg
@@ -151,4 +151,4 @@ def scan_phase_elink(loop_result, phases=DCB_ELK_VALID_PHASE,
         ph = int(ph, base=16)
         printout[ph][idx+1] = fg.li_green + printout[ph][idx+1] + fg.rs
 
-    return printout, phase_per_ch, pattern
+    return printout, phase_per_ch, int(pattern, base=16)
