@@ -120,7 +120,7 @@ the I2C bus. This argument is **mandatory**.
 
 ### To adjust TFC phase to `0x1f` of ASIC 0 on hybrid connected at GBT 3, I2C 5
 ```
-./saltutil.py 5 tfc_phase 1f -a 0  -g 3
+./saltutil.py 5 tfc_phase 1f -a 0 -g 3
 ```
 
 ## `phaseadj.py`
