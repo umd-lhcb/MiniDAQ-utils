@@ -78,9 +78,9 @@ When in doubt, use `-h` of each sub-command for help.
 ./dcbutil.py bias_cur 7 -s 1
 ```
 
-### To set phase of elink 11 to `0x77` on GBT 3, data GBTx 5
+### To set phase of elink 11 to `0x07` on GBT 3, data GBTx 5
 ```
-./dcbutil.py elk_phase 11 77 -s 5 -g 3
+./dcbutil.py elk_phase 11 7 -s 5 -g 3
 ```
 
 
