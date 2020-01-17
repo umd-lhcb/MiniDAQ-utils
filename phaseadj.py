@@ -2,7 +2,7 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Fri Jan 17, 2020 at 02:48 AM -0500
+# Last Change: Fri Jan 17, 2020 at 02:50 AM -0500
 
 from argparse import ArgumentParser
 from tabulate import tabulate
@@ -153,4 +153,4 @@ if __name__ == '__main__':
     # Print out memory to see adjust result ####################################
 
     if (not args.non_verbose) and success:
-        print_elink_table(mem_r()[-10:])
+        print_elink_table(mem_r()[-10:], highlighter=highlighter)
