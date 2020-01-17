@@ -2,7 +2,7 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Fri Jan 17, 2020 at 02:54 AM -0500
+# Last Change: Fri Jan 17, 2020 at 02:55 AM -0500
 
 import sys
 
@@ -106,10 +106,10 @@ specify SALT elink phase.
                            help='''
 specify the elink phase of SALT.''')
 
-    tfc_phase_cmd = add_salt_default_subparser(cmd, 'phase', description='''
+    tfc_phase_cmd = add_salt_default_subparser(cmd, 'tfc_phase', description='''
 specify SALT TFC phase.
 ''')
-    tfc_phase_cmd.add_argument('tfc_phase',
+    tfc_phase_cmd.add_argument('phase',
                                choices=SALT_TFC_VALID_PHASE,
                                help='''
 specify the TFC phase of SALT. Valid phases: {}.'''.format('|'.join(SALT_TFC_VALID_PHASE))
