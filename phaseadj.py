@@ -2,7 +2,7 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Fri Jan 17, 2020 at 02:42 AM -0500
+# Last Change: Fri Jan 17, 2020 at 02:48 AM -0500
 
 from argparse import ArgumentParser
 from tabulate import tabulate
@@ -75,7 +75,7 @@ specify DCB elink channels.
                         ''')
 
     parser.add_argument('--non-verbose',
-                        action='store_false',
+                        action='store_true',
                         help='''
 don't print the memory monitoring after the phase adjustment.
                         ''')
