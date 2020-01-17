@@ -161,3 +161,12 @@ latter case, all colors are muted.
 
 Note that patterns that are _exactly_ `0xc4` will be displayed in green; the
 ones with _a phase shift_ will be displayed in yellow.
+
+
+## `elkphases.sh`
+This script adjust phase of all elinks to a given phase.
+
+### To adjust elink phase for all data GBTxs to `0x08` on GBT 3
+```
+./elkphase.sh 8 -g 3
+```
