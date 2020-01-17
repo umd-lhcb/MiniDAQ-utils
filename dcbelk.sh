@@ -2,7 +2,7 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Fri Jan 17, 2020 at 04:44 AM -0500
+# Last Change: Fri Jan 17, 2020 at 04:57 AM -0500
 
 GBT=0
 
@@ -47,8 +47,7 @@ function test_dcb {
             --adjust-elink-phase y \
             --adjust-tfc-phase n
 
-        read -n 1 -s -r -p "Press any key to continue"
-        echo ""
+        read -n 1 -s -r -p "Press any key to continue..."
     done
 }
 
@@ -57,6 +56,7 @@ case $1 in
     FH) # On Mirror BP, we are using JP9 and JD10
         ./dcbutil.py init ./gbtx_config/slave-Tx-wrong_termination.txt -g $GBT
 
+        GBTXS=( 3 4 5 )
         declare -A I2C_BUS=(
             [3]=2
             [4]=1
@@ -68,12 +68,13 @@ case $1 in
         done
 
         # Now we start adjusting phase
-        test_dcb ${!I2C_BUS[@]} ${I2C_BUS[@]}
+        test_dcb ${GBTXS[@]} ${I2C_BUS[@]}
         ;;
 
     SH) # On Mirror BP, we are using JP10 and JD10
         ./dcbutil.py init ./gbtx_config/slave-Tx-wrong_termination.txt -g $GBT
 
+        GBTXS=( 1 2 6 )
         declare -A I2C_BUS=(
             [1]=4
             [2]=3
@@ -85,7 +86,7 @@ case $1 in
         done
 
         # Now we start adjusting phase
-        test_dcb ${!I2C_BUS[@]} ${I2C_BUS[@]}
+        test_dcb ${GBTXS[@]} ${I2C_BUS[@]}
         ;;
 
     *)
