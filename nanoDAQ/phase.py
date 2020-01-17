@@ -2,7 +2,7 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Fri Jan 17, 2020 at 03:10 AM -0500
+# Last Change: Fri Jan 17, 2020 at 03:14 AM -0500
 
 from collections import defaultdict, Counter
 from sty import fg
@@ -33,7 +33,7 @@ def adj_salt_elink_phase(pattern, gbt, bus, asic):
     if phase:
         cur_phase = int(exec_guard(salt_cur_elk_phase, gbt, bus, asic))
         phase = (phase + cur_phase) % 8
-        print('SALT current phase is {}, shifting to {}'.format(
+        print('Current SALT phase is {}, shifting to {}'.format(
             cur_phase, phase))
         exec_guard(salt_elk_phase, gbt, bus, asic, str(phase))
 
