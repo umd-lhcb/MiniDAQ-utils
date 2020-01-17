@@ -2,7 +2,7 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Fri Jan 17, 2020 at 03:31 AM -0500
+# Last Change: Fri Jan 17, 2020 at 03:33 AM -0500
 
 from argparse import ArgumentParser, ArgumentTypeError
 from tabulate import tabulate
@@ -37,10 +37,10 @@ def str2bool(v, error=ArgumentTypeError):
 
 def input2bool(question):
     try:
-        choice = input(question + ' [y/n]').lower()
+        choice = input(question + ' [y/n]: ').lower()
         return str2bool(choice, ValueError)
     except ValueError:
-        input2bool(question)
+        return input2bool(question)
 
 
 ################################
@@ -150,6 +150,7 @@ if __name__ == '__main__':
     print('Will adjust the following DCB elinks: {}'.format(
         ', '.join(map(str, daq_chs))
     ))
+    success = False  # Initial value
 
     # Adjust elink phase #######################################################
 
