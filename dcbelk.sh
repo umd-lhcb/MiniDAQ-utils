@@ -2,7 +2,7 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Fri Jan 17, 2020 at 04:57 AM -0500
+# Last Change: Fri Jan 17, 2020 at 04:58 AM -0500
 
 GBT=0
 
@@ -47,7 +47,7 @@ function test_dcb {
             --adjust-elink-phase y \
             --adjust-tfc-phase n
 
-        read -n 1 -s -r -p "Press any key to continue..."
+        read -n 1 -s -r -p "Is GBTx $gbtx OK? Press any key to continue..."
     done
 }
 
