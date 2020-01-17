@@ -2,7 +2,7 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Fri Jan 17, 2020 at 04:37 AM -0500
+# Last Change: Fri Jan 17, 2020 at 04:41 AM -0500
 
 GBT=0
 
@@ -22,27 +22,33 @@ declare -A MINIDAQ_CHS=(
     [6]=13
 )
 
+
 function test_dcb {
-   for gbtx in ${1[@]}; do
-       echo "Validating GBTx $gbtx..."
-       for asic in 3 2 1; do
-           ./phaseadj.py -g $GBT -s $gbtx \
-               -b ${2[$gbtx]} -a $asic \
-               -c ${MINIDAQ_CHS[$gbtx]} \
-               -e $(echo ${ELK_CHS[$asic]}) \
-               --adjust-elink-phase y \
-               --adjust-tfc-phase n \
-               --non-verbose
-       done
-       # Print out the final result for each GBTx
-       ./phaseadj.py -g $GBT -s $gbtx \
-           -b ${2[$gbtx]} -a 0 \
-           -c ${MINIDAQ_CHS[$gbtx]} \
-           -e $(echo ${ELK_CHS[0]}) \
-           --adjust-elink-phase y \
-           --adjust-tfc-phase n
-   done
+    GBTXS=$1
+    I2C_BUS=$2
+
+    for gbtx in ${GBTXS[@]}; do
+        echo "Validating GBTx $gbtx..."
+        for asic in 3 2 1; do
+            ./phaseadj.py -g $GBT -s $gbtx \
+                -b ${I2C_BUS[$gbtx]} -a $asic \
+                -c ${MINIDAQ_CHS[$gbtx]} \
+                -e $(echo ${ELK_CHS[$asic]}) \
+                --adjust-elink-phase y \
+                --adjust-tfc-phase n \
+                --non-verbose
+        done
+
+        # Print out the final result for each GBTx
+        ./phaseadj.py -g $GBT -s $gbtx \
+            -b ${I2C_BUS[$gbtx]} -a 0 \
+            -c ${MINIDAQ_CHS[$gbtx]} \
+            -e $(echo ${ELK_CHS[0]}) \
+            --adjust-elink-phase y \
+            --adjust-tfc-phase n
+    done
 }
+
 
 case $1 in
     FH) # On Mirror BP, we are using JP9 and JD10
@@ -92,7 +98,7 @@ case $1 in
         done
 
         # Now we start adjusting phase
-        test_dcb ${GBTXS} ${I2C_BUS}
+        test_dcb ${GBTXS[@]} ${I2C_BUS[@]}
         ;;
 
     *)
