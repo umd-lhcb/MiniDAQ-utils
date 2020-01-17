@@ -2,7 +2,7 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Fri Jan 17, 2020 at 04:43 AM -0500
+# Last Change: Fri Jan 17, 2020 at 04:44 AM -0500
 
 GBT=0
 
@@ -46,6 +46,9 @@ function test_dcb {
             -e $(echo ${ELK_CHS[0]}) \
             --adjust-elink-phase y \
             --adjust-tfc-phase n
+
+        read -n 1 -s -r -p "Press any key to continue"
+        echo ""
     done
 }
 
