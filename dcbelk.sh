@@ -2,7 +2,7 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Fri Jan 17, 2020 at 04:58 AM -0500
+# Last Change: Fri Jan 17, 2020 at 05:00 AM -0500
 
 GBT=0
 
@@ -48,6 +48,7 @@ function test_dcb {
             --adjust-tfc-phase n
 
         read -n 1 -s -r -p "Is GBTx $gbtx OK? Press any key to continue..."
+        echo ""
     done
 }
 
