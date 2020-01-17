@@ -2,7 +2,7 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Fri Jan 17, 2020 at 02:27 AM -0500
+# Last Change: Fri Jan 17, 2020 at 02:42 AM -0500
 
 from argparse import ArgumentParser
 from tabulate import tabulate
@@ -118,7 +118,7 @@ if __name__ == '__main__':
     highlighter = lambda x, y, z: \
         highlight_chs(x, z, ['elk'+str(n) for n in daq_chs])
     print('Will adjust the following DCB elinks: {}'.format(
-        ', '.join(daq_chs)
+        ', '.join(map(str, daq_chs))
     ))
 
     # Adjust elink phase #######################################################
