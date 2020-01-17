@@ -2,7 +2,7 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Sun Dec 29, 2019 at 11:06 PM -0500
+# Last Change: Fri Jan 17, 2020 at 03:07 AM -0500
 
 from tabulate import tabulate
 from time import sleep
@@ -50,6 +50,11 @@ SALT_INIT_SEQ = [
 
 def addr_shift(addr, shift, base=16):
     return addr + shift*base
+
+
+def salt_cur_elk_phase(gbt, bus, asic):
+    return i2c_read(gbt, 0, bus, addr_shift(0, asic), 0x08, 1,
+                    I2C_TYPE['salt'], I2C_FREQ['100KHz'])
 
 
 def salt_elk_phase(gbt, bus, asic, phase):

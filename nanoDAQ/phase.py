@@ -2,7 +2,7 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Mon Jan 06, 2020 at 03:23 AM -0500
+# Last Change: Fri Jan 17, 2020 at 03:10 AM -0500
 
 from collections import defaultdict, Counter
 from sty import fg
@@ -12,7 +12,8 @@ from nanoDAQ.utils import most_common, exec_guard, hex_pad
 
 from nanoDAQ.gbtclient.fpga_reg import mem_mon_read_safe as mem_r
 
-from nanoDAQ.ut.salt import salt_elk_phase, salt_ser_src, salt_tfc_phase, \
+from nanoDAQ.ut.salt import salt_cur_elk_phase, salt_elk_phase, \
+    salt_ser_src, salt_tfc_phase, \
     SALT_TFC_VALID_PHASE
 from nanoDAQ.ut.dcb import dcb_elk_phase, DCB_ELK_VALID_PHASE
 
@@ -27,9 +28,13 @@ def adj_dcb_elink_phase(adjustment, gbt, slave):
 
 
 def adj_salt_elink_phase(pattern, gbt, bus, asic):
+    cur_phase = int(exec_guard(salt_cur_elk_phase, gbt, bus, asic))
     phase = check_bit_shift(pattern)
+
     if phase:
-        print('Shift SALT elink phase to {}'.format(phase))
+        phase = (phase + cur_phase) % 8
+        print('SALT current phase is {}, shifting to {}'.format(
+            cur_phase, phase))
         exec_guard(salt_elk_phase, gbt, bus, asic, str(phase))
 
 
