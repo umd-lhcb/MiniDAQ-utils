@@ -28,10 +28,10 @@ def adj_dcb_elink_phase(adjustment, gbt, slave):
 
 
 def adj_salt_elink_phase(pattern, gbt, bus, asic):
-    cur_phase = int(exec_guard(salt_cur_elk_phase, gbt, bus, asic))
     phase = check_bit_shift(pattern)
 
     if phase:
+        cur_phase = int(exec_guard(salt_cur_elk_phase, gbt, bus, asic))
         phase = (phase + cur_phase) % 8
         print('SALT current phase is {}, shifting to {}'.format(
             cur_phase, phase))
