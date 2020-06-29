@@ -2,7 +2,7 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Mon Dec 30, 2019 at 12:33 AM -0500
+# Last Change: Mon Jun 29, 2020 at 08:26 PM +0800
 
 from platform import node
 
@@ -18,6 +18,7 @@ GBT_PREF = 'Gbt'
 GBT_SERV = node()  # Canonical hostname
 TELL40   = 'TELL40_Dev1_0'
 
+# This is defined in 'gbt_sca/inc/constants.h'
 SCA_OP_MODE = {
     'write':         0,
     'read':          1,
