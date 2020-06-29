@@ -19,6 +19,11 @@ cd utils
 Note that this script will try to install required `rpm` pacakges, so sudo
 permission is needed.
 
+### To open WinCC OA GUI
+```
+sudo /opt/WinCC_OA/3.16/bin/WCCOAui -proj MiniDAQ_r20191113 -m gedi &
+```
+
 
 ## `dcbutil.py`
 **Note**: The following flags are available in most sub-commands:
