@@ -121,9 +121,6 @@ class DCB(object):
         for s in self.dyn_slaves(slaves):
             i2c_write(self.gbt, self.sca, self.bus, s, 0, 366,
                       self.i2c_type, self.i2c_freq, filepath=filepath)
-            # FIXME: Newer gbtserv has parallelization, which may break things
-            #        So let's just add some sleep
-            sleep(0.3)
 
     ##################
     # I2C write/read #

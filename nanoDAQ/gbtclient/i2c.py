@@ -56,6 +56,7 @@ def i2c_op(mode, gbt, sca, bus, addr, sub_addr, size, i2c_type, i2c_freq,
     data = hex_to_bytes(data)
 
     args = (cmd, data)
+
     ret = pydim.dic_sync_cmnd_service(
         '{}/{}/CmndI2COperation'.format(GBT_PREF, GBT_SERV),
         args, 'C:128;C')
@@ -72,7 +73,12 @@ def i2c_write(*args, regulator=ddr, **kwargs):
 
 
 def i2c_read(*args, regulator=ddr, **kwargs):
+    # FIXME: The operation order doesn't make sense.
     i2c_op(SCA_OP_MODE['read'], *args, **kwargs)
+    pydim.dic_sync_info_service(
+        '{}/{}/SrvcI2CRead'.format(GBT_PREF, GBT_SERV),
+        'I:1;C'
+    )
     ret = pydim.dic_sync_info_service(
         '{}/{}/SrvcI2CRead'.format(GBT_PREF, GBT_SERV),
         'I:1;C'
@@ -81,7 +87,12 @@ def i2c_read(*args, regulator=ddr, **kwargs):
 
 
 def i2c_writeread(*args, regulator=ddr, **kwargs):
+    # FIXME: The operation order doesn't make sense.
     i2c_op(SCA_OP_MODE['writeread'], *args, **kwargs)
+    pydim.dic_sync_info_service(
+        '{}/{}/SrvcI2CRead'.format(GBT_PREF, GBT_SERV),
+        'I:1;C'
+    )
     ret = pydim.dic_sync_info_service(
         '{}/{}/SrvcI2CRead'.format(GBT_PREF, GBT_SERV),
         'I:1;C'
