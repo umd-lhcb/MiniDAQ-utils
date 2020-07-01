@@ -2,7 +2,7 @@
 #
 # Author: Yipeng Sun
 # License: BSD 2-clause
-# Last Change: Fri Jan 17, 2020 at 02:02 AM -0500
+# Last Change: Wed Jul 01, 2020 at 07:18 PM +0800
 
 import pydim
 
@@ -52,7 +52,7 @@ def i2c_op(mode, gbt, sca, bus, addr, sub_addr, size, i2c_type, i2c_freq,
     if not data:
         data = '0'
     # Note that the input parameter 'data' should be hex numbers in string
-    # e.g. 'abad1dea', note that there's no '0x' prefix!.
+    # e.g. 'abad1dea', note that there's no '0x' prefix!
     data = hex_to_bytes(data)
 
     args = (cmd, data)
