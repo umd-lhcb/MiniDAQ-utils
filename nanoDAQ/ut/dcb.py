@@ -2,7 +2,7 @@
 #
 # Author: Yipeng Sun, Manuel Franco Sevilla
 # License: BSD 2-clause
-# Last Change: Wed Jul 01, 2020 at 07:29 PM +0800
+# Last Change: Thu Jul 02, 2020 at 03:14 AM +0800
 
 import os.path as op
 
@@ -114,13 +114,21 @@ class DCB(object):
     # Initialize #
     ##############
 
+    def convert_file_to_reg(self, filepath):
+        with open(filepath) as f:
+            raw = f.readline()
+        raw = [i.strip() for i in raw]
+        padded = ['0'+i if len(i) == 1 else i for i in raw]
+        return ''.join(padded)
+
     def init(self, filepath, slaves=None):
         self.activate_i2c()
         filepath = op.abspath(op.expanduser(filepath))
+        data = self.convert_file_to_reg(filepath)
 
         for s in self.dyn_slaves(slaves):
             i2c_write(self.gbt, self.sca, self.bus, s, 0, 366,
-                      self.i2c_type, self.i2c_freq, filepath=filepath)
+                      self.i2c_type, self.i2c_freq, data=data)
 
     ##################
     # I2C write/read #
