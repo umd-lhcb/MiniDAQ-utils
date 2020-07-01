@@ -2,7 +2,7 @@
 #
 # Author: Yipeng Sun, Manuel Franco Sevilla
 # License: BSD 2-clause
-# Last Change: Sun Dec 29, 2019 at 10:44 PM -0500
+# Last Change: Wed Jul 01, 2020 at 07:29 PM +0800
 
 import os.path as op
 
@@ -121,6 +121,9 @@ class DCB(object):
         for s in self.dyn_slaves(slaves):
             i2c_write(self.gbt, self.sca, self.bus, s, 0, 366,
                       self.i2c_type, self.i2c_freq, filepath=filepath)
+            # FIXME: Newer gbtserv has parallelization, which may break things
+            #        So let's just add some sleep
+            sleep(0.3)
 
     ##################
     # I2C write/read #
