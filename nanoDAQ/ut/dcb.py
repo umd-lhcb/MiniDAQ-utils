@@ -12,6 +12,7 @@ from tabulate import tabulate
 
 from nanoDAQ.gbtclient.i2c import I2C_TYPE, I2C_FREQ
 from nanoDAQ.gbtclient.i2c import i2c_activate_ch, i2c_read, i2c_write
+from nanoDAQ.gbtclient.i2c import i2c_write_verify
 
 from nanoDAQ.gbtclient.gpio import GPIO_DIR_LOOKUP, GPIO_LEVEL_LOOKUP
 from nanoDAQ.gbtclient.gpio import gpio_activate_ch, gpio_setdir, \
@@ -116,7 +117,7 @@ class DCB(object):
 
     def convert_file_to_reg(self, filepath):
         with open(filepath) as f:
-            raw = f.readline()
+            raw = f.readlines()
         raw = [i.strip() for i in raw]
         padded = ['0'+i if len(i) == 1 else i for i in raw]
         return ''.join(padded)
@@ -127,8 +128,10 @@ class DCB(object):
         data = self.convert_file_to_reg(filepath)
 
         for s in self.dyn_slaves(slaves):
-            i2c_write(self.gbt, self.sca, self.bus, s, 0, 366,
-                      self.i2c_type, self.i2c_freq, data=data)
+            i2c_write_verify(
+                self.gbt, self.sca, self.bus, s, 0, 366,
+                self.i2c_type, self.i2c_freq, data=data)
+            sleep(0.2)
 
     ##################
     # I2C write/read #
