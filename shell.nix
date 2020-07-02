@@ -1,11 +1,11 @@
 let
   pkgs = import <nixpkgs> {};
-  python = pkgs.python36;
+  python = pkgs.python3;
   pythonPackages = python.pkgs;
 in
 
 pkgs.mkShell {
-  name = "pip-env";
+  name = "nanoDAQ";
   buildInputs = with pythonPackages; [
     # Auto completion
     jedi
@@ -25,7 +25,12 @@ pkgs.mkShell {
     # Augment the dynamic linker path or other packages you care about
     #export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:${pkgs.ncurses}/lib
 
-    VENV=$HOME/build/python-venv/nanoDAQ
+    if test -d $HOME/build/python-venv; then
+      VENV=$HOME/build/python-venv/nanoDAQ
+    else
+      VENV=./.virtualenv
+    fi
+
     if test ! -d $VENV; then
       virtualenv $VENV
     fi
