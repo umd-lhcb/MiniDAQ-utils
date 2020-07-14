@@ -2,7 +2,7 @@
 #
 # Author: Yipeng Sun, Manuel Franco Sevilla
 # License: BSD 2-clause
-# Last Change: Thu Jul 02, 2020 at 03:14 AM +0800
+# Last Change: Tue Jul 14, 2020 at 08:11 PM +0800
 
 import os.path as op
 
@@ -123,6 +123,8 @@ class DCB(object):
 
     def init(self, filepath, slaves=None):
         self.activate_i2c()
+        # FIXME: Sleep for no apparent reason
+        sleep(0.2)
         filepath = op.abspath(op.expanduser(filepath))
         data = self.convert_file_to_reg(filepath)
 
